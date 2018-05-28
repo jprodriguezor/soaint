@@ -1,7 +1,7 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.Documento;
+import co.com.soaint.ecm.domain.entity.DocumentMimeType;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -215,6 +215,19 @@ public class ContentControlAlfrescoTest {
                     detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        } catch (Exception e) {
+            logger.error("Error Exception: {}", e);
+        }
+    }
+    @Test
+    public void testDetallesUnidadDocumentalFail() {
+        //Crear unidad documental
+        UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
+        try {
+            contentControlAlfresco.detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje();
+        } catch (SystemException e) {
+            assertEquals("Unidad Documental no encontrada con ID: '" + unidadDocumentalDTO.getId() + "'",e.getMessage());
             logger.error("Error SystemException: {}", e);
         } catch (Exception e) {
             logger.error("Error Exception: {}", e);
@@ -656,7 +669,15 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
         }
 
     }
-
+    @Test
+    public void testGetDocumentsFromFolderFail() {
+        Folder foldertest = null;
+        try {
+            assertNotNull(contentControlAlfresco.getDocumentsFromFolder(foldertest));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testSubirDocumentosUnidadDocumentalECMSuccess() {
         try {
@@ -900,9 +921,9 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
     }
 
     @Test
-    public void testEstamparEtiquetaRadicacionSuccess() {
+    public void testEstamparEtiquetaRadicacionPDFSuccess() {
 
-        DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionSuccess");
+        DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionPDFSuccess");
         try {
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
 
@@ -917,6 +938,38 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
 
             documentoDTO.setDocumento(imageInByte);
             documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
+            MensajeRespuesta mensajeRespuestaTest = contentControlAlfresco.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
+            documentoDTO=(DocumentoDTO)mensajeRespuestaTest.getResponse().get("documento");
+            assertEquals("0000", mensajeRespuestaTest.getCodMensaje());
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(),conexion.getSession());
+
+        } catch (SystemException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    @Test
+    public void testEstamparEtiquetaRadicacionHTMLSuccess() {
+
+        DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionHTMLSuccess");
+        documentoDTO.setDocumento("PCFET0NUWVBFIGh0bWw+CjwhLS0gc2F2ZWQgZnJvbSB1cmw9KDAwNTApaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS5jdS9fL2Nocm9tZS9uZXd0YWI/aWU9VVRGLTggLS0+CjxodG1sIGxhbmc9ImVzLTQxOSI+CjxoMT5IZWxsbyBXb3JsZCB0ZXN0RXN0YW1wYXJFdGlxdWV0YVJhZGljYWNpb25TdWNjZXNzPC9oMT4KPC9odG1sPg==".getBytes());
+        documentoDTO.setTipoDocumento(DocumentMimeType.APPLICATION_HTML.getType());
+        try {
+            MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
+
+            documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
+            //Obtener arreglo de bytes a partir de la imagen
+            String imgPath = "src\\test\\java\\resources\\Imagen.png";
+            File imgFile = new File(imgPath);
+            BufferedImage bufferedImage = ImageIO.read(imgFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] imageInByte = baos.toByteArray();
+
+
+            documentoDTO.setDocumento(imageInByte);
             MensajeRespuesta mensajeRespuestaTest = contentControlAlfresco.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
             documentoDTO=(DocumentoDTO)mensajeRespuestaTest.getResponse().get("documento");
             assertEquals("0000", mensajeRespuestaTest.getCodMensaje());

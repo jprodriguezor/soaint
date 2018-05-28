@@ -5,6 +5,7 @@ import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -21,21 +22,23 @@ public class CorrespondenciaClient {
 
     private String droolsAuthToken = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN);
 
+    private Client client = ClientBuilder.newClient();
+
     public CorrespondenciaClient() {
         super();
     }
 
     public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
-    public Response radicarSalida(ComunicacionOficialDTO comunicacionOficialDTO) {
+    public Response radicarSalida(ComunicacionOficialRemiteDTO comunicacionOficialDTO) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia Salida with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/radicar-salida")
                 .request()
                 .post(Entity.json(comunicacionOficialDTO));
@@ -43,7 +46,7 @@ public class CorrespondenciaClient {
 
     public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado, String nroRadicado) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .queryParam("fecha_ini", fechaIni)
                 .queryParam("fecha_fin", fechaFin)
@@ -56,7 +59,7 @@ public class CorrespondenciaClient {
 
     public Response listarObservaciones(BigInteger idCorrespondencia) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/documento-web-api/documento/listar-observaciones/" + idCorrespondencia)
                 .request()
                 .get();
@@ -64,7 +67,7 @@ public class CorrespondenciaClient {
 
     public Response obtenerCorrespondenciaPorNroRadicado(String nroRadicado) {
         log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/" + nroRadicado)
                 .request()
                 .get();
@@ -72,7 +75,7 @@ public class CorrespondenciaClient {
 
     public Response obtenerCorrespondenciaFullPorNroRadicado(String nroRadicado) {
         log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/full" + nroRadicado)
                 .request()
                 .get();
@@ -80,7 +83,7 @@ public class CorrespondenciaClient {
 
     public Response asignarComunicaciones(AsignacionTramiteDTO asignacionTramiteDTO) {
         log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/asignacion-web-api/asignacion/asignar-funcionario")
                 .request()
                 .post(Entity.json(asignacionTramiteDTO));
@@ -88,7 +91,7 @@ public class CorrespondenciaClient {
 
     public Response obtenerFuncionarInfoParaReasignar(BigInteger idAgente) {
         log.info("Asignacion - [trafic] - obtener Hash del Funcionario with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/asignacion-web-api/asignacion/re-asignacion/" + idAgente)
                 .request()
                 .get();
@@ -96,7 +99,7 @@ public class CorrespondenciaClient {
 
     public Response redireccionarComunicaciones(RedireccionDTO redireccionDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/agente-web-api/agente/redireccionar")
                 .request()
                 .put(Entity.json(redireccionDTO));
@@ -104,7 +107,7 @@ public class CorrespondenciaClient {
 
     public Response devolverComunicaciones(DevolucionDTO devolucionDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/agente-web-api/agente/devolver")
                 .request()
                 .put(Entity.json(devolucionDTO));
@@ -112,14 +115,14 @@ public class CorrespondenciaClient {
 
     public Response obtenerContactoDestinatarioExterna(String idRadicado) {
         log.info("Correspondencia - [trafic] - obtener - Contacto- DestinatarioExterna with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/agente-web-api/agente/remitente/" + idRadicado ).request().get();
     }
 
     public Response metricasTiempoDrools(String payload) {
         log.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 
-        WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
+        WebTarget wt = client.target(droolsEndpoint);
         return wt.path("/regla")
                 .request()
                 .header("Authorization", "Basic " + droolsAuthToken)
@@ -132,7 +135,7 @@ public class CorrespondenciaClient {
         log.info("Correspondencia - [trafic] - verificar redirecciones Regla: " + droolsEndpoint);
         log.error("DROOLS TOKEN: Basic " + droolsAuthToken);
 
-        WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
+        WebTarget wt = client.target(droolsEndpoint);
         return wt.path("/redireccion")
                 .request()
                 .header("Authorization", "Basic " + droolsAuthToken)
@@ -143,7 +146,7 @@ public class CorrespondenciaClient {
 
     public Response registrarObservacion(PpdTrazDocumentoDTO observacion) {
         log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/documento-web-api/documento/registrar-observacion")
                 .request()
                 .post(Entity.json(observacion));
@@ -151,7 +154,7 @@ public class CorrespondenciaClient {
 
     public Response obtnerContantesPorCodigo(String codigos) {
         log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         WebTarget target = wt.path("/constantes-web-api/constantes").queryParam("codigos", codigos);
 
         return target.request().get();
@@ -159,7 +162,7 @@ public class CorrespondenciaClient {
 
     public Response listarDistribucion(String fechaIni, String fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) {
         log.info("Correspondencia - [trafic] - listar distribucion: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
 
         WebTarget target = wt.path("/correspondencia-web-api/correspondencia/listar-distribucion")
                 .queryParam("fecha_ini", fechaIni)
@@ -172,7 +175,7 @@ public class CorrespondenciaClient {
 
     public Response listarPlanillas(String nroPlanilla) {
         log.info("Correspondencia - [trafic] - listar planillas: " + nroPlanilla);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
 
         WebTarget target = wt.path("/planillas-web-api/planillas/" + nroPlanilla);
 
@@ -181,7 +184,7 @@ public class CorrespondenciaClient {
 
     public Response generarPlantilla(PlanillaDTO planilla) {
         log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/planillas-web-api/planillas")
                 .request()
                 .post(Entity.json(planilla));
@@ -189,7 +192,7 @@ public class CorrespondenciaClient {
 
     public Response cargarPlantilla(PlanillaDTO planilla) {
         log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/planillas-web-api/planillas")
                 .request()
                 .put(Entity.json(planilla));
@@ -197,7 +200,7 @@ public class CorrespondenciaClient {
 
     public Response exportarPlanilla(String nroPlanilla, String formato) {
         log.info("Correspondencia - [trafic] - exportar planilla: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/planillas-web-api/planillas/" + nroPlanilla + "/" + formato)
                 .request()
                 .get();
@@ -205,14 +208,14 @@ public class CorrespondenciaClient {
 
     public Response restablecerCorrespondenciaEntrada(String idproceso, String idtarea) {
         log.info("Correspondencia - [trafic] - Invocando Servicio Remoto SalvarCorrespondenciaEntrada: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
     }
 
     public Response salvarCorrespondenciaEntrada(TareaDTO tarea) {
         log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/tarea-web-api/tarea")
                 .request()
                 .post(Entity.json(tarea));
@@ -220,7 +223,7 @@ public class CorrespondenciaClient {
 
     public Response actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) {
         log.info("Comunicacion - [trafic] - comunicacion with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/actualizar-comunicacion")
                 .request()
                 .put(Entity.json(comunicacionOficialDTO));
@@ -229,7 +232,7 @@ public class CorrespondenciaClient {
 
     public Response listarAnexos(String nroRadicado) {
         log.info("Comunicacion - [trafic] - listar anexos: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return  wt.path("correspondencia-web-api/anexo-web-api/anexo" +  "/" + nroRadicado)
                 .request()
                 .get();
@@ -240,7 +243,7 @@ public class CorrespondenciaClient {
 
         log.info("Delegator: crear Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/crear-solicitud-um")
                 .request()
                 .post(Entity.json(solicitudes));
@@ -250,7 +253,7 @@ public class CorrespondenciaClient {
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
 
         return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante-sin-tramitar")
                 .queryParam("cod_sede", codSede)
@@ -265,7 +268,7 @@ public class CorrespondenciaClient {
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
 
         return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante")
                 .queryParam("cod_sede", codSede)
@@ -279,7 +282,7 @@ public class CorrespondenciaClient {
 
         log.info("Delegator: actualizar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/actualizar-solicitud-um")
                 .request()
                 .put(Entity.json(solicitud));

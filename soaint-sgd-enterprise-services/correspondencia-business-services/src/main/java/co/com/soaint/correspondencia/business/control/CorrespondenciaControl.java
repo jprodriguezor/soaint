@@ -535,6 +535,51 @@ public class CorrespondenciaControl {
     }
 
     /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
+        try {
+            List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
+                    .setParameter("REQ_DIST_FISICA", reqDistFisica)
+                    .setParameter("TIPO_COM1", "SE")
+                    .setParameter("TIPO_COM1", "SI")
+                    .getResultList();
+
+            if (correspondenciaDTOList.isEmpty()) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.not_exist_by_reqDistFisica_and_tipo_comunicacion")
+                        .buildBusinessException();
+            }
+
+            List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
+
+            for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
+                ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+                        .correspondencia(correspondenciaDTO)
+                        .agenteList(agenteDTOList)
+                        .build();
+                comunicacionOficialDTOList.add(comunicacionOficialDTO);
+            }
+
+            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia
@@ -1151,22 +1196,20 @@ public class CorrespondenciaControl {
     }
 
     /**
-     * @param esRemitenteReferidoDestinatario
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
     @Transactional
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO,
-                                                                                             Boolean esRemitenteReferidoDestinatario)
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                             throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
 
-            if (esRemitenteReferidoDestinatario){
+            if (comunicacionOficialDTO.getEsRemitenteReferidoDestinatario()){
                 List<String> nrosRadicadoReferido = referidoControl.consultarNrosRadicadoCorrespondenciaReferida(comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
                 if (nrosRadicadoReferido!= null || !nrosRadicadoReferido.isEmpty()) {
                     for (String nro : nrosRadicadoReferido) {
@@ -1249,7 +1292,6 @@ public class CorrespondenciaControl {
             });
 
             em.persist(correspondencia);
-
             em.flush();
 
             log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
@@ -1293,8 +1335,8 @@ public class CorrespondenciaControl {
                         doc.setContentTypeattachment(documento.getTipoDocumento());
                         doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
-                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
+                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento());
+                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento());
                     });
                 }
             } else{

@@ -121,6 +121,15 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
+        return control.listarComunicacionDeSalidaConDistribucionFisica();
+    }
+
+    /**
      *
      * @param nroRadicado
      * @return
@@ -152,16 +161,14 @@ public class GestionarCorrespondencia {
     }
 
     /**
-     *
-     * @param esRemitenteReferidoDestinatario
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO, Boolean esRemitenteReferidoDestinatario)
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                 throws BusinessException, SystemException {
-        return control.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO,esRemitenteReferidoDestinatario);
+        return control.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO);
     }
 
     /**

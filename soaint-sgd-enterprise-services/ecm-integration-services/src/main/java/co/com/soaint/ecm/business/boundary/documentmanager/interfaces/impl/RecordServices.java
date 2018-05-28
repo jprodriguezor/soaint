@@ -85,10 +85,10 @@ public class RecordServices implements IRecordServices {
     private String localizacion = "";
     @Value("${tag.propiedad.periodo}")
     private String propiedadPeriodo = "";
-    @Value("${tag.evento.completar}")
+    /*@Value("${tag.evento.completar}")
     private String eventoCompletar = "";
     @Value("${tag.evento}")
-    private String evento = "";
+    private String evento = "";*/
     @Value("${valor.periodo}")
     private String valorPeriodo = "";
     @Value("${valor.mensaje.descripcion}")
@@ -103,6 +103,9 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> propiedades = new HashMap<>();
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
+
+    public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
+    public static String RMA_IS_CLOSED = "rma:isClosed";
 
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
@@ -337,6 +340,10 @@ public class RecordServices implements IRecordServices {
         }
         if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
             nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
+            Calendar fechaAutoCierre = documentalDTO.getFechaAutoCierre();
+            nombreMap.put(RMC_X_AUTO_CIERRE, Utilities.calendarToString(fechaAutoCierre));
         }
 
         properties.put("properties", nombreMap);
@@ -756,10 +763,10 @@ public class RecordServices implements IRecordServices {
             jsonPostDataretencion.put(periodo, entrada.get(periodo));
             jsonPostDataretencion.put(localizacion, entrada.get(localizacion));
             jsonPostDataretencion.put(propiedadPeriodo, entrada.get(propiedadPeriodo));
-            jsonPostDataretencion.put(eventoCompletar, entrada.get(eventoCompletar));
-            JSONArray events = new JSONArray();
-            events.put(entrada.get("events"));
-            jsonPostDataretencion.put(evento, events);
+            //jsonPostDataretencion.put(eventoCompletar, entrada.get(eventoCompletar));
+            //JSONArray events = new JSONArray();
+            //events.put(entrada.get("events"));
+            //jsonPostDataretencion.put(evento, events);
 
             WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.API_SERVICE_ALFRESCO));
             Response response = wt.path("/" + idPadre + "/dispositionschedule/dispositionactiondefinitions")
@@ -867,8 +874,8 @@ public class RecordServices implements IRecordServices {
             disposicion.put(periodo, "immediately");
             disposicion.put(localizacion, trd.getNomSerie());
             disposicion.put(propiedadPeriodo, "rma:dispositionAsOf");
-            disposicion.put(eventoCompletar, true);
-            disposicion.put(evento, "case_closed");
+            //disposicion.put(eventoCompletar, false);
+            //disposicion.put(evento, "case_closed");
             if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) && !codigoSeries.containsKey(trd.getIdOrgOfc())) {
                 idSerie = crearSerie(trd);
                 codigoSeries.put(trd.getIdOrgOfc(), idSerie);

@@ -66,6 +66,16 @@ import java.util.stream.Collectors;
                 "AND c.reqDistFisica = :REQ_DIST_FISICA AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION " +
                 "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c " +
+                "INNER JOIN c.corAgenteList ca " +
+                "INNER JOIN c.ppdDocumentoList d " +
+//                "INNER JOIN CorPlanAgen cpa " +
+                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "+
+                "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION AND ca.codTipAgent = :TIPO_AGENTE "),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),

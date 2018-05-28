@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum DocumentMimeType {
 
     APPLICATION_PDF("application/pdf"),
-    APPLICATION_HTML("text/html");
+    APPLICATION_HTML("text/html"),
+    APPLICATION_ICON("image/png");
 
     private final String type;
 
