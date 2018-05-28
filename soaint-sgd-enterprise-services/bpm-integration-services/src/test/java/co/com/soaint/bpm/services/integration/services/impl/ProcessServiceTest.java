@@ -82,16 +82,27 @@ public class ProcessServiceTest {
 
         assertNotNull(procesoDTO);
         assertNotNull(processService);
-//        RespuestaProcesoDTO result = processService.iniciarProceso(procesoDTO);
-        assertNotNull(processService.iniciarProceso(procesoDTO));
+        RespuestaProcesoDTO result = processService.iniciarProceso(procesoDTO);
+        assertNotNull(result);
+        System.out.print(result.getCodigoProceso());
     }
 
     @Test
     public void iniciarProcesoPorTerceroTest() throws SystemException {
+        assertNotNull(procesoDTO);
+        assertNotNull(processService);
+        RespuestaProcesoDTO result = processService.iniciarProcesoPorTercero(procesoDTO);
+        assertNotNull(result);
+        System.out.print(result.getCodigoProceso());
     }
 
     @Test
     public void iniciarProcesoManualTest() throws SystemException {
+        assertNotNull(procesoDTO);
+        assertNotNull(processService);
+        RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
+        assertNotNull(result);
+        System.out.print(result.getCodigoProceso());
     }
 
 //    @Test
