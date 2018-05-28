@@ -30,6 +30,32 @@
           </div>
         </div>
 
+        <div class="ui-g ui-g-12" *ngIf="isRadicacionSalida()" style="margin: 20px 0;">
+            <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6" >
+              <div style="padding: 20px 0 0 10px">
+
+                <p-radioButton name="cg" formControlName="reqDistFisica" [value]="1" [disabled]="!showBlockDistribucionDig()"
+                               label="Requiere distribución física"></p-radioButton>
+
+                <p-radioButton name="cg" formControlName="reqDistFisica" [value]="2" [disabled]="!showBlockDistribucionDig()"
+                               label="Requiere distribución electrónica" [style]="{'margin-left':'10px'}"></p-radioButton>
+
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6" *ngIf="showBlockDistribucionDig()">
+              <div style="padding: 20px 0 0 10px">
+
+                <p-radioButton name="rd" formControlName="reqDigit" [value]="1"
+                               label="Requiere digitalización"></p-radioButton>
+
+                <p-radioButton name="rd" formControlName="reqDigit" [value]="2" label="Adjuntar documento"
+                               [style]="{'margin-left':'10px'}"></p-radioButton>
+
+              </div>
+
+            </div>
+        </div>
+
         <!--Tipo Comunicacion-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
@@ -150,38 +176,42 @@
         </div>
 
         <!--Tiempo Respuesta-->
-        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
+        <div class="ui-g ui-g-6" *ngIf="isRadicacionEntrada()">
+          <div class="ui-sm-12 ui-md-6" style="padding-top: 40px" >
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
                   <span class="md-inputfield">
                     <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta" [disabled]="true"
                                [ngModel]="tiempoRespuestaMetricaTipologia$ | async"></p-spinner>
                     <label>Tiempo de respuesta</label>
                   </span>
+              </div>
+            </div>
+          </div>
+
+          <!--Unidad de Tiempo-->
+          <div class="ui-sm-12 ui-md-6">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="unidadTiempo">Unidad de tiempo</label>
+              </div>
+              <div class="ui-g-12">
+                <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItem"
+                            [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
+                            id="unidadTiempo"
+                            [disabled]="true"
+                            formControlName="unidadTiempo"
+                            placeholder="Seleccione"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+
+              </div>
             </div>
           </div>
         </div>
+        <div class="ui-g ui-g-12" *ngIf="isRadicacionSalida()" > </div>
 
-        <!--Unidad de Tiempo-->
-        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="unidadTiempo">Unidad de tiempo</label>
-            </div>
-            <div class="ui-g-12">
-              <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItem"
-                          [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
-                          id="unidadTiempo"
-                          [disabled]="true"
-                          formControlName="unidadTiempo"
-                          placeholder="Seleccione"
-                          [autoWidth]="false"
-              >
-              </p-dropdown>
-
-            </div>
-          </div>
-        </div>
 
         <!--Numero Folio-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 40px">
@@ -215,7 +245,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-g-12 ui-lg-12" *ngIf="showBlockDistribucionDig()">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12" *ngIf="isRadicacionEntrada()">
           <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
             <div style="padding: 20px 0 0 10px">
 
@@ -255,9 +285,10 @@
       <div class="ui-g ui-fluid" style="margin-top: 30px">
 
         <!-- Radicados Referidos -->
-        <div class="ui-g-12" *ngIf="editable === true || editmode === true" style="margin-top: 8px">
+        <ng-template [ngIf]="isRadicacionEntrada()" [ngIfElse]="radWSalida">
+          <div class="ui-g-12" *ngIf="editable === true || editmode === true" style="margin-top: 8px">
 
-          <div class="form-group" style="display: flex; margin: 16px">
+            <div class="form-group" style="display: flex; margin: 16px">
               <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
                   <input type="text" pInputText
                          id="radicadoReferido"
@@ -266,7 +297,7 @@
                   <label>Radicados Referidos</label>
               </span>
 
-            <span style="float: right">
+              <span style="float: right">
                  <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
                          (click)="addRadicadosReferidos()" *ngIf="editable === true || editmode === true"
                          [disabled]="!form.get('radicadoReferido').value">
@@ -274,8 +305,41 @@
                 </button>
               </span>
 
+            </div>
           </div>
-        </div>
+        </ng-template>
+
+        <ng-template #radWSalida>
+          <div class="ui-g-12" *ngIf="showBlockDistribucionDig()" style="margin-top: 8px">
+
+            <div class="ui-g ui-g-4" >
+              <div class="form-group" style="display: flex; margin: 16px">
+               <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                  <input type="text" pInputText
+                         id="rs-radicadoReferido"
+                         formControlName="radicadoReferido"
+                  >
+                  <label>Radicados Referidos</label>
+               </span>
+              </div>
+            </div>
+            <div class="ui-g ui-g-4">
+              <div style="padding: 20px 0 0 10px">
+                <p-checkbox name="cg" label="Responder a remitente de radicado referido" id="responderRemitente"
+                            formControlName="responderRemitente" binary="true" (onChange)="changeTipoDistribucion($event)"></p-checkbox>
+              </div>
+            </div>
+            <div class="ui-g ui-g-4">
+               <span style="float: right">
+                 <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                         (click)="addRadicadosReferidos()" *ngIf="editable === true || editmode === true"
+                         [disabled]="!form.get('radicadoReferido').value">
+
+                </button>
+              </span>
+            </div>
+          </div>
+        </ng-template>
 
         <div class="ui-g-12 ui-lg-12 padding-12">
 
@@ -432,4 +496,5 @@
 
     </div>
   </div>
+
 </form>

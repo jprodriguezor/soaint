@@ -219,10 +219,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
       }));
 
-       let requiereDigitalizacion = valueGeneral.reqDigit;
-
-       console.log(requiereDigitalizacion);
-
         this._taskSandbox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
@@ -259,7 +255,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     return {
       codDependencia:this.dependencySelected.codigo,
       numeroRadicado:noRadicado,
-      requiereDigitalizacion:generales.reqDigit
+      requiereDigitalizacion:generales.reqDigit,
+      requiereDistribucionDemanda:generales.reqDistFisica
     }
   }
 
@@ -427,7 +424,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       const conditions:boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
-      !this.datosGenerales.form.get("reqDistFisica").value || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
+      this.datosGenerales.form.get("reqDistFisica").value != 1 || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
       this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
     ];
 
