@@ -135,7 +135,7 @@ public class ECMConnectionRule implements TestRule {
         unidadDocumental.setCerrada(false);
         unidadDocumental.setEstado("Abierto");
         unidadDocumental.setDisposicion("Eliminar");
-        unidadDocumental.setFaseArchivo("archivo central");
+        unidadDocumental.setFaseArchivo("Archivo Central");
 
         unidadDocumentalDTOList.add(unidadDocumental);
 

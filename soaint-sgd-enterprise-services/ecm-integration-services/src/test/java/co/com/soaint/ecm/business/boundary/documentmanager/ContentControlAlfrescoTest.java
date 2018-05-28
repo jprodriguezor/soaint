@@ -846,9 +846,9 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
             DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
             UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
-            UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
-            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
+            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTO);
             List<String> disposicionFinalList = new ArrayList<>();
             disposicionFinalList.add("CT");
             disposicionFinalList.add("M");
@@ -857,7 +857,7 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
             disposicionFinalList.add("D");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
             assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
-            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (SystemException e) {
             assertEquals("No se ha identificado la Unidad Documental", e.getMessage());
         }
