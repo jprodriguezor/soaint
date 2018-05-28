@@ -78,43 +78,43 @@ public class ProcessServiceTest {
     }
 
     @Test
-    public void listarProcesos() {
-    }
-
-    @Test
-    public void listarVariablesProcesos() {
-    }
-
-    @Test
-    public void listarProcesosInstanciaPorUsuarios() {
-    }
-
-    @Test
-    public void abortarProceso() {
-    }
-
-    @Test
-    public void iniciarProceso() throws SystemException {
+    public void iniciarProcesoTest() throws SystemException {
 
         assertNotNull(procesoDTO);
         assertNotNull(processService);
-        RespuestaProcesoDTO result = processService.iniciarProceso(procesoDTO);
+//        RespuestaProcesoDTO result = processService.iniciarProceso(procesoDTO);
         assertNotNull(processService.iniciarProceso(procesoDTO));
     }
 
     @Test
-    public void iniciarProcesoPorTercero() {
+    public void iniciarProcesoPorTerceroTest() throws SystemException {
     }
 
     @Test
-    public void iniciarProcesoManual() {
+    public void iniciarProcesoManualTest() throws SystemException {
     }
 
-    @Test
-    public void enviarSenalProceso() {
-    }
+//    @Test
+//    public void enviarSenalProceso() {
+//    }
+//
+//    @Test
+//    public void senalInicioAutomatico() {
+//    }
 
-    @Test
-    public void senalInicioAutomatico() {
-    }
+//    @Test
+//    public void listarProcesos() {
+//    }
+//
+//    @Test
+//    public void listarVariablesProcesos() {
+//    }
+//
+//    @Test
+//    public void listarProcesosInstanciaPorUsuarios() {
+//    }
+//
+//    @Test
+//    public void abortarProceso() {
+//    }
 }
