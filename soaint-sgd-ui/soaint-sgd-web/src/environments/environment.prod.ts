@@ -179,6 +179,10 @@ export const process_info = {
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
     show: false,
+  },
+  'proceso.gestion-planillas-salida': {
+    displayValue : 'Gestión de planillas',
+    show: false,
   }
 
 };

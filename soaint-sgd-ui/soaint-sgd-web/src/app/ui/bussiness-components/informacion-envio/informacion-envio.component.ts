@@ -1,0 +1,76 @@
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
+import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
+import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
+import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
+import { ComunicacionOficialDTO } from '../../../domain/comunicacionOficialDTO';
+
+@Component({
+  selector: 'app-informacion-envio',
+  templateUrl: './informacion-envio.component.html',
+  styleUrls: ['./informacion-envio.component.css']
+})
+export class InformacionEnvioComponent implements OnInit {
+
+  form: FormGroup;  
+  validations: any = {};
+  
+  private _comunicacionSeleccionada: ComunicacionOficialDTO = null;
+  @Output() completado: EventEmitter<any> = new EventEmitter();
+  @Output() cancelado: EventEmitter<any> = new EventEmitter();
+
+
+  constructor(
+    private fb: FormBuilder
+  ) { }
+
+  ngOnInit() {
+    this.form = this.fb.group({
+      nro_guia: null,
+      peso: [null, [Validators.required]],
+      valor: [null, [Validators.required]],
+    });
+  }
+
+  OnBlurEvents(control: string) {
+    this.SetValidationMessages(control);
+  }
+
+  SetValidationMessages(control: string) {
+      const formControl = this.form.get(control);
+      if (formControl.touched && formControl.invalid) {
+        const error_keys = Object.keys(formControl.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+          this.validations[control] = '';
+      }
+  }
+
+@Input() set comunicacionSeleccionada(value: number) {    
+    this.comunicacionSeleccionada = value;
+    this.ActualizarFormulario();    
+ }
+
+ ActualizarFormulario() {
+  if(this.form) {
+    this.form.reset();
+    this.form.controls['nro_guia'].setValue(this._comunicacionSeleccionada.correspondencia.envio_nroguia);
+    this.form.controls['peso'].setValue(this._comunicacionSeleccionada.correspondencia.envio_peso);
+    this.form.controls['valor'].setValue(this._comunicacionSeleccionada.correspondencia.envio_valor);
+  }
+}
+
+ Guardar() {
+  this._comunicacionSeleccionada.correspondencia.envio_nroguia = this.form.controls['envio_nroguia'].value;
+  this._comunicacionSeleccionada.correspondencia.envio_peso = this.form.controls['envio_peso'].value;
+  this._comunicacionSeleccionada.correspondencia.envio_valor = this.form.controls['envio_valor'].value;
+  this.completado.emit(this._comunicacionSeleccionada);
+ }
+ Cancelar() {
+  this.cancelado.emit();
+ }
+
+
+}

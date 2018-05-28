@@ -60,6 +60,7 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
+  listarCorrespondencia_salida_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -187,6 +188,10 @@ export const process_info = {
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
     show: false,
+  },
+  'proceso.gestion-planillas-salida': {
+    displayValue : 'Gestión de planillas de salida',
+    show: true,
   }
 
 };
