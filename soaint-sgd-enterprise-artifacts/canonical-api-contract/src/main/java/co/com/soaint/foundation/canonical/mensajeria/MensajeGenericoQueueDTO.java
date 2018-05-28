@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.mensajeria;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -24,6 +21,7 @@ import java.util.Map;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/mensaje-generico-queue/1.0.0")
+@ToString
 public class MensajeGenericoQueueDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

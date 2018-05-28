@@ -4,10 +4,12 @@ import co.com.soaint.correspondencia.domain.entity.CorReferido;
 import co.com.soaint.foundation.canonical.correspondencia.ReferidoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.List;
@@ -56,5 +58,43 @@ public class ReferidoControl {
         return CorReferido.newInstance()
                 .nroRadRef(referidoDTO.getNroRadRef())
                 .build();
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public String consultarNroRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("CorReferido.findByNroRadicadoCorrespodenciaReferida", String.class)
+                    .setParameter("NRO_RAD", nroRadicado)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred ", n);
+            return null;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            return null;
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public List<String> consultarNrosRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("CorReferido.findByNroRadicadoCorrespodenciaReferida", String.class)
+                    .setParameter("NRO_RAD", nroRadicado)
+                    .getResultList();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred ", n);
+            return null;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            return null;
+        }
     }
 }

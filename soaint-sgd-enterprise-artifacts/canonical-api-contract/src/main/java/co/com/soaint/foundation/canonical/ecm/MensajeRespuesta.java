@@ -6,9 +6,11 @@ package co.com.soaint.foundation.canonical.ecm;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +25,13 @@ import java.util.Map;
  */
 
 @Data
+@ToString
+@NoArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/mensajeRespuesta/1.0.0")
-public class MensajeRespuesta {
+public class MensajeRespuesta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String codMensaje;
     private String mensaje;
@@ -40,10 +46,6 @@ public class MensajeRespuesta {
         this.documentoDTOList = documentoDTOList;
         this.contenidoDependenciaTrdDTOS = contenidoDependenciaTrdDTOS;
         this.response = response;
-    }
-
-    public MensajeRespuesta() {
-        //Constructor por defecto de la clase
     }
 
     /**

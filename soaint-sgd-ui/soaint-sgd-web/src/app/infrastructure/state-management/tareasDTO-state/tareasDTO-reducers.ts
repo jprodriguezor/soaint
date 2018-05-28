@@ -11,7 +11,8 @@ export interface State {
   entities: { [idTarea: string]: TareaDTO };
   stats: {name: string, value: number }[];
   activeTask: TareaDTO;
-  nextTask: LoadNextTaskPayload,
+  nextTask: LoadNextTaskPayload;
+  openTask: boolean;
 }
 
 const initialState: State = {
@@ -20,6 +21,7 @@ const initialState: State = {
   stats: [],
   activeTask: null,
   nextTask: null,
+  openTask: false
 };
 
 /**
@@ -43,7 +45,7 @@ export function reducer(state = initialState, action: Actions) {
     case ActionTypes.LOCK_ACTIVE_TASK: {
       return tassign(state, {
         activeTask: action.payload, // task
-        nextTask: null
+        nextTask: null,
       });
     }
 
@@ -68,7 +70,8 @@ export function reducer(state = initialState, action: Actions) {
 
       return tassign(state, {
         entities: cloneEntities,
-        activeTask: task
+        activeTask: task,
+        openTask: true
       });
 
     }
@@ -99,7 +102,12 @@ export function reducer(state = initialState, action: Actions) {
       return tassign(state, {
         ids: state.ids.filter(value => value !== state.activeTask.idTarea),
         entities: cloneEntities,
-        activeTask: null
+        activeTask: null,
+      });
+    }
+    case ActionTypes.RESET_TASK : {
+      return tassign(state, {
+        openTask: false
       });
     }
 

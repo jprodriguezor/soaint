@@ -32,8 +32,8 @@ import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payl
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
-
-
+import {isNullOrUndefined} from "util";
+import * as domtoimage from 'dom-to-image';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -93,10 +93,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         ViewFilterHook.addFilter(this.taskFilter,() => false);
       }
       this.restore();
+
+
     });
-
-
-
 
     this.dependencySubscription =  this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependency => {
 
@@ -131,7 +130,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
       .subscribe(value => {
         console.log(value);
-        // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
+        // Habilitando o desabilitando la tarea que se ejecutarï¿½ secuencialmente a la actual
         if (value && value === 2) {
           const payload: LoadNextTaskPayload = {
             idProceso: this.task.idProceso,
@@ -147,16 +146,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   radicarSalida() {
 
-    const radicacionEntradaFormPayload: any = {
-       generales: this.datosGenerales.form.value,
-       descripcionAnexos: this.datosGenerales.descripcionAnexos,
-       radicadosReferidos: this.datosGenerales.radicadosReferidos,
-       task: this.task,
-       destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
-       destinatarioExt:this.datosContacto.listaDestinatariosExternos,
-       remitente:this.datosRemitente.form.value,
-       datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
-    };
+    const radicacionEntradaFormPayload: any =  this.buildPayload();
 
     const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
 
@@ -178,6 +168,13 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
+      this.radicacion.ppdDocumentoList= [{
+        ideEcm:comunicacionOficialDTV.getDocumento().ideEcm,
+        asunto:"",
+        nroFolios:0,
+        nroAnexos:0
+
+      }];
       this.editable = false;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
@@ -199,16 +196,28 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
       }
 
+      this._changeDetectorRef.detectChanges();
+
+      const self = this;
+
+      if(this.mustSendImage(valueGeneral))
+      setTimeout( () =>{ self.uploadTemplate(
+        self.radicacion.correspondencia.codDependencia,
+        self.radicacion.correspondencia.nroRadicado,
+        comunicacionOficialDTV.getDocumento().ideEcm
+      )},1000)
+
+      this.uploadTemplate(this.radicacion.correspondencia.codDependencia,
+                          this.radicacion.correspondencia.nroRadicado,
+                          comunicacionOficialDTV.getDocumento().ideEcm
+       );
+
       this.disableEditionOnForms();
 
       this._store.dispatch(new RadicarSuccessAction({
         tipoComunicacion: valueGeneral.tipoComunicacion,
         numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
       }));
-
-       let requiereDigitalizacion = valueGeneral.reqDigit;
-
-       console.log(requiereDigitalizacion);
 
         this._taskSandbox.completeTaskDispatch({
         idProceso: this.task.idProceso,
@@ -221,7 +230,50 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       this.radicacion = null;
       this.hideTicketRadicado();
+      this._changeDetectorRef.detectChanges();
     });
+  }
+
+  protected mustSendImage(general:any):boolean{
+
+    return general.reqDistFisica == 2 && general.reqDigit == 2
+  }
+
+  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
+
+    const node = document.getElementById("ticket-rad");
+
+    if(!isNullOrUndefined(node)) {
+
+      domtoimage.toBlob(node).then((blob) => {
+
+        let formData = new FormData();
+
+        formData.append("documento", blob, "etiqueta.png");
+        formData.append("idDocumento", ideEcm);
+        formData.append("nroRadicado", nroRadicado);
+        formData.append("codigoDependencia", codDependencia);
+
+
+        this._sandbox.uploadTemplate(formData).subscribe();
+
+      });
+    }
+
+  }
+
+  protected  buildPayload(): any{
+
+    return {
+      generales: this.datosGenerales.form.value,
+      descripcionAnexos: this.datosGenerales.descripcionAnexos,
+      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      task: this.task,
+      destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
+      destinatarioExt:this.datosContacto.listaDestinatariosExternos,
+      remitente:this.datosRemitente.form.value,
+      datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
+    };
   }
 
   protected buildTaskCompleteParameters(generales:any,noRadicado:any):any{
@@ -229,7 +281,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     return {
       codDependencia:this.dependencySelected.codigo,
       numeroRadicado:noRadicado,
-      requiereDigitalizacion:generales.reqDigit
+      requiereDigitalizacion:generales.reqDigit,
+      requiereDistribucionDemanda:generales.reqDistFisica
     }
   }
 
@@ -349,22 +402,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         if (!results) {
           return;
         }
-
         this.restoreByPayload(results);
 
-        // generales
-
-
-        // if (results.contactInProgress) {
-        //   const retry = setInterval(() => {
-        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-        //       clearInterval(retry);
-        //     }
-        //   }, 400)
-        // }
-
-      });
+        });
     }
   }
 
@@ -400,7 +440,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     this.activeTaskUnsubscriber.unsubscribe();
 
-    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    if(!isNullOrUndefined(this.reqDigitInmediataUnsubscriber))
+     this.reqDigitInmediataUnsubscriber.unsubscribe();
 
   }
 
@@ -409,7 +450,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       const conditions:boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
-      !this.datosGenerales.form.get("reqDistFisica").value || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
+      this.datosGenerales.form.get("reqDistFisica").value != 1 || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
       this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
     ];
 

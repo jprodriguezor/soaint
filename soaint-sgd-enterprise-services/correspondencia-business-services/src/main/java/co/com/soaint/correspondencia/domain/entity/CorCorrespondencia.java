@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -65,6 +66,13 @@ import java.util.List;
                 "AND c.reqDistFisica = :REQ_DIST_FISICA AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION " +
                 "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c " +
+                "INNER JOIN c.ppdDocumentoList d " +
+                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
@@ -136,17 +144,24 @@ public class CorCorrespondencia implements Serializable {
     private String codClaseEnvio;
     @Column(name = "COD_MODALIDAD_ENVIO")
     private String codModalidadEnvio;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorAgente> corAgenteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<DctAsignacion> dctAsignacionList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorPlanAgen> corPlanAgenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<PpdDocumento> ppdDocumentoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<DctAsigUltimo> dctAsigUltimoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorReferido> corReferidoList;
-    
+
+
+    public void removeAsignacionByAgente(CorAgente agente) {
+        List<DctAsignacion> dctAsignacions = dctAsignacionList.stream()
+                .filter(dctAsignacion -> dctAsignacion.getCorAgente().getIdeAgente().equals(agente.getIdeAgente()))
+                .collect(Collectors.toList());
+        dctAsignacions.forEach(dctAsignacion -> dctAsignacionList.remove(dctAsignacion));
+    }
 }

@@ -4,17 +4,12 @@ import {State as RootState} from "../../../infrastructure/redux-store/redux-redu
 import {Store} from "@ngrx/store";
 import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-salida.service";
 import {Sandbox as TaskSandBox} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox";
-import {Sandbox as AsignacionSandbox} from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
 import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
-import {Subscription} from "rxjs/Subscription";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {getActiveTask} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
-import {ComunicacionToSource} from "../../../shared/data-transformers/comunicacionToSource";
-import {ApiBase} from "../../../infrastructure/api/api-base";
-import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
-import {getTipoComunicacionArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
 import {isNullOrUndefined} from "util";
+import * as domtoimage from 'dom-to-image';
+import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
+import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 
 @Component({
   selector: 'app-radicar-documento-producido',
@@ -23,21 +18,17 @@ import {isNullOrUndefined} from "util";
 })
 export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent {
 
-  comunicacionUnsubscriber: Subscription;
 
   datosGenerales$: Subject<any> = new Subject;
   datosContacto$: Subject<any> = new Subject;
 
   ideEcm;
 
-
   constructor(
     protected _store: Store<RootState>
     , protected _changeDetectorRef: ChangeDetectorRef
     , protected _sandbox: RadicacionSalidaService
     , protected _taskSandbox: TaskSandBox
-    , private _asignacionSandbox: AsignacionSandbox
-    , private _api: ApiBase
   ) {
 
     super(_store, _changeDetectorRef, _sandbox, _taskSandbox);
@@ -62,8 +53,19 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
 
               resp.datosGenerales.reqDigit = 2;
               if(!isNullOrUndefined(this.task.variables.numeroRadicado))
-                resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
+              resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física" ? 1:2;
+
+              if(resp.datosGenerales.reqDistFisica == 1){
+                const payload: LoadNextTaskPayload = {
+                  idProceso: this.task.idProceso,
+                  idInstanciaProceso: this.task.idInstanciaProceso,
+                  idDespliegue: this.task.idDespliegue
+                };
+                this._store.dispatch(new ScheduleNextTaskAction(payload));
+              }
+              else
+                this._store.dispatch(new ScheduleNextTaskAction(null));
 
               this.datosGenerales$.next(resp.datosGenerales);
               this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
@@ -76,18 +78,11 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
 
        this.restoreByPayload(results);
 
-        // if (results.contactInProgress) {
-        //   const retry = setInterval(() => {
-        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-        //       clearInterval(retry);
-        //     }
-        //   }, 400)
-        // }
-
-      });
+        });
     }
   }
+
+  ngAfterViewInit(){}
 
 
   ngOnDestroy() {
@@ -107,6 +102,15 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     }
   }
 
+  protected buildPayload():any{
+
+    let payload = super.buildPayload();
+
+    payload.generales.ideEcm = this.ideEcm;
+
+    return payload;
+  }
+
   radicacionButtonIsShown():boolean {
 
     const conditions: boolean[] = [
@@ -116,6 +120,10 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     ];
 
     return conditions.every(condition => condition);
+  }
+
+  protected mustSendImage(general:any):boolean{
+    return true;
   }
 
 }

@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Input,
+  Component, EventEmitter, Input,
   OnDestroy,
-  OnInit,
+  OnInit, Output,
   ViewEncapsulation
 } from '@angular/core';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
@@ -14,10 +14,11 @@ import {Observable} from 'rxjs/Observable';
 import {getActiveTask, getNextTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {go} from '@ngrx/router-store';
-import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {ContinueWithNextTaskAction, ResetTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {process_info} from '../../../../environments/environment';
 import {isNullOrUndefined} from "util";
+import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 
 @Component({
@@ -32,13 +33,19 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   task: TareaDTO = null;
  @Input() processName = '';
  @Input() taskName = "";
- @Input() isActive = true;
+ isActive = true;
+ @Input() forceHiddenButtons = false;
+
    hasToContinue: boolean;
 
   activeTaskUnsubscriber: Subscription;
   infoUnsubscriber: Subscription;
 
-  constructor(private _store: Store<RootState>, private _changeDetector: ChangeDetectorRef) {
+  @Output() onFinalizar:EventEmitter<any> = new EventEmitter;
+
+  constructor(private _store: Store<RootState>,
+              private _changeDetector: ChangeDetectorRef,
+              private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -70,6 +77,9 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   navigateBack() {
+
+    this.onFinalizar.emit();
+
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
@@ -82,5 +92,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
     if(!isNullOrUndefined(this.infoUnsubscriber))
     this.infoUnsubscriber.unsubscribe();
     this.activeTaskUnsubscriber.unsubscribe();
+    this._store.dispatch(new ResetTaskAction());
+
   }
 }

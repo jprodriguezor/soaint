@@ -1,15 +1,24 @@
 <div class="ui-fluid archivar-documento">
-  <app-task-container [isActive]="showFinalizarButton">
-    <div customActions>
-       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()"  [disabled]="!buttonSaveIsEnabled()"></button>
-    </div>
-      <div taskBody>
+  <app-task-container [forceHiddenButtons]="true" >
+    <div taskBody>
+      <div  class="page-buttons text-right">
+        <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()" ></button>
+        <button pButton type="button" label="Enviar Solicitud UD" style="width: auto; margin-bottom: 10px" (click)="solicitarCreacionUd(selectUD)"  *ngIf="showSolicitarButton" [disabled]="solicitudUDModel.Solicitudes.length === 0"></button>
+        <button pButton type="button"  class="ui-button-success" label="Finalizar" style="width: auto; margin-bottom: 10px" (click)="finalizar()" ></button>
+      </div>
         <div class="ui-g ui-fluid">
           <div class="ui-g-12">
             <div class="card card-w-title">
-              <app-seleccionar-unidad-documental   *ngIf="currentPage === 1" [archivarDocumentoModel]="archivarDocumentoModel" [solicitudModel]="solicitudUDModel"  (onChangeSection)="toggleEnableButtonNext($event)" ></app-seleccionar-unidad-documental>
+              <app-seleccionar-unidad-documental  #selectUD
+                                                  *ngIf="currentPage === 1"
+                                                  [archivarDocumentoModel]="archivarDocumentoModel"
+                                                  [solicitudModel]="solicitudUDModel"
+                                                  (onChangeSection)="toggleEnableButtonNext($event)"
+                                                  (onSelectUD)="setEnableButtonNext(true)"
+                                                  (onDeselectUD)="setEnableButtonNext(false)"
+              ></app-seleccionar-unidad-documental>
 
-              <app-seleccionar-documentos *ngIf="currentPage  === 2" [archivarDocumentoModel]= "archivarDocumentoModel"></app-seleccionar-documentos>
+              <app-seleccionar-documentos *ngIf="currentPage  === 2" [archivarDocumentoModel]= "archivarDocumentoModel" [nroRadicado]="nroRadicado" ></app-seleccionar-documentos>
 
               <div class="ui-g ui-fluid">
                 <div class="ui-g-12" style="padding-top: 20px">

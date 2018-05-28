@@ -78,8 +78,11 @@ import {SeleccionarDocumentosComponent} from "./ui/page-components/organizacion-
 import {DireccionToTextPipe} from './ui/bussiness-components/datos-direccion/direccion-to-text.pipe';
 import { DisposicionFinalComponent } from './ui/page-components/disposicion-final/disposicion-final.component';
 import {AdjuntarDocumentoComponent} from "./ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component";
+import {ArchivarDocumentoApiService} from "./infrastructure/api/archivar-documento.api";
+import {FuncionariosService} from "./infrastructure/api/funcionarios.service";
 import { TransferenciasDocumentalesComponent } from './ui/page-components/transferencias-documentales/transferencias-documentales.component';
 import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/popup-unidad-documental-notas/popup-unidad-documental-notas.component';
+import { TipologiaDocumentalPipePipe } from './shared/pipes/tipologia-documental-pipe.pipe';
 
 @NgModule({
   imports: [
@@ -197,6 +200,7 @@ import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/p
     SeleccionarDocumentosComponent,
     TransferenciasDocumentalesComponent,
     PopupUnidadDocumentalNotasComponent,
+    TipologiaDocumentalPipePipe,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -212,6 +216,8 @@ import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/p
     SolicitudCreacionUdService,
     RadicacionSalidaService,
     UnidadDocumentalApiService,
+    ArchivarDocumentoApiService,
+    FuncionariosService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

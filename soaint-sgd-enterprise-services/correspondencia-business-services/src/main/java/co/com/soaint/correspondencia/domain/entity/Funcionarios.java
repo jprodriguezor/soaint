@@ -5,10 +5,7 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString(exclude = {"ideFunci","tvsOrgaAdminXFunciPkList"})
 @Table(name = "FUNCIONARIOS")
 @NamedQueries({
         @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
@@ -66,6 +64,12 @@ import java.util.List;
                 "FROM Funcionarios f " +
                 "INNER JOIN f.tvsOrgaAdminXFunciPkList o " +
                 "WHERE TRIM(f.auditColumns.estado) = TRIM(:ESTADO) AND o.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORGA_ADMI"),
+        @NamedQuery(name = "Funcionarios.findAllByCodOrgaAdmi", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
+                "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
+                "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
+                "FROM Funcionarios f " +
+                "INNER JOIN f.tvsOrgaAdminXFunciPkList o " +
+                "WHERE o.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORGA_ADMI"),
         @NamedQuery(name = "Funcionarios.filter", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +

@@ -3,11 +3,12 @@ import { TareaDTO } from 'app/domain/tareaDTO';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ConstanteDTO } from 'app/domain/constanteDTO';
+import { DisposicionFinalDTO } from 'app/domain/DisposicionFinalDTO';
 import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import { UnidadDocumentalApiService } from '../../../infrastructure/api/unidad-documental.api';
 import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
-import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
-import {Subscription} from 'rxjs/Subscription';
+import { VALIDATION_MESSAGES} from 'app/shared/validation-messages';
+import { Subscription} from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
 import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-documentales/models/enums/unidad.documental.accion.enum';
 import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
@@ -32,10 +33,15 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     tipoDisposicion = '';
     listadoSeries$: Observable<SerieDTO[]> = Observable.of([]);
     listaDisposiciones: any[] = [
-      'Conservación total', 'Eliminar', 'Seleccionar', 'Microfilmar', 'Digitalizar', 'Todas'
+      { label:'Conservación total', value: 'CT' }, 
+      { label:'Eliminar', value: 'E' },
+      { label:'Seleccionar', value: 'S' }, 
+      { label:'Microfilmar', value: 'M' }, 
+      { label:'Digitalizar', value: 'D' },
     ];
     listaDisposicionesEjecutar: any[] = [
-      'Conservación total', 'Eliminar',
+      { label:'Conservación total', value: 'CT' }, 
+      { label:'Eliminar', value: 'E' },
     ];
     
     indexUnidadSeleccionada: number = null;
@@ -61,8 +67,8 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     InitForm() {
       this.formBuscar = this.fb.group({
        tiposDisposicionFinal: [null, [Validators.required]],
-       sede: [null],
-       dependencia: [null],
+       sede: [null, [Validators.required]],
+       dependencia: [null, [Validators.required]],
        serie: [null],
        subserie: [null],
        identificador: [''],
@@ -77,7 +83,6 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
       this.state.GetListadoSedes();
       this.state.ListadoUnidadDocumental = [];
     }
-
 
     ngOnDestroy() {
       this.subscribers.forEach(obs => {
@@ -146,6 +151,10 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     }));
   }
 
+  Listar() {
+    this.state.ListarDisposicionFinal(this.GetPayload());
+  }
+
   AplicarDisposicion() {
     this.state.AplicarDisposicion(this.tipoDisposicion);
   }
@@ -155,37 +164,39 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     this.abrirNotas = true;
   }
 
-
   CerrarNotas() {
     this.abrirNotas = false;
   }
 
-  GetPayload(): UnidadDocumentalDTO {    
-        const payload: UnidadDocumentalDTO = {};
+  GetPayload(): DisposicionFinalDTO {    
+        const payload: DisposicionFinalDTO = {
+          disposicionFinalList: [],
+          unidadDocumentalDTO: {}
+        };
 
         if (this.formBuscar.controls['tiposDisposicionFinal'].value) {
-          // payload.disposicion = this.formBuscar.controls['tiposDisposicionFinal'].value;
+          payload.disposicionFinalList = this.formBuscar.controls['tiposDisposicionFinal'].value;
         } 
         if (this.formBuscar.controls['dependencia'].value) {
-          payload.codigoDependencia = this.formBuscar.controls['dependencia'].value;
+          payload.unidadDocumentalDTO.codigoDependencia = this.formBuscar.controls['dependencia'].value.codigo;
         }   
         if (this.formBuscar.controls['serie'].value) {
-          payload.codigoSerie = this.formBuscar.controls['serie'].value;
+          payload.unidadDocumentalDTO.codigoSerie = this.formBuscar.controls['serie'].value;
         }
         if (this.formBuscar.controls['subserie'].value) {
-          payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
+          payload.unidadDocumentalDTO.codigoSubSerie = this.formBuscar.controls['subserie'].value;
         }
         if (this.formBuscar.controls['identificador'].value) {
-          payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
+          payload.unidadDocumentalDTO.id = this.formBuscar.controls['identificador'].value;
         }
         if (this.formBuscar.controls['nombre'].value) {
-          payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
+          payload.unidadDocumentalDTO.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
         }
         if (this.formBuscar.controls['descriptor1'].value) {
-          payload.descriptor1 = this.formBuscar.controls['descriptor1'].value;
+          payload.unidadDocumentalDTO.descriptor1 = this.formBuscar.controls['descriptor1'].value;
         }
         if (this.formBuscar.controls['descriptor2'].value) {
-          payload.descriptor1 = this.formBuscar.controls['descriptor2'].value;
+          payload.unidadDocumentalDTO.descriptor1 = this.formBuscar.controls['descriptor2'].value;
         }
     
         return payload;
@@ -193,12 +204,14 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
 
     Finalizar() {
       if(this.state.ListadoUnidadDocumental.length) {
-        const item_pendiente = this.state.ListadoUnidadDocumental.find(_item => _item.aprobado === null || _item.aprobado === '');
+        const item_pendiente = this.state.ListadoUnidadDocumental.find(_item => _item.estado === null || _item.estado === '');
         if(item_pendiente) {
           this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'Recuerde que debe aprobar/rechazar todas las unidades documentales'}));
         } else {
           this.state.ActualizarDisposicionFinal();
         }
+      } else {
+        this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'No hay unidades documentales para actualizar'}));
       }
     }
 

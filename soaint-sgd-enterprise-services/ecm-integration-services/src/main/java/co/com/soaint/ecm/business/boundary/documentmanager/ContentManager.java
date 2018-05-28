@@ -6,14 +6,13 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
-import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
+import javax.annotation.PostConstruct;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -21,15 +20,23 @@ import java.util.List;
  * Created by dasiel
  */
 
+@Log4j2
 @BusinessBoundary
-@NoArgsConstructor
-public class ContentManager {
-    @Autowired
-    private
-    ContentControl contentControl;
+public class ContentManager implements Serializable {
+    
+    private static final Long serialVersionUID = 150L;
+    
     private static final String MSGCONEXION = "### Estableciendo la conexion..";
-    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
 
+    @Autowired
+    private ContentControl contentControl;
+    private Conexion conexion;
+
+    @PostConstruct
+    public void init() {
+        log.info(MSGCONEXION);
+        this.conexion = contentControl.obtenerConexion();
+    }
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -39,31 +46,15 @@ public class ContentManager {
      * @throws InfrastructureException Excepcion que se recoje ante cualquier error
      */
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) {
-        logger.info("### Creando estructura content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        Carpeta carpeta;
-        try {
-
-            Utilities utils = new Utilities();
-            new Conexion();
-            Conexion conexion;
-            for (EstructuraTrdDTO EstructuraTrdDTO : structure) {
-                utils.ordenarListaOrganigrama(EstructuraTrdDTO.getOrganigramaItemList());
-            }
-
-            logger.info("### Estableciendo Conexion con el ECM..");
-            conexion = contentControl.obtenerConexion();
-
-            carpeta = new Carpeta();
-            carpeta.setFolder(conexion.getSession().getRootFolder());
-            response = contentControl.generarArbol(structure, carpeta);
-
-        } catch (Exception e) {
-            response.setCodMensaje("Error creando estructura");
-            response.setMensaje("11113");
-            logger.error("Error creando estructura", e);
+        log.info("### Creando estructura content..");
+        final Utilities utils = new Utilities();
+        for (EstructuraTrdDTO EstructuraTrdDTO : structure) {
+            utils.ordenarListaOrganigrama(EstructuraTrdDTO.getOrganigramaItemList());
         }
-        return response;
+        log.info("### Estableciendo Conexion con el ECM..");
+        Carpeta carpeta = new Carpeta();
+        carpeta.setFolder(conexion.getSession().getRootFolder());
+        return contentControl.generarArbol(structure, carpeta);        
     }
 
     /**
@@ -74,27 +65,12 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) throws IOException {
-
-        logger.info("### Subiendo documento principal/adjunto al content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de subir el documento principal/adjunto..");
-            response = contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
-
-        } catch (Exception e) {
-            logger.error("Error subiendo documento principal/adjunto", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error al crear el documento principal/adjunto");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) {
+        log.info("### Subiendo documento principal/adjunto al content..");
+        log.info("### Se invoca el metodo de subir el documento principal/adjunto..");
+        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
     }
+
     /**
      * Metodo generico para crear el link del documento en el content
      *
@@ -102,26 +78,10 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) throws IOException {
-
-        logger.info("### Creando link del documento en el content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo crearLinkDocumentosApoyo..");
-            response = contentControl.crearLinkDocumentosApoyo(conexion.getSession(), documento);
-
-        } catch (Exception e) {
-            logger.error("Error Creando link del documento en el content", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error Creando link del documento en el content");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) {
+        log.info("### Creando link del documento en el content..");
+        log.info("### Se invoca el metodo crearLinkDocumentosApoyo..");
+        return contentControl.crearLinkDocumentosApoyo(conexion.getSession(), documento);
     }
 
     /**
@@ -132,26 +92,10 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(DocumentoDTO documento, String selector) throws IOException {
-
-        logger.info("### Subiendo versionando documento generado al content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de subir/versionar el documento..");
-            response = contentControl.subirVersionarDocumentoGenerado(conexion.getSession(), documento, selector);
-
-        } catch (Exception e) {
-            logger.error("Error subiendo/versionando documento", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error al crear/versionar el documento");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(DocumentoDTO documento, String selector) {
+        log.info("### Subiendo versionando documento generado al content..");
+        log.info("### Se invoca el metodo de subir/versionar el documento..");
+        return contentControl.subirVersionarDocumentoGenerado(conexion.getSession(), documento, selector);
     }
 
     /**
@@ -161,26 +105,10 @@ public class ContentManager {
      * @return Lista de objetos de documentos asociados al idDocPrincipal
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta obtenerDocumentosAdjuntosContent(DocumentoDTO documento) throws IOException {
-
-        logger.info("### Obtener documento principal y adjunto del content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de obtener documentos principales y adjuntos..");
-            response = contentControl.obtenerDocumentosAdjuntos(conexion.getSession(), documento);
-
-        } catch (Exception e) {
-            logger.error("Error obteniendo documento adjunto y principal", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error obteniendo documento adjunto y principal");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta obtenerDocumentosAdjuntosContent(DocumentoDTO documento) {
+        log.info("### Obtener documento principal y adjunto del content..");
+        log.info("### Se invoca el metodo de obtener documentos principales y adjuntos..");
+        return contentControl.obtenerDocumentosAdjuntos(conexion.getSession(), documento);
     }
 
     /**
@@ -190,26 +118,10 @@ public class ContentManager {
      * @return Lista de objetos de documentos asociados al idDocPrincipal
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta obtenerVersionesDocumentoContent(String idDoc) throws IOException {
-
-        logger.info("### Obtener versiones documento del content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de obtener versiones del documento..");
-            response = contentControl.obtenerVersionesDocumento(conexion.getSession(), idDoc);
-
-        } catch (Exception e) {
-            logger.error("Error obteniendo versiones del documento", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error obteniendo versiones del documento");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta obtenerVersionesDocumentoContent(String idDoc) {
+        log.info("### Obtener versiones documento del content..");
+        log.info("### Se invoca el metodo de obtener versiones del documento..");
+        return contentControl.obtenerVersionesDocumento(conexion.getSession(), idDoc);
     }
 
     /**
@@ -219,28 +131,11 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws IOException {
-
-        logger.info("### Modificando metadatos del documento..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-
-            logger.info("### Se invoca el metodo de modificar el documento..");
-
-            response = contentControl.modificarMetadatosDocumento(conexion.getSession(), metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(), metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
-
-        } catch (Exception e) {
-            logger.error("Error modificando el documento", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error al modificar el documento");
-            throw e;
-        }
-        return response;
-
+    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) {
+        log.info("### Modificando metadatos del documento..");log.info("### Se invoca el metodo de modificar el documento..");
+        return contentControl.modificarMetadatosDocumento(conexion.getSession(),
+                metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(),
+                metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
     }
 
     /**
@@ -252,25 +147,8 @@ public class ContentManager {
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
      */
     public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) {
-
-        logger.info("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
-        MensajeRespuesta response = new MensajeRespuesta();
-
-        try {
-
-            logger.info("###Se va a establecer la conexion");
-            Conexion conexion;
-            new Conexion();
-            conexion = contentControl.obtenerConexion();
-            logger.info("###Conexion establecida");
-            response = contentControl.movDocumento(conexion.getSession(), documento, carpetaFuente, carpetaDestino);
-
-        } catch (Exception e) {
-            logger.error("Error moviendo documento", e);
-            response.setCodMensaje("0003");
-            response.setMensaje("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
-        }
-        return response;
+        log.info("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
+        return contentControl.movDocumento(conexion.getSession(), documento, carpetaFuente, carpetaDestino);
     }
 
     /**
@@ -279,25 +157,10 @@ public class ContentManager {
      * @param documentoDTO Metadatos del documento dentro del ECM
      * @return Documento
      */
-    public MensajeRespuesta descargarDocumentoContent(DocumentoDTO documentoDTO) {
-
-        logger.info("### Descargando documento del content..");
-        MensajeRespuesta respuesta = new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de descargar el documento..");
-            respuesta = contentControl.descargarDocumento(documentoDTO, conexion.getSession());
-
-        } catch (Exception e) {
-            logger.error("Error descargando documento", e);
-
-        }
-        logger.info("### Se devuelve el documento del content..");
-        return respuesta;
-
+    public MensajeRespuesta descargarDocumentoContent(DocumentoDTO documentoDTO) throws SystemException {
+        log.info("### Descargando documento del content..");
+        log.info("### Se invoca el metodo de descargar el documento..");
+        return contentControl.descargarDocumento(documentoDTO, conexion.getSession());
     }
 
     /**
@@ -306,26 +169,10 @@ public class ContentManager {
      * @param idDoc Identificador del documento dentro del ECM
      * @return true en exito y false en error
      */
-    public boolean eliminarDocumento(String idDoc) {
-
-        logger.info("### Eliminando documento del content..");
-
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de eliminar el documento..");
-            if (contentControl.eliminardocumento(idDoc, conexion.getSession())) {
-                logger.info("Documento eliminado con exito");
-                return Boolean.TRUE;
-            } else
-                return Boolean.FALSE;
-
-        } catch (Exception e) {
-            logger.error("Error eliminando documento", e);
-            return Boolean.FALSE;
-        }
+    public void eliminarDocumento(String idDoc) throws SystemException {
+        log.info("### Eliminando documento del content..");
+        log.info("### Se invoca el metodo de eliminar el documento..");
+        contentControl.eliminardocumento(idDoc, conexion.getSession());
     }
 
     /**
@@ -334,26 +181,23 @@ public class ContentManager {
      * @param contenidoDependenciaTrdDTO Objeto que contiene los datos para realizar la busqueda
      * @return Objeto response
      */
-    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws Exception {
-        logger.info("### Obteniendo las series y subseries del content..");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
-        logger.info("### Se invoca el metodo de devolver serie o subserie..");
+    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws SystemException {
+        log.info("### Obteniendo las series y subseries del content..");
+        log.info("### Se invoca el metodo de devolver serie o subserie..");
         MensajeRespuesta response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
-        logger.info("Series o subseries devueltas exitosamente");
+        log.info("Series o subseries devueltas exitosamente");
         return response;
     }
 
     /**
      * Metodo para devolver crear las unidades documentales
+     *
      * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
-        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
-        logger.info("### Invocando metodo para crear Unidad Documental..");
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
+        log.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        log.info("### Invocando metodo para crear Unidad Documental..");
         return contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
     }
 
@@ -362,69 +206,57 @@ public class ContentManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
+        log.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         return contentControl.listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
     }
 
     /**
      * Metodo para listar los documentos de una Unidad Documental
      *
-     * @param idDocumento     Id Documento
+     * @param idDocumento Id Documento
      * @return MensajeRespuesta con los detalles del documento
      */
     public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws Exception {
-        logger.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+        log.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
         return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
     }
 
     /**
      * Metodo para devolver la Unidad Documental
      *
-     * @param idUnidadDocumental     Id Unidad Documental
+     * @param idUnidadDocumental Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
     public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws Exception {
-        logger.info("### Ejecutando MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+        log.info("### Ejecutando MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
         return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
     }
 
     /**
      * Metodo para devolver la Unidad Documental
      *
-     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param unidadDocumentalDTO Obj Unidad Documental
      * @return MensajeRespuesta       Unidad Documental
      */
-    public MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
-        logger.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
+        log.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
         return contentControl.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, conexion.getSession());
     }
 
-    public MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia) throws Exception {
-        logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia) throws SystemException {
+        log.info("processing rest request - Obtener los documentos por archivar en el ECM");
         return contentControl.getDocumentosPorArchivar(codigoDependencia, conexion.getSession());
     }
 
     /**
      * Metodo para Modificar Unidades Documentales
      *
-     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @param unidadDocumentalDTOS Lista de unidades a modificar
      * @return MensajeRespuesta       Unidad Documental
      */
-    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
-        logger.info("processing rest request - modificar las unidades documentales en el ECM");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException {
+        log.info("processing rest request - modificar las unidades documentales en el ECM");
         return contentControl.modificarUnidadesDocumentales(unidadDocumentalDTOS, conexion.getSession());
     }
 
@@ -434,10 +266,8 @@ public class ContentManager {
      * @param documentoDTOS Lista de documentos a archivar
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) throws Exception {
-        logger.info("processing rest request - Subir Documentos temporales ECM");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) throws SystemException {
+        log.info("processing rest request - Subir Documentos temporales ECM");
         return contentControl.subirDocumentosTemporalesUD(documentoDTOS, conexion.getSession());
     }
 
@@ -447,10 +277,63 @@ public class ContentManager {
      * @param codigoDependencia Codigo de la dependencia
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia) throws Exception {
-        logger.info("processing rest request - Obtener Documentos archivados ECM");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
+    public MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia) throws SystemException {
+        log.info("processing rest request - Obtener Documentos archivados ECM");
         return contentControl.obtenerDocumentosArchivados(codigoDependencia, conexion.getSession());
+    }
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param dependenciaTrdDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta listarDependenciaMultiple(ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws SystemException {
+        log.info("processing rest request - Obtener las sedes, dependencias, series o subseries");
+        return contentControl.listarDependenciaMultiple(dependenciaTrdDTO, conexion.getSession());
+    }
+
+    /**
+     * Crear carpeta en el Record
+     *
+     * @param disposicionFinalDTO Obj con el DTO Unidad Documental y l listado de las disposiciones
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUdDisposicionFinal(DisposicionFinalDTO disposicionFinalDTO) throws SystemException {
+        log.info("processing rest request - Listar las unidades documentales que hay culminado su tiempo de retencion");
+        return contentControl.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession());
+    }
+
+    /**
+     * Metodo para cerrar una o varias unidades documentales
+     *
+     * @param unidadDocumentalDTOS   Lista Unidades Documentales para aprobar/rechazar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta aprobarRechazarDisposicionesFinales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException {
+        log.info("Ejecutando metodo MensajeRespuesta aprobarRechazarDisposicionesFinalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS)");
+        return contentControl.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOS, conexion.getSession());
+    }
+
+    /**
+     * Operacion para Subir documentos a una UD temporal ECM
+     *
+     * @param documentoDTO Obj de documento DTO a archivar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta subirDocumentoTemporalUD(DocumentoDTO documentoDTO) throws SystemException {
+        log.info("processing rest request - Subir Documento temporal ECM");
+        return contentControl.subirDocumentoTemporalUD(documentoDTO, conexion.getSession());
+    }
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param documentoDTO Obj con el tag a agregar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) throws SystemException {
+        log.info("processing rest request - Estampar la etiquta de radicacion");
+        return contentControl.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
     }
 }

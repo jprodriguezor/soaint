@@ -16,11 +16,12 @@ import { isNullOrUndefined } from 'util';
 import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-documentales/models/enums/unidad.documental.accion.enum';
 import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import {ActivatedRoute} from '@angular/router';
+import { megaf } from 'environments/environment';
+import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 
 @Component({
   selector: 'app-transferencias-documentales',
   templateUrl: './transferencias-documentales.component.html',
-  styleUrls: ['./transferencias-documentales.component.css']
 })
 export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, OnDestroy {
 
@@ -37,6 +38,11 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
   formTransferencia: FormGroup;
   validations: any = {};
   subscribers: Array<Subscription> = [];
+
+  // dialog
+  abrirNotas = false;
+  indexUnidadSeleccionada: number = null;
+
   constructor(    
     private state: StateUnidadDocumentalService,
     private _store: Store<State>,
@@ -59,8 +65,8 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
 
   InitForm() {
     this.formTransferencia = this.fb.group({
-     fondo: [null, Validators.required],
-     subfondo: [null],
+     fondo: [''],
+     subfondo: [''],
      seccion: [''],
      tipoTransferencia: [''],
      funcionarioResponsable: [''],
@@ -76,7 +82,7 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
     this._store.select(getActiveTask).subscribe((activeTask) => {
         this.task = activeTask; 
         this.route.params.subscribe( params => {
-          this.status = parseInt(params.status, 10) || null;
+          this.status = parseInt(params.status, 10) || 1;
           this.State.Listar({
             codigoDependencia: this.task.variables.codDependencia,
           });
@@ -86,6 +92,10 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
           }
       });     
     });
+  }
+
+  OnBlurEvents(control: string) {
+    this.SetValidationMessages(control);
   }
 
   SetValidationMessages(control: string) {
@@ -106,11 +116,32 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
     }
 
   Finalizar() {
+    if(this.State.ListadoUnidadDocumental.length) {
+      const item_pendiente = this.state.ListadoUnidadDocumental.find(_item => _item.estado === null || _item.estado === '');
+      if(item_pendiente) {
+        this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'Recuerde que debe aprobar/rechazar todas las unidades documentales'}));
+      } else {
+        if(this.status === 1) { // aprobar transferencia
+          this.State.ActualizarAprobarTransferencia();
+          this.CompleteTask();
+        } else if (this.status === 2) { // verficar transferencia
+          this.CompleteTask();
+        }
+      }
+    } else {
+      this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'No hay unidades documentales para actualizar'}));
+    }
+
+  }
+
+  CompleteTask() {
     this._taskSandBox.completeBackTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
-      parametros: {}
+      parametros: {
+        megaf: megaf ? 1 : 2
+      }
     });
   }
 
@@ -128,6 +159,15 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
             payload: payload
           };
           this._taskSandBox.guardarEstadoTarea(tareaDto).subscribe(() => {});
+  }
+
+  AgregarNotas(index: number) {
+    this.indexUnidadSeleccionada = index;
+    this.abrirNotas = true;
+  }
+
+  CerrarNotas() {
+    this.abrirNotas = false;
   }
 
   ngOnDestroy() {

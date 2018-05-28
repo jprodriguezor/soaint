@@ -1,18 +1,1 @@
-<p-panel header="Documentos archivados">
-  <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-               [paginator]="true" [rows]="10" [responsive]="true" [value]="(listaDocumentos$|async)">
-    <p-column >
-      <ng-template  pTemplate="body" let-index="rowIndex">
-        {{index}}
-      </ng-template>
-    </p-column>
-    <p-column header="Numero de Solicitud" [sortable]="true"></p-column>
-    <p-column header="Identificador de unidad documental" [sortable]="true"></p-column>
-    <p-column header="Nombre de unidad documental" [sortable]="true"></p-column>
-    <p-column header="Serie/subserie" [sortable]="true"></p-column>
-    <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
-    <p-column header="identificacion documento" [sortable]="true"></p-column>
-    <p-column header="Tipologia documental" [sortable]="true"></p-column>
-    <p-column header="Nombre/ Asunto Documento" [sortable]="true"></p-column>
-  </p-dataTable>
-</p-panel>
+

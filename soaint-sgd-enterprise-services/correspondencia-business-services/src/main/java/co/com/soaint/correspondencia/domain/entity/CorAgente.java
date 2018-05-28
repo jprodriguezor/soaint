@@ -5,10 +5,7 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
+@ToString(exclude = {"corCorrespondencia","dctAsignacionList","corPlanAgenList","tvsDatosContactoList","dctAsigUltimoList"})
 @Table(name = "COR_AGENTE")
 @NamedQueries({
         @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
@@ -81,6 +79,14 @@ import java.util.List;
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "INNER JOIN c.dctAsigUltimoList dau " +
+                "WHERE c.codTipAgent = :COD_TIP_AGENT " +
+                "AND co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgenteMail", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
+                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "FROM CorAgente c " +
+                "INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findRemitentesByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +

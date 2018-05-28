@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.digitalizar;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Map;
@@ -16,7 +13,7 @@ import java.util.Map;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/mensaje-generico-digitalizar/1.0.0")
-
+@ToString
 public class MensajeGenericoDigitalizarDTO {
     String dirProcesar;
     String dirProcesados;

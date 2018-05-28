@@ -1,10 +1,11 @@
 package co.com.foundation.sgd.apigateway.apis;
 
+import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -26,6 +27,9 @@ import java.util.Map;
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
 public class DigitalizarDocumentoGatewayApi {
+
+    @Autowired
+    private DigitalizarDocumentoClient digitalizarDocumentoClient;
 
     @Autowired
     private ECMClient client;
@@ -154,9 +158,18 @@ public class DigitalizarDocumentoGatewayApi {
     @GET
     @Path("/obtener-documentos-asociados/{idDocumento}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
+    public Response obtenerdocumentosasociadosID(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
-        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociados(idDocumento);
+        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociadosID(idDocumento);
+        return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
+    }
+
+    @GET
+    @Path("/obtener-documentos-asociados-radicado/{nroRadicado}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerdocumentosasociadosNroRadicado(@PathParam("nroRadicado") String nroRadicado) {
+        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm broRadicado: " + nroRadicado);
+        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociadosRadicado(nroRadicado);
         return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
     }
 
@@ -167,6 +180,41 @@ public class DigitalizarDocumentoGatewayApi {
         Response response = client.deleteDocumentById(documentId);
         String removed = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(removed).build();
+    }
+
+    @POST
+    @Path("/estampar-etiqueta-radicacion/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @JWTTokenSecurity
+    public Response estamparEtiquetaRadicacion(MultipartFormDataInput formDataInput) {
+        if (null == formDataInput) {
+            log.error("Esta vacio el Multipart");
+            return Response.serverError().build();
+        }
+        try {
+            log.info("Procesando la informacion del multipart");
+            final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
+            final String nroRadicado = formDataInput.getFormDataPart("nroRadicado", String.class, null);
+            final String idDocumento = formDataInput.getFormDataPart("idDocumento", String.class, null);
+            InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
+
+            MensajeRespuesta mensajeRespuesta = client.estamparEtiquetaRadicacion(DocumentoDTO.newInstance()
+                    .codigoDependencia(dependencyCode)
+                    .nroRadicado(nroRadicado)
+                    .idDocumento(idDocumento)
+                    .documento(IOUtils.toByteArray(inputStream))
+                    .build());
+            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
+
+        } catch (Exception e) {
+            log.error("Error del Sistema {}", e.getMessage());
+            MensajeRespuesta respuesta = MensajeRespuesta.newInstance()
+                    .codMensaje("1223")
+                    .mensaje(e.getMessage())
+                    .build();
+            return Response.status(Response.Status.OK).entity(respuesta).build();
+        }
     }
 
 }

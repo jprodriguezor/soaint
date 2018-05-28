@@ -10,9 +10,9 @@
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-const hostMock = 'http://localhost:9000/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
+export const megaf = false;
 
 export const environment = {
   production: false,
@@ -56,7 +56,7 @@ export const environment = {
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
-  motivoNoCreacionUd_endpoint:"motivo-no-creacon-ud-gateway-api",
+  motivoNoCreacionUd_endpoint:`${host}/motivo-no-creacion-ud-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
@@ -85,6 +85,7 @@ export const environment = {
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
+  obtenerDocumento_nro_radicado_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados-radicado`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
   obtenerComunicacionfull_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/full`,
   obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
@@ -127,16 +128,23 @@ export const environment = {
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
-  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/subir-documentos-unidad-documental`,
   gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
   listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
   listar_documentos_archivados: `${host}/unidad-documental-gateway-api/listar-documentos-archivados/`,
   crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
-  listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
+  listar_solicitud_ud_no_tramitadas: `${host}/correspondencia-gateway-api/listar-solicitud-ud-no-tramitadas/`,
+  listar_solicitud_ud_tramitadas: `${host}/correspondencia-gateway-api/listar-solicitud-ud-tramitadas/`,
   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
+  restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
+  subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
-  
+  listar_unidades_documentales_disposicion_endpoint: `${host}/unidad-documental-gateway-api/listar-unidades-documentales-disposicion`,
+  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`,
+
+  upload_template:`${host}/digitalizar-documento-gateway-api/estampar-etiqueta-radicacion`,
+
 };
 
 export const process_info = {
@@ -178,7 +186,7 @@ export const process_info = {
   },
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
-    show: true,
+    show: false,
   }
 
 };

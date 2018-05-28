@@ -8,7 +8,7 @@ import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unid
 })
 export class UdTramitadasComponent implements OnInit {
 
-  @Input() solicitudesProcesadas:Observable<any[]>;
+  @Input() solicitudesProcesadas$:Observable<any[]>;
 
   constructor(private _udService:UnidadDocumentalApiService) { }
 

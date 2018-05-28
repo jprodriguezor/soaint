@@ -13,13 +13,16 @@ import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/soli
 import {ConstanteDTO} from "../../../../../domain/constanteDTO";
 import {Observable} from "rxjs/Observable";
 import  {Sandbox as ConstanteSandbox} from "../../../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox";
+import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
+import {SupertypeSeries} from "../../shared/supertype-series";
+import {getMotivoNoCreacionUDArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/motivo-no-creacion-ud-selectors";
 
 @Component({
   selector: 'app-no-tramitar-creacion-ud',
   templateUrl: './no-tramitar-creacion-ud.component.html',
   providers:[ConfirmationService]
 })
-export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy {
+export class NoTramitarCreacionUdComponent  implements OnInit,OnDestroy {
 
   form:FormGroup;
 
@@ -27,9 +30,9 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
   motivo$:Observable<ConstanteDTO[]>;
 
-  unsubscriber:Subscription;
+  subscriptions:Subscription[] = [];
 
-  @Input() solicitud:SolicitudCreacionUDDto;
+  @Input() solicitudModel:SolicitudCreacioUdModel;
 
   @Output() onNoTramitarUnidadDocumental:EventEmitter<any> = new EventEmitter;
 
@@ -52,18 +55,6 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
   }
 
 
-ngOnChanges(){
-
-   this.form.setValue({
-     'identificador':this.solicitud.id,
-     'nombre':this.solicitud.nombreUnidadDocumental,
-     'descriptor1':this.solicitud.descriptor1,
-     'descriptor2':this.solicitud.descriptor2,
-     'motivo' : null,
-     'observaciones': null,
-   });
-}
-
  noTramitarCreacionUnidadesDocumentales(){
 
    this._confirmationService.confirm({
@@ -72,29 +63,53 @@ ngOnChanges(){
      icon: 'fa fa-question-circle',
      accept: () => {
 
+       const solicitud = this.solicitudModel.SolicitudSelected;
+
        if(!isNullOrUndefined(this.form.get('motivo')))
-         this.solicitud.motivo =  this.form.get('motivo').value;
+         solicitud.motivo =  this.form.get('motivo').value;
 
-       this.solicitud.accion = "No Tramitar UD";
+       solicitud.accion = "No Tramitar UD";
 
-        this._solicitudService.actualizarSolicitudes(this.solicitud)
-         .subscribe(() => {
-           this.onNoTramitarUnidadDocumental.emit(this.solicitud);
-         }, error => {});
+       this.subscriptions.push(
+         this._solicitudService.actualizarSolicitudes(solicitud)
+           .subscribe(() => {
+
+             this.onNoTramitarUnidadDocumental.emit({action:"No tramitar creación UD"});
+
+             this.solicitudModel.removeAtIndex();
+           }, error => {})
+       );
+
+
      },
      reject: () => {}
    });
  }
   ngOnInit(): void {
 
-    this._sandbox.loadMotivoNoCreacionUdDispatch();
+     this._sandbox.loadMotivoNoCreacionUdDispatch();
 
-    this.unsubscriber = this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
+     this.motivo$ = this._store.select(getMotivoNoCreacionUDArrayData);
+
+    this.subscriptions.push(
+      this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
+    ) ;
+
+    if(this.solicitudModel.SelectedIndex == -1)
+      return;
+
+    const solicitud = this.solicitudModel.SolicitudSelected;
+
+    this.form.get('identificador').setValue(solicitud.id);
+    this.form.get("nombre").setValue(solicitud.nombreUnidadDocumental);
+    this.form.get("descriptor1").setValue(solicitud.descriptor1);
+    this.form.get("descriptor2").setValue(solicitud.descriptor2);
   }
 
   ngOnDestroy(): void {
 
-    this.unsubscriber.unsubscribe();
+    this.subscriptions.forEach( subscription => subscription.unsubscribe());
+
   }
 
 

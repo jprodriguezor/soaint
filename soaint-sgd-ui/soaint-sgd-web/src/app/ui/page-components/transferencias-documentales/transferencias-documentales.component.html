@@ -2,16 +2,16 @@
   <app-task-container>
     <div customActions>
       <button pButton type="button" label="Aprobar" style="width: auto; margin-bottom: 10px"
-              (click)="State.AprobarTransferencia()"></button>
+      (click)="State.ActualizarEstadoUD('Aprobado')"></button>
 
       <button pButton type="button" label="Rechazar" style="width: auto; margin-bottom: 10px"
-              (click)="State.RechazarTransferencia()"></button>
+      (click)="State.ActualizarEstadoUD('Rechazado')"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"
               (click)="guardarEstadoTarea()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
-              (click)="Finalizar()"></button>
+              (click)="Finalizar()" [disabled]="formTransferencia.invalid"></button>
     </div>
 
     <div taskBody>
@@ -31,7 +31,7 @@
                       <label for="nombre">Fondo</label>
                   </div>
                   <div class="ui-g-12">
-                      <input type="text" pInputText   id="fondo" formControlName="fondo" />
+                      <input type="text" pInputText   id="fondo" formControlName="fondo" readonly="readonly"/>
                   </div>
               </div>
           </div>
@@ -41,7 +41,7 @@
                     <label for="nombre">Sección</label>
                 </div>
                 <div class="ui-g-12">
-                    <input type="text" pInputText   id="seccion" formControlName="seccion" />
+                    <input type="text" pInputText   id="seccion" formControlName="seccion" readonly="readonly" />
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                       <label for="idunidaddocumental">Tipo transferencia (Objeto)</label>
                   </div>
                   <div class="ui-g-12">
-                      <input type="text" pInputText   id="tipoTransferencia" formControlName="tipoTransferencia" />
+                      <input type="text" pInputText   id="tipoTransferencia" formControlName="tipoTransferencia" readonly="readonly" />
                   </div>
               </div>
           </div>
@@ -62,7 +62,7 @@
                     <label for="idunidaddocumental">Funcionario responsable</label>
                 </div>
                 <div class="ui-g-12">
-                    <input type="text" pInputText   id="funcionarioResponsable" formControlName="funcionarioResponsable" />
+                    <input type="text" pInputText   id="funcionarioResponsable" formControlName="funcionarioResponsable" readonly="readonly" />
                 </div>
             </div>
         </div>
@@ -72,8 +72,7 @@
                   <label for="descriptor2">Fecha y hora aprobación</label>
               </div>
               <div class="ui-g-12">
-                  <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaAprobacion"
-                  id="fechaAprobacion" ></p-calendar>
+                  <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaAprobacion"    id="fechaAprobacion" [disabled]="true"></p-calendar>
                 </div>
           </div>
       </div>
@@ -83,7 +82,7 @@
                 <label for="nombre">Subfondo</label>
             </div>
             <div class="ui-g-12">
-                <input type="text" pInputText   id="subfondo" formControlName="subfondo" />
+                <input type="text" pInputText   id="subfondo" formControlName="subfondo" readonly="readonly"/>
             </div>
         </div>
     </div>
@@ -93,7 +92,7 @@
                 <label for="descriptor2">Subseccion</label>
             </div>
             <div class="ui-g-12">
-                <input type="text" pInputText   id="subseccion" formControlName="subseccion" />
+                <input type="text" pInputText   id="subseccion" formControlName="subseccion" readonly="readonly"/>
             </div>
         </div>
 
@@ -104,7 +103,7 @@
               <label for="descriptor2">Nro. transferencia</label>
           </div>
           <div class="ui-g-12">
-              <input type="text" pInputText   id="nroTransferencia" formControlName="nroTransferencia" />
+              <input type="text" pInputText   id="nroTransferencia" formControlName="nroTransferencia" readonly="readonly"/>
           </div>
       </div>
 
@@ -115,7 +114,7 @@
             <label for="descriptor2">Cargo funcionario</label>
         </div>
         <div class="ui-g-12">
-            <input type="text" pInputText   id="cargoFuncionario" formControlName="cargoFuncionario" />
+            <input type="text" pInputText   id="cargoFuncionario" formControlName="cargoFuncionario" readonly="readonly"/>
         </div>
     </div>
 
@@ -123,11 +122,15 @@
 <div *ngIf="status === 2" class="ui-sm-12 ui-g-3 ui-lg-3">
   <div class="ui-g form-group">
       <div class="ui-g-12">
-          <label for="descriptor2">Lugar Verificación</label>
+          <label for="lugarVerificacion">Lugar Verificación</label>
       </div>
       <div class="ui-g-12">
-          <input type="text" pInputText   id="lugarVerificacion" formControlName="lugarVerificacion" />
+          <input type="text" pInputText   id="lugarVerificacion" formControlName="lugarVerificacion" (onBlur)="OnBlurEvents('lugarVerificacion')" />
       </div>
+      <div class="ui-message ui-messages-error"
+            *ngIf="validations.lugarVerificacion">
+             {{ validations.lugarVerificacion }}
+       </div>
   </div>
 
 </div>
@@ -173,7 +176,13 @@
             </p-column>
             <p-column field="soporte" header="Soporte"></p-column>
             <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>
-            <p-column  header="Notas" ></p-column>
+            <p-column  header="Notas" [style]="{'width':'120px','text-align':'center'}">                             
+                <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                    <button pButton type="button" style="width: 35px; float: right"
+                        (click)="AgregarNotas(i)" icon="ui-icon-arrow-forward">
+                     </button>
+                </ng-template>
+                </p-column>
           </p-dataTable>
         </div>
       </p-panel>
@@ -182,17 +191,28 @@
 </div>
 
 <p-dialog
-[visible]="State.AbrirDetalle | async"
-modal="modal"
-[responsive]="true"
-[closable]="true"
-positionTop="20"
-[style]="{'position':'absolute'}"
-[width]="800"
-(onHide)="State.CerrarDetalle()">
-<p-header>
-
-</p-header>
+    [visible]="State.AbrirDetalle | async"
+    modal="modal"
+    [responsive]="true"
+    [closable]="true"
+    positionTop="20"
+    [style]="{'position':'absolute'}"
+    [width]="800"
+    (onHide)="State.CerrarDetalle()">
+    <p-header>
+    </p-header>
 <app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
+</p-dialog>
+
+<p-dialog
+    [visible]="abrirNotas"
+    modal="modal"
+    [responsive]="true"
+    [closable]="true"
+    [width]="800"
+    (onHide)="CerrarNotas()">
+    <p-header>
+    </p-header>
+<app-popup-unidad-documental-notas [state]="state" [index]="indexUnidadSeleccionada" (completado)="CerrarNotas()" ></app-popup-unidad-documental-notas>
 </p-dialog>
 

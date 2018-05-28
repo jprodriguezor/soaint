@@ -166,6 +166,16 @@ public class PlanillasControl {
         }
     }
 
+//    /**
+//     * @param nroPlanilla
+//     * @return
+//     * @throws BusinessException
+//     * @throws SystemException
+//     */
+//    public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla, String estado) throws BusinessException, SystemException {
+//
+//    }
+
     /**
      * @param nroPlanilla
      * @param formato

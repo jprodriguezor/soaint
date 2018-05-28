@@ -6,6 +6,7 @@ public final class ConstantesECM {
 
     // Class Properties ECM
     public static final String CLASE_BASE = "claseBase";
+    public static final String CLASE_SEDE = "claseSede";
     public static final String CLASE_DEPENDENCIA = "claseDependencia";
     public static final String CLASE_SERIE = "claseSerie";
     public static final String CLASE_SUBSERIE = "claseSubserie";
@@ -65,14 +66,16 @@ public final class ConstantesECM {
     public static final String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
     public static final String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
     public static final String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
+
     public static final String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
     public static final String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
+
     public static final String DOCUMENTOS_POR_ARCHIVAR = "DOCUMENTOS POR ARCHIVAR";
+
     public static final String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
     public static final String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
     public static final String DOCUMENTO = "documento";
-    public static final String APPLICATION_PDF = "application/pdf";
     public static final String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
     public static final String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
     public static final String AVISO_CREA_DOC = "### Se va a crear el documento..";
@@ -80,9 +83,11 @@ public final class ConstantesECM {
     public static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     public static final String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     public static final String SEPARADOR = "---";
-    public static final String SUCCESS_COD = "0000";
+    public static final String SUCCESS_COD_MENSAJE = "0000";
     public static final String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
     public static final String SUCCESS = "SUCCESS";
+    public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
+    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
 
     private ConstantesECM(){}
 }

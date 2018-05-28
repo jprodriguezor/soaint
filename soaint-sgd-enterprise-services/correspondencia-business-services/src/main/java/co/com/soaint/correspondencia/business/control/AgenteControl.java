@@ -1,8 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
-import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
-import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
@@ -21,7 +19,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +54,9 @@ public class AgenteControl {
 
     @Autowired
     private OrganigramaAdministrativoControl organigramaAdministrativoControl;
+
+    @Autowired
+    private FuncionariosControl funcionariosControl;
 
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
@@ -208,6 +208,27 @@ public class AgenteControl {
     public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
             return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoMail(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgenteMail", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -482,15 +503,31 @@ public class AgenteControl {
     }
 
     /**
+     * @param agenteDTO
+     * @return
+     */
+    public void actualizarIdeFunciAgenteInterno(CorAgente agenteDTO) throws SystemException {
+
+            if (TipoRemitenteEnum.INTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())){
+                List<FuncionarioDTO> funcionarios = funcionariosControl.listarFuncionariosByCodDependencia(agenteDTO.getCodDependencia());
+                BigInteger ideFunci = (funcionarios.size()>0)? funcionarios.get(0).getIdeFunci(): null;
+                agenteDTO.setIdeFunci(ideFunci);
+            }
+//        return agenteDTO;
+    }
+
+    /**
      * @param agentes
      * @param datosContactoList
      * @param rDistFisica
      * @return
      */
-    public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) {
+    public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) throws SystemException {
         List<CorAgente> corAgentes = new ArrayList<>();
+
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
+            this.actualizarIdeFunciAgenteInterno(corAgente);
 
             if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()) && datosContactoList != null)
                 AgenteControl.asignarDatosContacto(corAgente, datosContactoList);
@@ -510,10 +547,12 @@ public class AgenteControl {
      * @param rDistFisica
      * @return
      */
-    public List<CorAgente> conformarAgentesSalida(List<AgenteDTO> agentes, String rDistFisica) {
+    public List<CorAgente> conformarAgentesSalida(List<AgenteDTO> agentes, String rDistFisica) throws SystemException {
         List<CorAgente> corAgentes = new ArrayList<>();
+
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
+            this.actualizarIdeFunciAgenteInterno(corAgente);
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()))
                 AgenteControl.asignarDatosContacto(corAgente, agenteDTO.getDatosContactoList());
@@ -522,7 +561,6 @@ public class AgenteControl {
                 corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
                 corAgente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
             }
-
             corAgentes.add(corAgente);
         }
         return corAgentes;
@@ -587,6 +625,7 @@ public class AgenteControl {
             CorAgente destinatario = em.getReference(CorAgente.class, destinatarioDTO.getAgenteDestinatario().getIdeAgente());
             destinatario.setCodDependencia(destinatarioDTO.getAgenteDestinatario().getCodDependencia());
             destinatario.setCodSede(destinatarioDTO.getAgenteDestinatario().getCodSede());
+
             asignacionControl.actualizarAsignacion(destinatario.getIdeAgente(), destinatario.getCorCorrespondencia().getIdeDocumento(),
                     destinatario.getCodDependencia(), destinatarioDTO.getIdeFuncionarioCreaModifica());
 
@@ -628,11 +667,7 @@ public class AgenteControl {
             remitente.setCodTipAgent(remitenteDTO.getAgenteRemitente().getCodTipAgent());
             remitente.setIndOriginal(remitenteDTO.getAgenteRemitente().getIndOriginal());
 
-            CorAgente agente = CorAgente.newInstance()
-                    .ideAgente(remitenteDTO.getAgenteRemitente().getIdeAgente())
-                    .build();
-
-            DatosContactoControl datosContactoControl = new DatosContactoControl();
+            DatosContactoControl datosContactoControl;
             for (DatosContactoDTO datosContactoDTO : remitenteDTO.getDatosContactoList()) {
                 TvsDatosContacto datosCont = em.find(TvsDatosContacto.class, datosContactoDTO.getIdeContacto());
                 if (datosCont == null) {

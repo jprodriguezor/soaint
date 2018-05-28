@@ -33,10 +33,12 @@ import {FileUpload} from 'primeng/primeng';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 import {DocumentUploaded} from '../../events/DocumentUploaded';
 import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {getTipoComunicacionArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
 
 @Component({
   selector: 'pd-datos-generales',
   templateUrl: './datos-generales.component.html',
+  styleUrls:['./datos-generales.component.css']
 })
 
 export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
@@ -46,6 +48,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   validations: any = {};
 
   taskData: TareaDTO;
+  screenData:any;
 
   funcionarioLog: FuncionarioDTO;
 
@@ -112,13 +115,15 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         if (this.taskData && this.taskData.variables) {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
+          this.screenData = Object.assign({},this.taskData.variables);
+
           this._changeDetectorRef.detectChanges();
         }
 
       }
       );
 
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
+    this.tiposComunicacion$ = this._store.select(getTipoComunicacionArrayData).map( tipoComunicaciones => tipoComunicaciones.filter(tipo => tipo.codigo[0] =='S'));
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.listenForErrors();
@@ -259,10 +264,10 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('nombreDocumento', doc.nombre);
       formData.append('tipoDocumento', doc.tipo);
       if(this.taskData !== null){
-        formData.append('sede', this.taskData.variables.nombreSede);
-        formData.append('dependencia', this.taskData.variables.nombreDependencia);
-        formData.append('codigoDependencia', this.taskData.variables.codDependencia);
-        formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+        formData.append('sede', this.screenData.nombreSede);
+        formData.append('dependencia', this.screenData.nombreDependencia);
+        formData.append('codigoDependencia', this.screenData.codDependencia);
+        formData.append('nroRadicado', this.screenData.numeroRadicado || null);
         formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
       }
 
@@ -276,12 +281,13 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           doc.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
           doc.version = docEcmResp && docEcmResp.versionLabel || '1.0';
           versiones.push(doc);
-          console.log(versiones);
+
           this.listaVersionesDocumento = [...versiones];
-          console.log(this.listaVersionesDocumento);
+
         //  this.form.get('tipoPlantilla').reset();
           this.resetCurrentVersion();
           this.messagingService.publish(new DocumentUploaded(docEcmResp));
+          this._changeDetectorRef.detectChanges();
         } else {
           this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
         }
@@ -296,7 +302,10 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   selectAnexo(){
 
-    if(!this.form.get('tipoAnexo').value){
+    if(this.listaVersionesDocumento.length == 0)
+      return false;
+
+    if(!this.form.get('tipoAnexo').value ){
 
       this.alertItem.ShowMessage("Debe de seleccionar un tipo de anexo");
 
@@ -319,11 +328,12 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('documento', anexo.file, anexo.file.name);
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
+      formData.append("idDocumentoPadre",this.listaVersionesDocumento[0].id);
       if(this.taskData !== null){
-      formData.append('sede', this.taskData.variables.nombreSede);
-      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
-      formData.append('dependencia', this.taskData.variables.nombreDependencia);
-      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      formData.append('sede', this.screenData.nombreSede);
+      formData.append('codigoDependencia', this.screenData.codDependencia);
+      formData.append('dependencia', this.screenData.nombreDependencia);
+      formData.append('nroRadicado', this.screenData.numeroRadicado || null);
       formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
 
       }

@@ -1,10 +1,8 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.ecm.util.ConstantesECM;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,19 +58,19 @@ public class RecordIntegratioServicesClientRest {
     /**
      * Crear carpeta en el Record
      *
-     * @param entrada carpeta a crear
+     * @param idUnidadDocumental id de la UD a crear en el record
      * @return Mensaje de respuesta
      */
     @POST
     @Path("/crearCarpetaRecord/")
-    public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
+    public MensajeRespuesta crearCarpetaRecord(String idUnidadDocumental) throws SystemException {
         logger.info("processing rest request - Crear carpeta Record");
         try {
-            return record.crearCarpetaRecord(entrada);
+            return record.crearCarpetaRecord(idUnidadDocumental);
         } catch (RuntimeException e) {
             logger.error("Error en operacion - crearCarpetaRecord ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje("11111");
+            respuesta.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             respuesta.setMensaje(e.getMessage());
             throw e;
         }
@@ -93,7 +91,7 @@ public class RecordIntegratioServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - cerrarUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje("11111");
+            respuesta.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
@@ -114,7 +112,7 @@ public class RecordIntegratioServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - cerrarUnidadesDocumentalesECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje("11111");
+            respuesta.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
             return respuesta;
         }

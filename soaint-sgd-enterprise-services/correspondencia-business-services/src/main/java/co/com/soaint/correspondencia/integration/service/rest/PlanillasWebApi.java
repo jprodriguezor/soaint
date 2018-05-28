@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlanillasDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ReportDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +28,7 @@ import javax.ws.rs.*;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "PlanillasWebApi", description = "")
+@Api(value = "PlanillasWebApi")
 public class PlanillasWebApi {
 
     @Autowired
@@ -63,6 +66,21 @@ public class PlanillasWebApi {
     public void cargarPlanilla(PlanillaDTO planilla) throws SystemException {
         log.info("processing rest request - cargar planilla distribucion");
         boundary.cargarPlanilla(planilla);
+    }
+
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/planillas-salida")
+    public PlanillasDTO listarPlanillasSalida() throws BusinessException, SystemException {
+        log.info("processing rest request - listar planilla distribucion by nroPlanilla");
+        List<PlanillaDTO> lista = new ArrayList<PlanillaDTO>();
+        lista.add(PlanillaDTO.newInstance().nroPlanilla("creado").build());
+        return PlanillasDTO.newInstance().planillaDTOList(lista).build();
+
     }
 
     /**

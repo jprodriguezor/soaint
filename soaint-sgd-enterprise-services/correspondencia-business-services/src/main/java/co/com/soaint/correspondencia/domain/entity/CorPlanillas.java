@@ -28,6 +28,7 @@ import javax.persistence.*;
 @Table(name = "COR_PLANILLAS")
 @NamedQueries({
     @NamedQuery(name = "CorPlanillas.findAll", query = "SELECT c FROM CorPlanillas c"),
+    @NamedQuery(name = "CorPlanillas.findAllOrdered", query = "SELECT c FROM CorPlanillas c"), // consulta pendiente
         @NamedQuery(name = "CorPlanillas.findByNroPlanilla", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO " +
                 "(c.idePlanilla, c.nroPlanilla, c.fecGeneracion, c.codTipoPlanilla, c.codFuncGenera, c.codSedeOrigen, " +
                 "c.codDependenciaOrigen, c.codSedeDestino, c.codDependenciaDestino, c.codClaseEnvio, c.codModalidadEnvio, " +

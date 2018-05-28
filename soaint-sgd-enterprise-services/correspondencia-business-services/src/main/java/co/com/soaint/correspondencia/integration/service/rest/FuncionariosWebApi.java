@@ -26,7 +26,7 @@ import java.math.BigInteger;
 @Path("/funcionarios-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "FuncionariosWebApi", description = "")
+@Api(value = "FuncionariosWebApi")
 public class FuncionariosWebApi {
 
     @Autowired
