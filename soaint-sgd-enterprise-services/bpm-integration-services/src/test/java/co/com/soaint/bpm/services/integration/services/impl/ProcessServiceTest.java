@@ -1,15 +1,11 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
-import co.com.soaint.bpm.services.integration.services.ITaskServices;
-import co.com.soaint.bpm.services.util.EngineConexion;
-import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -28,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/spring/core-config.xml", "/spring/db-persistence-integration-test.xml"})
@@ -63,11 +57,8 @@ public class ProcessServiceTest {
             map = objectMapper.readValue(parametros, new TypeReference<HashMap<String, String>>() {
             });
 
-            List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
-            estados.add(EstadosEnum.LISTO);
-
             procesoDTO = EntradaProcesoDTO.newInstance().idProceso(idProceso).usuario(usuario).pass(pass).
-                    idDespliegue(idDespliegue).parametros(o).estados(estados).build();
+                    idDespliegue(idDespliegue).parametros(o).build();
 
         } catch (JsonGenerationException e) {
             e.printStackTrace();
@@ -80,38 +71,101 @@ public class ProcessServiceTest {
     @Test
     public void iniciarProcesoTest() throws SystemException {
 
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+
         assertNotNull(procesoDTO);
         assertNotNull(processService);
         RespuestaProcesoDTO result = processService.iniciarProceso(procesoDTO);
         assertNotNull(result);
-        System.out.print(result.getCodigoProceso());
+        System.out.print(result.getIdDespliegue());
     }
 
     @Test
     public void iniciarProcesoPorTerceroTest() throws SystemException {
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+
         assertNotNull(procesoDTO);
         assertNotNull(processService);
         RespuestaProcesoDTO result = processService.iniciarProcesoPorTercero(procesoDTO);
         assertNotNull(result);
-        System.out.print(result.getCodigoProceso());
+        System.out.print(result.getIdDespliegue());
     }
 
     @Test
     public void iniciarProcesoManualTest() throws SystemException {
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+
         assertNotNull(procesoDTO);
         assertNotNull(processService);
         RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
         assertNotNull(result);
-        System.out.print(result.getCodigoProceso());
+        System.out.print(result.getIdDespliegue());
     }
 
+    @Test
+    public void senalInicioAutomaticoTest() throws SystemException{
+        procesoDTO.setIdProceso("proceso.archivar-documento");
+        procesoDTO.setIdDespliegue("co.com.soaint.sgd.process:proceso-archivar-documento:1.0.0-SNAPSHOT");
+        procesoDTO.setIdTarea(Long.valueOf(4931));
+        try {
+            String parametros = "{\"nombreSennal\":\"archivarDocumento\",\"numeroRadicado\":\"CS-CTC-2017-000002\",\"codDependencia\":\"1040.1040\"}";
+            ObjectMapper objectMapper = new ObjectMapper();
+            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+            };
+            Map<String, String> map = new HashMap<String, String>();
+            HashMap<String, Object> o = objectMapper.readValue(parametros, typeRef);
+            map = objectMapper.readValue(parametros, new TypeReference<HashMap<String, String>>() {
+            });
+            procesoDTO.setParametros(o);
+
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assertNotNull(procesoDTO);
+        assertNotNull(processService);
+        RespuestaProcesoDTO result = processService.senalInicioAutomatico(procesoDTO);
+        assertNotNull(result);
+        System.out.print(result.getIdDespliegue());
+    }
 //    @Test
-//    public void enviarSenalProceso() {
+//    public void enviarSenalProcesoTest() throws SystemException {
+//
+//        procesoDTO.setIdProceso("proceso.archivar-documento");
+//        procesoDTO.setIdDespliegue("co.com.soaint.sgd.process:proceso-archivar-documento:1.0.0-SNAPSHOT");
+//        procesoDTO.setIdTarea(Long.valueOf(4931));
+//        try {
+//            String parametros = "{\"nombreSennal\":\"archivarDocumento\",\"numeroRadicado\":\"CS-CTC-2017-000002\",\"codDependencia\":\"1040.1040\"}";
+////            String parametros = "{}";
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+//            };
+//            Map<String, String> map = new HashMap<String, String>();
+//            HashMap<String, Object> o = objectMapper.readValue(parametros, typeRef);
+//            map = objectMapper.readValue(parametros, new TypeReference<HashMap<String, String>>() {
+//            });
+//            procesoDTO.setParametros(o);
+//
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        assertNotNull(procesoDTO);
+//        assertNotNull(processService);
+//        RespuestaProcesoDTO result = processService.enviarSenalProceso(procesoDTO);
+//        assertNotNull(result);
+//        System.out.print(result.getIdDespliegue());
 //    }
 //
-//    @Test
-//    public void senalInicioAutomatico() {
-//    }
+
 
 //    @Test
 //    public void listarProcesos() {
