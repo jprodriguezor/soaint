@@ -103,7 +103,7 @@ public class ProcessServiceTest {
         assertNotNull(processService);
         RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
         assertNotNull(result);
-        System.out.print(result.getIdDespliegue());
+        System.out.println(result.getIdDespliegue());
     }
 
     @Test
@@ -150,21 +150,30 @@ public class ProcessServiceTest {
     }
 
     @Test
-    public void listarProcesosTest() throws SystemException {
+    public void listarVariablesProcesosTest() throws SystemException {
         List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
         estados.add(EstadosEnum.LISTO);
         procesoDTO.setEstados(estados);
         assertNotNull(procesoDTO);
         RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
-
+        assertNotNull(result);
         String result1 = processService.listarVariablesProcesos(procesoDTO);
         System.out.print(result1);
 
     }
-//
-//    @Test
-//    public void listarVariablesProcesos() {
-//    }
+
+    @Test
+    public void listarProcesosTest() throws SystemException{
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+        assertNotNull(procesoDTO);
+        List<RespuestaProcesoDTO> listaProcesos =processService.listarProcesos(procesoDTO);
+        for (int i = 0; i< listaProcesos.size(); i ++){
+            System.out.print(listaProcesos.get(i).getCodigoProceso() + "\n");
+        }
+
+    }
 //
 //    @Test
 //    public void listarProcesosInstanciaPorUsuarios() {
