@@ -135,36 +135,21 @@ public class ProcessServiceTest {
         assertNotNull(result);
         System.out.print(result.getIdDespliegue());
     }
-//    @Test
-//    public void enviarSenalProcesoTest() throws SystemException {
-//
-//        procesoDTO.setIdProceso("proceso.archivar-documento");
-//        procesoDTO.setIdDespliegue("co.com.soaint.sgd.process:proceso-archivar-documento:1.0.0-SNAPSHOT");
-//        procesoDTO.setIdTarea(Long.valueOf(4931));
-//        try {
-//            String parametros = "{\"nombreSennal\":\"archivarDocumento\",\"numeroRadicado\":\"CS-CTC-2017-000002\",\"codDependencia\":\"1040.1040\"}";
-////            String parametros = "{}";
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
-//            };
-//            Map<String, String> map = new HashMap<String, String>();
-//            HashMap<String, Object> o = objectMapper.readValue(parametros, typeRef);
-//            map = objectMapper.readValue(parametros, new TypeReference<HashMap<String, String>>() {
-//            });
-//            procesoDTO.setParametros(o);
-//
-//        } catch (JsonGenerationException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        assertNotNull(procesoDTO);
-//        assertNotNull(processService);
-//        RespuestaProcesoDTO result = processService.enviarSenalProceso(procesoDTO);
-//        assertNotNull(result);
-//        System.out.print(result.getIdDespliegue());
-//    }
-//
+
+    @Test
+    public void abortarProcesoTest() throws SystemException{
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+        RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
+
+        procesoDTO.setIdDespliegue(result.getIdDespliegue());
+        procesoDTO.setInstanciaProceso(Long.valueOf(result.getCodigoProceso()));
+        RespuestaProcesoDTO result1 = processService.abortarProceso(procesoDTO);
+        assertNotNull(result1);
+        System.out.print(result1.getEstado());
+
+    }
 
 
 //    @Test
@@ -179,7 +164,5 @@ public class ProcessServiceTest {
 //    public void listarProcesosInstanciaPorUsuarios() {
 //    }
 //
-//    @Test
-//    public void abortarProceso() {
-//    }
+
 }
