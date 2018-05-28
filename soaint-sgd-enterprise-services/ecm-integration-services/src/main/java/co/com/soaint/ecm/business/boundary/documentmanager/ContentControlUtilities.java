@@ -1073,6 +1073,26 @@ final class ContentControlUtilities implements Serializable {
         return map;
     }
 
+    void eliminarDocumentosAnexos(String idDoc, Session session) throws SystemException {
+        log.info("Eliminar todos los documentos anexos a {}", idDoc);
+        final String query = "select * from cmcor:CM_DocumentoPersonalizado" +
+                " where " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + idDoc + "'";
+        try {
+            final ItemIterable<QueryResult> queryResults = session.query(query, false);
+            for (QueryResult queryResult :
+                    queryResults) {
+                String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                contentControl.eliminardocumento(objectId, session);
+            }
+        } catch (Exception e) {
+            log.error("Ocurrio un error al eliminar documentos anexos");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
     Document estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException {
         try {
             if (ObjectUtils.isEmpty(documentoDTO)) {
