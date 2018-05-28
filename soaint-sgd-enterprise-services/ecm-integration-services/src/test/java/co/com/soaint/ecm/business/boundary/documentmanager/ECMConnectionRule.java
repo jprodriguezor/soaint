@@ -73,7 +73,7 @@ public class ECMConnectionRule implements TestRule {
     }
 
     private boolean isLocal() {
-        return !System.getProperty("user.dir").startsWith("/var/lib/jenkins");
+        return System.getProperty(SystemParameters.API_SEARCH_ALFRESCO) == null;
     }
 
     public void usingContentControlAlfresco(ContentControlAlfresco contentControlAlfresco) {
@@ -93,10 +93,7 @@ public class ECMConnectionRule implements TestRule {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-        if(isLocal())
-            parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
-        else
-            parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
 
 
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
