@@ -11,6 +11,7 @@ public class Authenticator implements ClientRequestFilter {
 
     private final String user;
     private final String password;
+    private final String TOKEN_CHARSET = "UTF-8";
 
     public Authenticator(String user, String password) {
         this.user = user;
@@ -18,7 +19,7 @@ public class Authenticator implements ClientRequestFilter {
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
+    public void filter(ClientRequestContext requestContext) {
         MultivaluedMap<String, Object> headers = requestContext.getHeaders();
         final String basicAuthentication = getBasicAuthentication();
         headers.add("Authorization", basicAuthentication);
@@ -28,7 +29,7 @@ public class Authenticator implements ClientRequestFilter {
     private String getBasicAuthentication() {
         String token = this.user + ":" + this.password;
         try {
-            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes(TOKEN_CHARSET));
         } catch (UnsupportedEncodingException ex) {
             throw new IllegalStateException("Cannot encode with UTF-8", ex);
         }

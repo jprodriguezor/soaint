@@ -1,7 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
-import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
@@ -25,9 +24,6 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
 public class UnidadDocumentalGatewayApi {
-
-    @Autowired
-    private UnidadDocumentalClient unidadDocumentalClient;
 
     @Autowired
     private ECMClient ecmClient;
