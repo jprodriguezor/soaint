@@ -1151,22 +1151,20 @@ public class CorrespondenciaControl {
     }
 
     /**
-     * @param esRemitenteReferidoDestinatario
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
     @Transactional
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO,
-                                                                                             Boolean esRemitenteReferidoDestinatario)
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                             throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
 
-            if (esRemitenteReferidoDestinatario){
+            if (comunicacionOficialDTO.getEsRemitenteReferidoDestinatario()){
                 List<String> nrosRadicadoReferido = referidoControl.consultarNrosRadicadoCorrespondenciaReferida(comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
                 if (nrosRadicadoReferido!= null || !nrosRadicadoReferido.isEmpty()) {
                     for (String nro : nrosRadicadoReferido) {
@@ -1249,7 +1247,6 @@ public class CorrespondenciaControl {
             });
 
             em.persist(correspondencia);
-
             em.flush();
 
             log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
@@ -1293,8 +1290,8 @@ public class CorrespondenciaControl {
                         doc.setContentTypeattachment(documento.getTipoDocumento());
                         doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
-                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
+                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento());
+                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento());
                     });
                 }
             } else{

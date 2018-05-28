@@ -33,8 +33,7 @@ import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/t
 import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 import {isNullOrUndefined} from "util";
-
-
+import * as domtoimage from 'dom-to-image';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -201,6 +200,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       const self = this;
 
+      if(this.mustSendImage(valueGeneral))
       setTimeout( () =>{ self.uploadTemplate(
         self.radicacion.correspondencia.codDependencia,
         self.radicacion.correspondencia.nroRadicado,
@@ -234,7 +234,33 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     });
   }
 
-  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){}
+  protected mustSendImage(general:any):boolean{
+
+    return general.reqDistFisica == 2 && general.reqDigit == 2
+  }
+
+  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
+
+    const node = document.getElementById("ticket-rad");
+
+    if(!isNullOrUndefined(node)) {
+
+      domtoimage.toBlob(node).then((blob) => {
+
+        let formData = new FormData();
+
+        formData.append("documento", blob, "etiqueta.png");
+        formData.append("idDocumento", ideEcm);
+        formData.append("nroRadicado", nroRadicado);
+        formData.append("codigoDependencia", codDependencia);
+
+
+        this._sandbox.uploadTemplate(formData).subscribe();
+
+      });
+    }
+
+  }
 
   protected  buildPayload(): any{
 

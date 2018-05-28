@@ -52,7 +52,7 @@
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
                 (onHide)="hideTicketRadicado()" [width]="520">
-        <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
+        <rs-ticket-radicado id="ticket" #ticketRadicado idTicket="ticket-rad" ></rs-ticket-radicado>
 
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
