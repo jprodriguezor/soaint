@@ -197,7 +197,7 @@ public class ProcessService implements IProcessServices {
      * @throws SystemException
      */
     @Override
-    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuariosTest(EntradaProcesoDTO entrada) throws SystemException {
+    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws SystemException {
         log.info("iniciar - listar instancias de usarios de proceso ");
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
