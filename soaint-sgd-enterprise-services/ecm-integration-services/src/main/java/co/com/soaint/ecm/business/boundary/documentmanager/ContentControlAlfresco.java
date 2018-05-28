@@ -929,7 +929,12 @@ public class ContentControlAlfresco implements ContentControl {
             ObjectId objectId = new ObjectIdImpl(idDoc);
             CmisObject object = session.getObject(objectId);
             Document delDoc = (Document) object;
+            DocumentoDTO documentoDTO = utilities.transformarDocumento(delDoc);
             delDoc.delete(false);
+            if ("Principal".equals(documentoDTO.getTipoPadreAdjunto())) {
+                utilities.eliminarDocumentosAnexos(idDoc, session);
+            }
+
         } catch (CmisObjectNotFoundException e) {
             log.error("Documento no encontrado :", e);
             throw ExceptionBuilder.newBuilder()
