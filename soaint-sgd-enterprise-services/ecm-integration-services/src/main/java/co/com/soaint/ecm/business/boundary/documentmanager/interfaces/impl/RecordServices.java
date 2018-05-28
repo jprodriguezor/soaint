@@ -104,6 +104,9 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
 
+    public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
+    public static String RMA_IS_CLOSED = "rma:isClosed";
+
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
         log.info("iniciar - Crear estructura en record: {}");
@@ -337,6 +340,10 @@ public class RecordServices implements IRecordServices {
         }
         if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
             nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
+            Calendar fechaAutoCierre = documentalDTO.getFechaAutoCierre();
+            nombreMap.put(RMC_X_AUTO_CIERRE, Utilities.calendarToString(fechaAutoCierre));
         }
 
         properties.put("properties", nombreMap);

@@ -218,9 +218,16 @@ final class ContentControlUtilities implements Serializable {
                     throw new SystemException("Ya existe la unidad documental de nombre " + nombreUnidadDocumental + " en el ECM");
                 }
             }
-            unidadDocumentalDTO.setSoporte("Electrónico");
-            unidadDocumentalDTO.setInactivo(false);
-            unidadDocumentalDTO.setCerrada(false);
+
+            final String soporte = !StringUtils.isEmpty(unidadDocumentalDTO.getSoporte()) ?
+                    unidadDocumentalDTO.getSoporte() : "Electrónico";
+            final boolean inactivo = !ObjectUtils.isEmpty(unidadDocumentalDTO.getInactivo()) ?
+                    unidadDocumentalDTO.getInactivo() : false;
+            final boolean cerrada = !ObjectUtils.isEmpty(unidadDocumentalDTO.getCerrada()) ?
+                    unidadDocumentalDTO.getCerrada() : false;
+            unidadDocumentalDTO.setSoporte(soporte);
+            unidadDocumentalDTO.setInactivo(inactivo);
+            unidadDocumentalDTO.setCerrada(cerrada);
             final Map<String, Object> props = updateProperties(null, unidadDocumentalDTO);
             props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL));
             log.info("Making the tmpFolder!!!");
