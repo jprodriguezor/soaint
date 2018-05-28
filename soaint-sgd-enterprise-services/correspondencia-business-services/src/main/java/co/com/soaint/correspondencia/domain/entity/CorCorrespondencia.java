@@ -71,9 +71,11 @@ import java.util.stream.Collectors;
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
                 "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
                 "FROM CorCorrespondencia c " +
-                "INNER JOIN c.ppdDocumentoList d " +
                 "INNER JOIN c.corAgenteList ca " +
-                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "),
+                "INNER JOIN c.ppdDocumentoList d " +
+//                "INNER JOIN CorPlanAgen cpa " +
+                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "+
+                "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION AND ca.codTipAgent = :TIPO_AGENTE "),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
