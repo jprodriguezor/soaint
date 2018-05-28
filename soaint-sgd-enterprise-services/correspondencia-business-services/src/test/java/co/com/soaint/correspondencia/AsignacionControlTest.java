@@ -32,6 +32,7 @@ public class AsignacionControlTest  {
     public ExpectedException fails = ExpectedException.none();
 
     final String LOGIN_NAME = "User";
+    final String ID_INSTANCIA = "II01";
     final BigInteger ID_ASIGNACION = BigInteger.valueOf(100);
     final BigInteger ID_AGENTE = BigInteger.valueOf(100);
     final BigInteger ID_DOCUMENTO = BigInteger.valueOf(836);
@@ -82,13 +83,11 @@ public class AsignacionControlTest  {
         List<AsignacionDTO> asignacionDTOList = asignacionTramiteDTO.getAsignaciones().getAsignaciones();
 
         // asignacion
-        DctAsignacionDTO asignacionDTOStub = DctAsignacionDTO.newInstance().build();
+        DctAsignacionDTO asignacionDTOStub = DctAsignacionDTO.newInstance().ideAsignacion(ID_ASIGNACION).build();
         TypedQuery<DctAsignacionDTO> asignacionTQ = getSingleResultMock("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class, asignacionDTOStub);
 
         // asignacion result update DUDA!!!!!!!!!!!!!!!!!!!!!!!!
-        TypedQuery<AsignacionDTO> asignacionFuncionarioTQ = mock(TypedQuery.class);
-        when(asignacionFuncionarioTQ.setParameter(anyString(),any())).thenReturn(asignacionFuncionarioTQ);
-        when(em.createNamedQuery("DctAsignacion.asignarToFuncionario")).thenReturn(asignacionFuncionarioTQ);
+        TypedQuery<AsignacionDTO> asignacionFuncionarioTQ = getExecuteUpdateMock("DctAsignacion.asignarToFuncionario", null);
 
         // asignacion result
         AsignacionDTO asignacionDTOResultStub = AsignacionDTO.newInstance().build();
@@ -105,15 +104,16 @@ public class AsignacionControlTest  {
         assertThat(result.getLoginName(), is(LOGIN_NAME));
         assertThat(result.getAlertaVencimiento(), notNullValue());
 
-
+        verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class);
         verify(asignacionTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", ID_AGENTE);
 
-        verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class);
         verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.asignarToFuncionario");
+        verify(asignacionFuncionarioTQ, times(asignacionDTOList.size())).setParameter("IDE_FUNCI", ID_FUNCIONARIO);
+        verify(asignacionFuncionarioTQ, times(asignacionDTOList.size())).setParameter("IDE_ASIGNACION", ID_ASIGNACION);
 
+        verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class);
         verify(asignacionResultTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", ID_AGENTE);
         verify(asignacionResultTQ, times(asignacionDTOList.size())).setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo());
-        verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class);
 
         verify(agenteControl, times(asignacionDTOList.size())).actualizarEstadoAgente(any(AgenteDTO.class));
         verify(correspondenciaControl, times(asignacionDTOList.size())).consultarFechaVencimientoByIdeDocumento(any(BigInteger.class));
@@ -149,23 +149,24 @@ public class AsignacionControlTest  {
         AsignacionDTO asignacionDTO = newAsignacionDTO();
 
         // asignacion
+        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().ideAsigUltimo(ID_ASIGNACION).build();
 
-        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().build();
         TypedQuery<DctAsigUltimo> dctAsigUltimoTQ = getSingleResultMock("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class, dctAsigUltimoStub);
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTypedQuery = getExecuteUpdateMock("DctAsigUltimo.updateIdInstancia", null);
 
-        TypedQuery<DctAsigUltimo> dctAsigUltimoTypedQuery = mock(TypedQuery.class);
-        when(dctAsigUltimoTQ.setParameter(anyString(),any())).thenReturn(dctAsigUltimoTypedQuery);
-        when(em.createNamedQuery("DctAsigUltimo.updateIdInstancia")).thenReturn(dctAsigUltimoTypedQuery);
 
         // when
         asignacionControl.actualizarIdInstancia(asignacionDTO);
 
         // then
 
-        verify(dctAsigUltimoTQ, times(1)).setParameter("ID_ASIGNACION", ID_ASIGNACION);
+        //verify(dctAsigUltimoTQ, times(1)).setParameter("ID_ASIGNACION", ID_ASIGNACION);
+        verify(em).createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class);
+        verify(dctAsigUltimoTQ).setParameter("IDE_ASIGNACION", ID_ASIGNACION);
 
-        //verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class);
-
+        verify(em).createNamedQuery("DctAsigUltimo.updateIdInstancia");
+        verify(dctAsigUltimoTypedQuery).setParameter("IDE_ASIG_ULTIMO", ID_ASIGNACION);
+        verify(dctAsigUltimoTypedQuery).setParameter("ID_INSTANCIA", ID_INSTANCIA);
     }
 
     @Test
@@ -219,6 +220,7 @@ public class AsignacionControlTest  {
                 .ideAgente(ID_AGENTE)
                 .ideDocumento(ID_DOCUMENTO)
                 .ideFunci(ID_FUNCIONARIO)
+                .idInstancia(ID_INSTANCIA)
                 .build();
     }
 
@@ -230,4 +232,13 @@ public class AsignacionControlTest  {
         return typedQuery;
     }
 
+    private <T> TypedQuery<T> getExecuteUpdateMock(String namedQuery, Class<T> type) {
+        TypedQuery<T> typedQuery = mock(TypedQuery.class);
+        if(type == null)
+            when(em.createNamedQuery(namedQuery)).thenReturn(typedQuery);
+        else
+            when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
+        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        return typedQuery;
+    }
 }
