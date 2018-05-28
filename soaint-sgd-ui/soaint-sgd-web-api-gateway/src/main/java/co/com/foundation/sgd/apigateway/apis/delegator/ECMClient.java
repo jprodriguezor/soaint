@@ -74,7 +74,7 @@ public class ECMClient {
 
     public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) {
         log.info("Digitalizar Documento - [trafic] - Invocando Servicio Remoto Estampar Documento Radicacion Salida: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         Response response = wt.path("/estampar-etiqueta-radicacion/")
                 .request().post(Entity.json(documentoDTO));
         return response.readEntity(MensajeRespuesta.class);
@@ -97,12 +97,12 @@ public class ECMClient {
                     documentoAsociadoECMDTO.setNroRadicado(numero);
                     documentoAsociadoECMDTO.setNroRadicadoReferido(referidoList);
 
+                    MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
+                    mensajeRespuestas.add(asociadoResponse);
+
                 } catch (Exception e) {
                     log.info("Error generando el documento ", e);
                 }
-
-                MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
-                mensajeRespuestas.add(asociadoResponse);
 
             });
         } catch (Exception e) {
@@ -160,7 +160,7 @@ public class ECMClient {
     }
 
     public Response listarUnidadesDocumentalesDisposicion(DisposicionFinalDTO disposicionFinal) {
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         Response response = wt.path("/listar-unidades-documentales-disposicion")
                             .request()
                             .post(Entity.json(disposicionFinal));
@@ -168,7 +168,7 @@ public class ECMClient {
     }
 
     public Response aprobarRechazarUnidadesDocumentalesDisposicion(List<UnidadDocumentalDTO> unidadesDocumentales) {
-         WebTarget wt = ClientBuilder.newClient().target(endpoint);
+         WebTarget wt = client.target(endpoint);
          Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
                              .request()
                              .put(Entity.json(unidadesDocumentales));
@@ -271,7 +271,7 @@ public class ECMClient {
     }
 
     private Response getDocumentosAsociados(DocumentoDTO documentoDTO) {
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/obtenerDocumentosAdjuntosECM").request().post(Entity.json(documentoDTO));
     }
 }

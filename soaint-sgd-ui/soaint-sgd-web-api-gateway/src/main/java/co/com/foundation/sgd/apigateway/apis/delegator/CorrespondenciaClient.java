@@ -268,7 +268,7 @@ public class CorrespondenciaClient {
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
 
         return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante")
                 .queryParam("cod_sede", codSede)

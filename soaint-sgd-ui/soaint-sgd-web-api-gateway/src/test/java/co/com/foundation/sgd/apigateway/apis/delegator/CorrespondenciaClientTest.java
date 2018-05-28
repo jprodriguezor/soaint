@@ -75,7 +75,7 @@ public class CorrespondenciaClientTest {
     public void radicarSalida() {
         // given
         String path = "/correspondencia-web-api/correspondencia/radicar-salida";
-        ComunicacionOficialDTO dto = mock(ComunicacionOficialDTO.class);
+        ComunicacionOficialRemiteDTO dto = mock(ComunicacionOficialRemiteDTO.class);
         Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, path);
 
         // when
@@ -85,7 +85,7 @@ public class CorrespondenciaClientTest {
         verify(client).target(API_ENDPOINT);
         verify(wt).path(path);
 
-        ArgumentCaptor<Entity<ComunicacionOficialDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+        ArgumentCaptor<Entity<ComunicacionOficialRemiteDTO>> captor = ArgumentCaptor.forClass(Entity.class);
 
         verify(requestBuilder).post(captor.capture());
 
@@ -541,10 +541,10 @@ public class CorrespondenciaClientTest {
     }
 
     @Test
-    public void listarSolicitudUnidadDocumental() {
+    public void listarSolicitudUnidadDocumentalNoTramitadas() {
 
         // given
-        String path = "/correspondencia-web-api/correspondencia/obtener-solicitud-um";
+        String path = "/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante-sin-tramitar";
         String COD_SEDE = "CD01";
         String COD_DEPENDENCIA = "CD01";
         String ID_SOLICITANTE = "CTDE01";
@@ -553,7 +553,7 @@ public class CorrespondenciaClientTest {
         WebTarget requestTarget = JaxRsUtils.mockGetPath(wt, path);
 
         // when
-        correspondenciaClient.listarSolicitudUnidadDocumental(
+        correspondenciaClient.listarSolicitudUnidadDocumentalNoTramitadas(
                 COD_SEDE, COD_DEPENDENCIA,
                 ID_SOLICITANTE, FECHA_SOLICITUD);
 
@@ -565,6 +565,30 @@ public class CorrespondenciaClientTest {
         verify(requestTarget).queryParam("cod_dependencia", COD_DEPENDENCIA);
         verify(requestTarget).queryParam("id_solicitante", ID_SOLICITANTE);
         verify(requestTarget).queryParam("fecha_in", FECHA_SOLICITUD);
+    }
+
+    @Test
+    public void listarSolicitudUnidadDocumentalTramitadas() {
+
+        // given
+        String path = "/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante";
+        String COD_SEDE = "CD01";
+        String COD_DEPENDENCIA = "CD01";
+        String ID_SOLICITANTE = "CTDE01";
+
+        WebTarget requestTarget = JaxRsUtils.mockGetPath(wt, path);
+
+        // when
+        correspondenciaClient.listarSolicitudUnidadDocumentalTramitadas(
+                COD_SEDE, COD_DEPENDENCIA, ID_SOLICITANTE);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+
+        verify(requestTarget).queryParam("cod_sede", COD_SEDE);
+        verify(requestTarget).queryParam("cod_dependencia", COD_DEPENDENCIA);
+        verify(requestTarget).queryParam("id_solicitante", ID_SOLICITANTE);
     }
 
     @Test

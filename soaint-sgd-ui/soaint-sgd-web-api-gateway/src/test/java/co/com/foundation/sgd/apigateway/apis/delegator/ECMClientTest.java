@@ -1,13 +1,12 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.test.mocks.JaxRsUtils;
+import co.com.foundation.test.mocks.PartUtils;
 import co.com.foundation.test.rules.EnvironmentRule;
 import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,6 +17,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,6 +145,28 @@ public class ECMClientTest {
     }
 
     @Test
+    public void estamparEtiquetaRadicacion() {
+        // given
+        String path = "/estampar-etiqueta-radicacion/";
+        DocumentoDTO dto = mock(DocumentoDTO.class);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+
+        // when
+        ecmClient.estamparEtiquetaRadicacion(dto);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+        verify(JaxRsUtils.getResponseMock()).readEntity(MensajeRespuesta.class);
+
+        ArgumentCaptor<Entity<DocumentoDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+    }
+
+    @Test
     public void uploadDocumentsAsociates() throws IOException {
         // given
         String PARENT_ID = "PI01";
@@ -220,16 +242,12 @@ public class ECMClientTest {
         List<MensajeRespuesta> respuestas = ecmClientSpy.uploadDocumentsAsociates(null, FILES, null, null, TIPO_COMUNICACION, null, null);
 
         // then
-
-//        assertThat(respuestas.size()).isEqualTo(0);
-//        verify(ecmClientSpy, times(0)).uploadDocument(any(DocumentoDTO.class), anyString());
-
-        assertThat(respuestas.size()).isEqualTo(FILES.size());
-        verify(ecmClientSpy, times(FILES.size())).uploadDocument(any(DocumentoDTO.class), anyString());
+        assertThat(respuestas.size()).isEqualTo(0);
+        verify(ecmClientSpy, times(0)).uploadDocument(any(DocumentoDTO.class), anyString());
     }
 
     @Test
-    public void uploadDocumentsAsociatesExceptionUploadDocument() throws IOException {
+    public void uploadDocumentsAsociatesExceptionFromUploadDocument() throws IOException {
         // given
         Map<String, InputPart> FILES = new HashMap<>();
         String TIPO_COMUNICACION = "TC01";
@@ -248,7 +266,7 @@ public class ECMClientTest {
 
         // then
         assertThat(respuestas.size()).isEqualTo(0);
-        verify(ecmClientSpy, times(1)).uploadDocument(any(DocumentoDTO.class), anyString());
+        verify(ecmClientSpy, times(0)).uploadDocument(any(DocumentoDTO.class), anyString());
     }
 
     @Test
@@ -285,14 +303,15 @@ public class ECMClientTest {
     }
 
     @Test
-    public void findDocumentosAsociados() {
+    public void findDocumentosAsociadosID() {
         // given
         String ID_DOCUMENTO = "ID01";
         String path = "/obtenerDocumentosAdjuntosECM";
         Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+        ECMClient ecmClientSpy = spy(ecmClient);
 
         // when
-        ecmClient.findDocumentosAsociados(ID_DOCUMENTO);
+        ecmClientSpy.findDocumentosAsociadosID(ID_DOCUMENTO);
 
         // then
         verify(client).target(API_ENDPOINT);
@@ -304,6 +323,29 @@ public class ECMClientTest {
         verify(requestBuilder).post(captor.capture());
 
         assertThat(captor.getValue().getEntity().getIdDocumento()).isEqualTo(ID_DOCUMENTO);
+    }
+
+    @Test
+    public void findDocumentosAsociadosRadicado() {
+        // given
+        String NRO_RADICADO = "NR01";
+        String path = "/obtenerDocumentosAdjuntosECM";
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+        ECMClient ecmClientSpy = spy(ecmClient);
+
+        // when
+        ecmClientSpy.findDocumentosAsociadosRadicado(NRO_RADICADO);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+        verify(JaxRsUtils.getResponseMock()).readEntity(MensajeRespuesta.class);
+
+        ArgumentCaptor<Entity<DocumentoDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity().getNroRadicado()).isEqualTo(NRO_RADICADO);
     }
 
     @Test
@@ -365,6 +407,49 @@ public class ECMClientTest {
         ArgumentCaptor<Entity<UnidadDocumentalDTO>> captor = ArgumentCaptor.forClass(Entity.class);
 
         verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+    }
+
+    @Test
+    public void listarUnidadesDocumentalesDisposicion() {
+        // given
+        String path = "/listar-unidades-documentales-disposicion";
+        DisposicionFinalDTO dto = mock(DisposicionFinalDTO.class);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, path);
+
+        // when
+        ecmClient.listarUnidadesDocumentalesDisposicion(dto);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+
+        ArgumentCaptor<Entity<DisposicionFinalDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+    }
+
+
+    @Test
+    public void aprobarRechazarUnidadesDocumentalesDisposicion() {
+        // given
+        String path = "/aprobar-rechazar-disposiciones-finales";
+        List<UnidadDocumentalDTO> dto = mock(List.class);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPutPath(wt, path);
+
+        // when
+        ecmClient.aprobarRechazarUnidadesDocumentalesDisposicion(dto);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+
+        ArgumentCaptor<Entity<List<UnidadDocumentalDTO>>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).put(captor.capture());
 
         assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
@@ -484,11 +569,20 @@ public class ECMClientTest {
     public void subirDocumentosPorArchivar() {
         // given
         String path = "/subirDocumentosTemporalesECM";
-        List<DocumentoDTO> dto = mock(List.class);
+        String FILE_1 = "FILE_1.PDF";
+        String FILE_2 = "FILE_2.PDF";
+        String COD_DEPENDENCIA = "CD01";
+
+        MultipartFormDataInput files = PartUtils.newMultiPart()
+                .addPart("codigoDependencia", COD_DEPENDENCIA)
+                .addBinaryPart(FILE_1, "HELLO PDF 1")
+                .addBinaryPart(FILE_2, "HELLO PDF 2")
+                .build();
+
         Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, path);
 
         // when
-        ecmClient.subirDocumentosPorArchivar(dto);
+        ecmClient.subirDocumentosPorArchivar(files);
 
         // then
         verify(client).target(API_ENDPOINT);
@@ -498,7 +592,48 @@ public class ECMClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+        assertThat(captor.getValue().getEntity()).allSatisfy(documentoDTO -> {
+            assertThat(documentoDTO.getDocumento()).isNotNull();
+            assertThat(documentoDTO.getCodigoDependencia()).isEqualTo(COD_DEPENDENCIA);
+            assertThat(documentoDTO.getTipoDocumento()).isEqualTo("application/pdf");
+            assertThat(documentoDTO.getNombreDocumento()).isIn(FILE_1, FILE_2);
+        });
+    }
+
+    @Test
+    public void subirDocumentosPorArchivarWithEmptyParams() {
+        // given
+        MultipartFormDataInput files = null;
+
+        // when
+        Response response = ecmClient.subirDocumentosPorArchivar(files);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    }
+
+    @Test
+    public void subirDocumentosPorArchivarWithErrorHandling() {
+        // given
+        String COD_MENSAJE = "1223";
+        String FILE_1 = "FILE_1.PDF";
+        String FILE_2 = "FILE_2.PDF";
+        String COD_DEPENDENCIA = "CD01";
+
+        MultipartFormDataInput files = PartUtils.newMultiPart()
+                .addPart("codigoDependencia", COD_DEPENDENCIA)
+                .addBinaryPart(FILE_1, "HELLO PDF 1")
+                .addBinaryPart(FILE_2, "HELLO PDF 2")
+                .build();
+
+        // when
+        Response response = ecmClient.subirDocumentosPorArchivar(files);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+
+        MensajeRespuesta respuesta = (MensajeRespuesta) response.getEntity();
+        assertThat(respuesta.getCodMensaje()).isEqualTo(COD_MENSAJE);
     }
 
     @Test
