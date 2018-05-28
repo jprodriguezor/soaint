@@ -174,10 +174,18 @@ public class ProcessServiceTest {
         }
 
     }
-//
-//    @Test
-//    public void listarProcesosInstanciaPorUsuarios() {
-//    }
-//
+
+    @Test
+    public void listarProcesosInstanciaPorUsuariosTest() throws SystemException{
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+        assertNotNull(procesoDTO);
+        List<RespuestaProcesoDTO> listaProcesos =processService.listarProcesosInstanciaPorUsuarios(procesoDTO);
+        for (int i = 0; i< listaProcesos.size(); i ++){
+            System.out.print(listaProcesos.get(i).getCodigoProceso() + "\n");
+        }
+    }
+
 
 }
