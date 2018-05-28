@@ -32,9 +32,4 @@ public class AuthenticatorTest {
         assertThat(headers.getFirst("Authorization").toString())
                 .startsWith("BASIC");
     }
-
-    @Test
-    public void filterFail() {
-
-    }
 }

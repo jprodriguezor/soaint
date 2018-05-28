@@ -1,17 +1,15 @@
 package co.com.foundation.sgd.infrastructure;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 
 public class Authenticator implements ClientRequestFilter {
 
     private final String user;
     private final String password;
-    private final String TOKEN_CHARSET = "UTF-8";
 
     public Authenticator(String user, String password) {
         this.user = user;
@@ -28,10 +26,6 @@ public class Authenticator implements ClientRequestFilter {
 
     private String getBasicAuthentication() {
         String token = this.user + ":" + this.password;
-        try {
-            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes(TOKEN_CHARSET));
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalStateException("Cannot encode with UTF-8", ex);
-        }
+        return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes(StandardCharsets.UTF_8 ));
     }
 }
