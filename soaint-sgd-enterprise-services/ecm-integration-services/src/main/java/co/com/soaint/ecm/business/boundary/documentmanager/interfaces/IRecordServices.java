@@ -17,8 +17,6 @@ import java.util.Optional;
 @Service
 public interface IRecordServices {
 
-    String RMA_IS_CLOSED = "rma:isClosed";
-
     /**
      * Permite crear la estructura en el record
      * @param structure objeto que contiene la estructura

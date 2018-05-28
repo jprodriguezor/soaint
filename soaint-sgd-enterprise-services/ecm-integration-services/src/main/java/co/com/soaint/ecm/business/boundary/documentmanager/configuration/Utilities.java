@@ -8,6 +8,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -64,5 +65,10 @@ public class Utilities {
         if (dias == 0) return calendar;
         calendar.add(Calendar.DAY_OF_YEAR, dias);
         return calendar;
+    }
+
+    public static String calendarToString(Calendar calendar) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(calendar.getTime());
     }
 }
