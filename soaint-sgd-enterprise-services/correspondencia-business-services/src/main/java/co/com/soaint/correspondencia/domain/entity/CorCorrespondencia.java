@@ -72,6 +72,7 @@ import java.util.stream.Collectors;
                 "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.ppdDocumentoList d " +
+                "INNER JOIN c.corAgenteList ca " +
                 "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
