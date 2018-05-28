@@ -33,7 +33,7 @@ public class CorrespondenciaClient {
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
-    public Response radicarSalida(ComunicacionOficialDTO comunicacionOficialDTO) {
+    public Response radicarSalida(ComunicacionOficialRemiteDTO comunicacionOficialDTO) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia Salida with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/radicar-salida")

@@ -5,10 +5,7 @@ import co.com.foundation.cartridge.email.model.MailRequestDTO;
 import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -183,15 +180,6 @@ public class CorrespondenciaControl {
             }
             while (verificarByNroRadicado(nRadicado));
 
-/*                if (!dserialControl.verificarConsecutivo(codSede,codTipoCmc,anno,consecutivo)){
-                        dserialControl.updateConsecutivo(codSede, codDependencia,
-                            codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
-                }
-                return procesarNroRadicadoSalida(codSede, codDependencia, codFunci, codTipoCmc, anno, consecutivo+1);*/
-//
-//            dserialControl.updateConsecutivo(codSede, codDependencia,
-//                    codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
-
             return nRadicado;
         } catch (SystemException e) {
             log.error("Business Control - a business error has occurred", e);
@@ -220,8 +208,9 @@ public class CorrespondenciaControl {
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
 
-            agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica())
-                    .stream().forEach(corAgente -> {
+            List<CorAgente> corAgenteList = agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica());
+            for (CorAgente corAgente : corAgenteList) {
+
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 //----------------------asignacion--------------
@@ -240,7 +229,7 @@ public class CorrespondenciaControl {
                 //------------------------------------
 
                 correspondencia.getCorAgenteList().add(corAgente);
-            });
+            }
 
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
             ppdDocumento.setCorCorrespondencia(correspondencia);
@@ -722,13 +711,16 @@ public class CorrespondenciaControl {
         if (diaSiguienteHabil.equals(correspondenciaDTO.getInicioConteo()))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
-        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
+//        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta()); // error Dagmar
+        String tiempoRespuesta = (correspondenciaDTO.getTiempoRespuesta()== null)? "0" : correspondenciaDTO.getTiempoRespuesta();
+        Long tiempoDuracionTramite = Long.parseLong(tiempoRespuesta);
         long cantHorasLaborales = horasHabilesDia(horarioLaboral[0], horarioLaboral[1]);
         if (unidadTiempoDias.equals(correspondenciaDTO.getCodUnidadTiempo()))
             tiempoDuracionTramite *= cantHorasLaborales;
 
         SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
         while (tiempoDuracionTramite > 0) {
+
             long horasHabilesDia = horasHabilesDia(formatoHora.format(calendario.getTime()), horarioLaboral[1]);
 
             if (horasHabilesDia >= 0) {
@@ -936,12 +928,10 @@ public class CorrespondenciaControl {
     public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
 
-            // TODO verificar caso que se mande en la lista un agente nuevo
             CorCorrespondencia correspondencia = em.find(CorCorrespondencia.class ,comunicacionOficialDTO.getCorrespondencia().getIdeDocumento());
 
             //------------------------------------------
-            List<CorAgente> agentes = correspondencia.getCorAgenteList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
-//            List<DctAsignacion> dctAsignacionList = correspondencia.getDctAsignacionList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
+            List<CorAgente> agentes = correspondencia.getCorAgenteList();
             log.info("Lisado de agentes antes de posible modificacion" + agentes.toString());
             List<AgenteDTO> agenteDTOList = comunicacionOficialDTO.getAgenteList();
 
@@ -950,24 +940,24 @@ public class CorrespondenciaControl {
                     .peek(correspondencia::removeAsignacionByAgente)
                     .collect(Collectors.toList());
 
-            correspondencia.getCorAgenteList().removeAll(agentesAEliminar); // no elimino el agente
-
-//            em.flush();
+            correspondencia.getCorAgenteList().removeAll(agentesAEliminar);
 
             log.info("Lisado de agentes despues de eliminacion agente " + agentes.toString());
-            log.info("Lisado de agentes despues de eliminacion agente correspondencia" + correspondencia.getCorAgenteList().toString()); // se mantiene el listado con el id cambiado
+            log.info("Lisado de agentes despues de eliminacion agente correspondencia" + correspondencia.getCorAgenteList().toString());
 
             for (AgenteDTO agenteDTO: agenteDTOList){
 
-                if (agenteDTO.getIdeAgente() == null){
+                if (agenteDTO.getIdeAgente() == null){ // si no existe
                     CorAgente agente;
                     agente = agenteControl.corAgenteTransform(agenteDTO);
+                    agenteControl.actualizarIdeFunciAgenteInterno(agente);
                     agente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
                     agente.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorAgenteList().add(agente);
 //                    agente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
                     em.persist(agente);
                     agenteDTO.setIdeAgente(agente.getIdeAgente());
+                    agenteDTO.setIdeFunci(agente.getIdeFunci());
 
                     //----------------------asignacion--------------
                     if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
@@ -992,8 +982,6 @@ public class CorrespondenciaControl {
 
                         correspondencia.getDctAsignacionList().add(dctAsignacion);
                         correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
-//                        em.merge(correspondencia);
-//                        em.flush();
                     }
                 }  //------ si existe el agente en la correspondencia
 
@@ -1018,9 +1006,7 @@ public class CorrespondenciaControl {
                             .build();
                     agenteControl.actualizarRemitente(remitente);
                 }
-
             //-------------------------------------------------------
-
             }
 
             PpdDocumento ppdDocumento = em.find(PpdDocumento.class, comunicacionOficialDTO.getPpdDocumentoList().get(0).getIdePpdDocumento());
@@ -1050,7 +1036,6 @@ public class CorrespondenciaControl {
                 });
 
             em.persist(correspondencia);
-//            em.flush();
 
             log.info("Actualizacion exitosa de la comunicacion");
             return "1";
@@ -1087,7 +1072,7 @@ public class CorrespondenciaControl {
 
             log.info("Antes de Agente");
             agenteControl.conformarAgentesSalida(comunicacionOficialDTO.getAgenteList(), correspondencia.getReqDistFisica())
-                    .stream().forEach(corAgente -> {
+                    .forEach(corAgente -> {
                 corAgente.setCorCorrespondencia(correspondencia);
                 log.info(corAgente.getTvsDatosContactoList().size());
                 correspondencia.getCorAgenteList().add(corAgente);
@@ -1115,9 +1100,6 @@ public class CorrespondenciaControl {
                     corReferido.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
-
-//            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
-//                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
             String tipoRadicacion = "";
             for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
@@ -1148,10 +1130,123 @@ public class CorrespondenciaControl {
                 log.info("Response del cambio de radicado " + response.toString());
             });
 
-//            dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
-//                    correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
 
+            em.flush();
+
+            log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
+            return ComunicacionOficialDTO.newInstance()
+                    .correspondencia(consultarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado()))
+                    .build();
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
+                                                                                                            throws BusinessException, SystemException {
+        Date fecha = new Date();
+        try {
+            if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
+                comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
+
+            if (comunicacionOficialDTO.getEsRemitenteReferidoDestinatario()){
+                List<String> nrosRadicadoReferido = referidoControl.consultarNrosRadicadoCorrespondenciaReferida(comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
+                if (nrosRadicadoReferido!= null || !nrosRadicadoReferido.isEmpty()) {
+                    for (String nro : nrosRadicadoReferido) {
+                        List<AgenteDTO> agentesReferido = agenteControl.listarRemitentesByIdeDocumento(this.consultarCorrespondenciaByNroRadicado(nro).getIdeDocumento());
+                        agentesReferido.forEach(agenteDTO -> {
+                            agenteDTO.setCodTipAgent(TipoAgenteEnum.DESTINATARIO.getCodigo());
+                            comunicacionOficialDTO.getAgenteList().add(agenteDTO);
+                        });
+                    }
+                }
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(comunicacionOficialDTO.getCorrespondencia().getFecRadicado());
+            int anno = cal.get(Calendar.YEAR);
+
+            CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
+            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
+            correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
+            correspondencia.setCorAgenteList(new ArrayList<>());
+
+            log.info("Antes de Agente");
+            agenteControl.conformarAgentesSalida(comunicacionOficialDTO.getAgenteList(), correspondencia.getReqDistFisica())
+                    .forEach(corAgente -> {
+                corAgente.setCorCorrespondencia(correspondencia);
+                log.info(corAgente.getTvsDatosContactoList().size());
+                correspondencia.getCorAgenteList().add(corAgente);
+            });
+            log.info("Despues de Agente");
+
+            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
+            ppdDocumento.setCorCorrespondencia(correspondencia);
+
+            if (comunicacionOficialDTO.getAnexoList() != null) {
+                ppdDocumento.setCorAnexoList(new ArrayList<>());
+                comunicacionOficialDTO.getAnexoList().forEach(anexoDTO -> {
+                    CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                    corAnexo.setPpdDocumento(ppdDocumento);
+                    ppdDocumento.getCorAnexoList().add(corAnexo);
+                });
+
+            }
+
+            correspondencia.getPpdDocumentoList().add(ppdDocumento);
+
+            if (comunicacionOficialDTO.getReferidoList() != null)
+                comunicacionOficialDTO.getReferidoList().forEach(referidoDTO -> {
+                    CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                    corReferido.setCorCorrespondencia(correspondencia);
+                    correspondencia.getCorReferidoList().add(corReferido);
+                });
+
+            String tipoRadicacion = "";
+            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+            }
+
+            correspondencia.setNroRadicado(procesarNroRadicadoSalida(
+                    correspondencia.getCodSede(),
+                    correspondencia.getCodDependencia(),
+                    correspondencia.getCodFuncRadica(),
+                    tipoRadicacion,
+                    String.valueOf(anno)));
+
+            String endpoint = System.getProperty("ecm-api-endpoint");
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+            correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
+                log.info("Se modificara el documento con el NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
+                co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
+                        .nroRadicado(correspondencia.getNroRadicado())
+                        .idDocumento(ppdDoc.getIdeEcm())
+                        .build();
+                Response response = wt.path("/modificarMetadatosDocumentoECM/")
+                        .request()
+                        .put(Entity.json(dto));
+                log.info("Response del cambio de radicado " + response.toString());
+            });
+
+            em.persist(correspondencia);
             em.flush();
 
             log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
@@ -1195,8 +1290,8 @@ public class CorrespondenciaControl {
                         doc.setContentTypeattachment(documento.getTipoDocumento());
                         doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
-                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
+                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento());
+                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento());
                     });
                 }
             } else{
@@ -1272,14 +1367,17 @@ public class CorrespondenciaControl {
                     FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(agenteDTO.getIdeFunci());
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal()!=null){
-                            if (agenteDTO.getIndOriginal() == "TP-DESP"){
-                                    String usuario = (funcionario.getNomFuncionario() == null)? "" : funcionario.getNomFuncionario();
-                                    log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
-                                    parameters.put("#USER#", usuario);
+                            if ("TP-DESP" == agenteDTO.getIndOriginal()){
+                                if ("TP-PERA" == agenteDTO.getCodTipoPers()) parameters.put("#USER#", "");
+                                else{
+                                    String nombre = (funcionario.getNomFuncionario() == null)? "" : funcionario.getNomFuncionario();
+                                    log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
+                                    parameters.put("#USER#", nombre);
+                                }
                             }
                         }
 
-                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionario.getNomFuncionario().toString());
+                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionario.getNomFuncionario());
                     destinatarios.add(funcionario.getCorrElectronico());
                  } catch (Exception ex) {
                     log.error("Business Control - a system error has occurred", ex);
@@ -1287,10 +1385,13 @@ public class CorrespondenciaControl {
             } else{
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
-                        if (agenteDTO.getIndOriginal() == "TP-DESP") {
-                            String usuario = (agenteDTO.getNombre() == null)? "" : agenteDTO.getNombre();
-                            log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
-                            parameters.put("#USER#", usuario);
+                        if ("TP-DESP" == agenteDTO.getIndOriginal()) {
+                            if ("TP-PERA" == agenteDTO.getCodTipoPers()) parameters.put("#USER#", "");
+                            else{
+                                String nombre = (agenteDTO.getNombre() == null)? "" : agenteDTO.getNombre();
+                                log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
+                                parameters.put("#USER#", nombre);
+                            }
                         }
                         log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
                     }

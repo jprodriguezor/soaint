@@ -12,5 +12,6 @@ export interface ComunicacionOficialDTO {
   ppdDocumentoList?: Array<DocumentoDTO>,
   anexoList?: Array<AnexoDTO>
   referidoList?: Array<ReferidoDTO>
-  datosContactoList?: Array<ContactoDTO>
+  datosContactoList?: Array<ContactoDTO>,
+  esRemitenteReferidoDestinatario?:boolean;
 }

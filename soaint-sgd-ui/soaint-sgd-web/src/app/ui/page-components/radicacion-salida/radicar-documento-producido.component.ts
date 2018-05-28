@@ -54,9 +54,9 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
               resp.datosGenerales.reqDigit = 2;
               if(!isNullOrUndefined(this.task.variables.numeroRadicado))
               resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
+              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física" ? 1:2;
 
-              if(resp.datosGenerales.reqDistFisica){
+              if(resp.datosGenerales.reqDistFisica == 1){
                 const payload: LoadNextTaskPayload = {
                   idProceso: this.task.idProceso,
                   idInstanciaProceso: this.task.idInstanciaProceso,
@@ -122,26 +122,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     return conditions.every(condition => condition);
   }
 
-  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
-
-    const node = document.getElementById("ticket-rad");
-
-     if(!isNullOrUndefined(node)){
-
-      domtoimage.toBlob(node).then((blob) => {
-
-        let formData = new FormData();
-
-        formData.append("documento",blob,"etiqueta.png");
-        formData.append("idDocumento",ideEcm)
-        formData.append("nroRadicado",nroRadicado);
-        formData.append("codigoDependencia",codDependencia);
-
-
-        this._sandbox.uploadTemplate(formData).subscribe();
-
-      });
-    }
+  protected mustSendImage(general:any):boolean{
+    return true;
   }
 
 }
