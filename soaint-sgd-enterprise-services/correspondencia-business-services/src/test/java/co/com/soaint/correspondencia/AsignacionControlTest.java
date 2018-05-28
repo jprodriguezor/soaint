@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia;
 
 import co.com.soaint.correspondencia.business.control.*;
+import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -30,20 +31,34 @@ public class AsignacionControlTest  {
     @Rule
     public ExpectedException fails = ExpectedException.none();
 
+    final String LOGIN_NAME = "User";
+    final BigInteger ID_ASIGNACION = BigInteger.valueOf(100);
+    final BigInteger ID_AGENTE = BigInteger.valueOf(100);
+    final BigInteger ID_DOCUMENTO = BigInteger.valueOf(836);
+    final BigInteger ID_FUNCIONARIO = BigInteger.valueOf(1);
+
+
     AsignacionControl asignacionControl;
 
     // Dependencias
-    EntityManager em = mock(EntityManager.class);
-    DctAsignacionControl dctAsignacionControl = mock(DctAsignacionControl.class);
-    DctAsigUltimoControl dctAsigUltimoControl = mock(DctAsigUltimoControl.class);
-    CorrespondenciaControl correspondenciaControl = mock(CorrespondenciaControl.class);
-    FuncionariosControl funcionariosControl = mock(FuncionariosControl.class);
-    AgenteControl agenteControl = mock(AgenteControl.class);
+    EntityManager em;
+    DctAsignacionControl dctAsignacionControl;
+    DctAsigUltimoControl dctAsigUltimoControl;
+    CorrespondenciaControl correspondenciaControl;
+    FuncionariosControl funcionariosControl;
+    AgenteControl agenteControl;
 
     @Before
     public void setUp() throws Exception {
 
         asignacionControl = new AsignacionControl();
+
+        em = mock(EntityManager.class);
+        dctAsignacionControl = mock(DctAsignacionControl.class);
+        dctAsigUltimoControl = mock(DctAsigUltimoControl.class);
+        correspondenciaControl = mock(CorrespondenciaControl.class);
+        funcionariosControl = mock(FuncionariosControl.class);
+        agenteControl = mock(AgenteControl.class);
 
         ReflectionTestUtils.setField(asignacionControl, "em", em);
         ReflectionTestUtils.setField(asignacionControl, "dctAsignacionControl", dctAsignacionControl);
@@ -63,55 +78,40 @@ public class AsignacionControlTest  {
     public void asignarCorrespondencia() throws Exception {
 
         // given
-        AsignacionDTO asignacionDTO = AsignacionDTO.newInstance()
-                .loginName("User")
-                .ideAsignacion(new BigInteger("100"))
-                .ideAgente(new BigInteger("100"))
-                .ideDocumento(new BigInteger("836"))
-                .ideFunci(new BigInteger("1"))
-                .build();
-        List<AsignacionDTO> asignacionDTOList=new ArrayList<>();
-        asignacionDTOList.add(asignacionDTO);
-
-        AsignacionTramiteDTO asignacionTramiteDTO = AsignacionTramiteDTO.newInstance()
-                        .asignaciones(AsignacionesDTO.newInstance()
-                        .asignaciones(asignacionDTOList).build())
-                        .build();
+        AsignacionTramiteDTO asignacionTramiteDTO = newAsignacionTramiteDTO();
+        List<AsignacionDTO> asignacionDTOList = asignacionTramiteDTO.getAsignaciones().getAsignaciones();
 
         // asignacion
-        DctAsignacionDTO asignacionDTOStub = DctAsignacionDTO.newInstance().ideAsignacion(BigInteger.valueOf(100)).build();
-        TypedQuery<DctAsignacionDTO> asignacionTQ = mock(TypedQuery.class);
-        when(asignacionTQ.setParameter(anyString(), any())).thenReturn(asignacionTQ);
-        when(asignacionTQ.getSingleResult()).thenReturn(asignacionDTOStub);
-        when(em.createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class)).thenReturn(asignacionTQ);
+        DctAsignacionDTO asignacionDTOStub = DctAsignacionDTO.newInstance().build();
+        TypedQuery<DctAsignacionDTO> asignacionTQ = getSingleResultMock("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class, asignacionDTOStub);
 
-        // asignacion result
+        // asignacion result update DUDA!!!!!!!!!!!!!!!!!!!!!!!!
         TypedQuery<AsignacionDTO> asignacionFuncionarioTQ = mock(TypedQuery.class);
-        when(asignacionFuncionarioTQ.setParameter(anyString(), any())).thenReturn(asignacionFuncionarioTQ);
+        when(asignacionFuncionarioTQ.setParameter(anyString(),any())).thenReturn(asignacionFuncionarioTQ);
         when(em.createNamedQuery("DctAsignacion.asignarToFuncionario")).thenReturn(asignacionFuncionarioTQ);
 
         // asignacion result
         AsignacionDTO asignacionDTOResultStub = AsignacionDTO.newInstance().build();
-        TypedQuery<AsignacionDTO> asignacionResultTQ = mock(TypedQuery.class);
-        when(asignacionResultTQ.setParameter(anyString(), any())).thenReturn(asignacionResultTQ);
-        when(asignacionResultTQ.getSingleResult()).thenReturn(asignacionDTOResultStub);
-        when(em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)).thenReturn(asignacionResultTQ);
+        TypedQuery<AsignacionDTO> asignacionResultTQ = getSingleResultMock( "DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class, asignacionDTOResultStub);
 
-
+        //DUDA!!!!!!!!!!!!!!!!!
         when(correspondenciaControl.consultarFechaVencimientoByIdeDocumento(any(BigInteger.class))).thenReturn(new Date());
+
         // when
         AsignacionesDTO asignacionesDTO = asignacionControl.asignarCorrespondencia(asignacionTramiteDTO);
 
         // then
         AsignacionDTO result = asignacionesDTO.getAsignaciones().get(0);
-        assertThat(result.getLoginName(), is("User"));
+        assertThat(result.getLoginName(), is(LOGIN_NAME));
         assertThat(result.getAlertaVencimiento(), notNullValue());
 
-        verify(asignacionTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", BigInteger.valueOf(100));
+
+        verify(asignacionTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", ID_AGENTE);
+
         verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class);
         verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.asignarToFuncionario");
 
-        verify(asignacionResultTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", BigInteger.valueOf(100));
+        verify(asignacionResultTQ, times(asignacionDTOList.size())).setParameter("IDE_AGENTE", ID_AGENTE);
         verify(asignacionResultTQ, times(asignacionDTOList.size())).setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo());
         verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class);
 
@@ -121,20 +121,8 @@ public class AsignacionControlTest  {
 
     @Test(expected = BusinessException.class)
     public void asignarCorrespondencia_Fail_1() throws SystemException, BusinessException {
-        AsignacionDTO asignacionDTO = AsignacionDTO.newInstance()
-                .loginName("User")
-                .ideAsignacion(new BigInteger("100"))
-                .ideAgente(new BigInteger("100"))
-                .ideDocumento(new BigInteger("836"))
-                .ideFunci(new BigInteger("1"))
-                .build();
-        List<AsignacionDTO> asignacionDTOList=new ArrayList<>();
-        asignacionDTOList.add(asignacionDTO);
-
-        AsignacionTramiteDTO asignacionTramiteDTO = AsignacionTramiteDTO.newInstance()
-                .asignaciones(AsignacionesDTO.newInstance()
-                        .asignaciones(asignacionDTOList).build())
-                .build();
+        AsignacionTramiteDTO asignacionTramiteDTO = newAsignacionTramiteDTO();
+        List<AsignacionDTO> asignacionDTOList = asignacionTramiteDTO.getAsignaciones().getAsignaciones();
 
         when(em.createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class)).thenThrow(BusinessException.class);
 
@@ -143,20 +131,9 @@ public class AsignacionControlTest  {
 
     @Test
     public void asignarCorrespondencia_Fail_2() throws SystemException, BusinessException {
-        AsignacionDTO asignacionDTO = AsignacionDTO.newInstance()
-                .loginName("User")
-                .ideAsignacion(new BigInteger("100"))
-                .ideAgente(new BigInteger("100"))
-                .ideDocumento(new BigInteger("836"))
-                .ideFunci(new BigInteger("1"))
-                .build();
-        List<AsignacionDTO> asignacionDTOList=new ArrayList<>();
-        asignacionDTOList.add(asignacionDTO);
+        AsignacionTramiteDTO asignacionTramiteDTO = newAsignacionTramiteDTO();
+        List<AsignacionDTO> asignacionDTOList = asignacionTramiteDTO.getAsignaciones().getAsignaciones();
 
-        AsignacionTramiteDTO asignacionTramiteDTO = AsignacionTramiteDTO.newInstance()
-                .asignaciones(AsignacionesDTO.newInstance()
-                        .asignaciones(asignacionDTOList).build())
-                .build();
 
         when(em.createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class)).thenThrow(Exception.class);
 
@@ -168,6 +145,27 @@ public class AsignacionControlTest  {
 
     @Test
     public void actualizarIdInstancia() throws Exception {
+        // given
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        // asignacion
+
+        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().build();
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTQ = getSingleResultMock("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class, dctAsigUltimoStub);
+
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTypedQuery = mock(TypedQuery.class);
+        when(dctAsigUltimoTQ.setParameter(anyString(),any())).thenReturn(dctAsigUltimoTypedQuery);
+        when(em.createNamedQuery("DctAsigUltimo.updateIdInstancia")).thenReturn(dctAsigUltimoTypedQuery);
+
+        // when
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
+
+        // then
+
+        verify(dctAsigUltimoTQ, times(1)).setParameter("ID_ASIGNACION", ID_ASIGNACION);
+
+        //verify(em, times(asignacionDTOList.size())).createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class);
+
     }
 
     @Test
@@ -200,6 +198,36 @@ public class AsignacionControlTest  {
 
     @Test
     public void getAsignacionUltimoByIdeAgente() throws Exception {
+    }
+
+
+    private AsignacionTramiteDTO newAsignacionTramiteDTO() {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+        List<AsignacionDTO> asignacionDTOList = new ArrayList<>();
+        asignacionDTOList.add(asignacionDTO);
+
+        return AsignacionTramiteDTO.newInstance()
+                .asignaciones(AsignacionesDTO.newInstance()
+                        .asignaciones(asignacionDTOList).build())
+                .build();
+    }
+
+    private AsignacionDTO newAsignacionDTO() {
+        return AsignacionDTO.newInstance()
+                .loginName(LOGIN_NAME)
+                .ideAsignacion(ID_ASIGNACION)
+                .ideAgente(ID_AGENTE)
+                .ideDocumento(ID_DOCUMENTO)
+                .ideFunci(ID_FUNCIONARIO)
+                .build();
+    }
+
+    private <T> TypedQuery<T> getSingleResultMock(String namedQuery, Class<T> type, T dummyObject) {
+        TypedQuery<T> typedQuery = mock(TypedQuery.class);
+        when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
+        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        when(typedQuery.getSingleResult()).thenReturn(dummyObject);
+        return typedQuery;
     }
 
 }
