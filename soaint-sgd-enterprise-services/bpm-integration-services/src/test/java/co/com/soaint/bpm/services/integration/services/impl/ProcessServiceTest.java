@@ -41,8 +41,6 @@ public class ProcessServiceTest {
         //seteando el objeto de entrada
         String idDespliegue = "co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT";
         String idProceso = "proceso.recibir-gestionar-doc";
-//        Long instanciaProceso = Long.valueOf(17613);
-//        Long idTarea = Long.valueOf(0);
         String usuario = "arce";
         String pass = "arce";
 
@@ -142,7 +140,7 @@ public class ProcessServiceTest {
         estados.add(EstadosEnum.LISTO);
         procesoDTO.setEstados(estados);
         RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
-
+        assertNotNull(result);
         procesoDTO.setIdDespliegue(result.getIdDespliegue());
         procesoDTO.setInstanciaProceso(Long.valueOf(result.getCodigoProceso()));
         RespuestaProcesoDTO result1 = processService.abortarProceso(procesoDTO);
@@ -151,10 +149,18 @@ public class ProcessServiceTest {
 
     }
 
+    @Test
+    public void listarProcesosTest() throws SystemException {
+        List<EstadosEnum> estados = new ArrayList<EstadosEnum>();
+        estados.add(EstadosEnum.LISTO);
+        procesoDTO.setEstados(estados);
+        assertNotNull(procesoDTO);
+        RespuestaProcesoDTO result = processService.iniciarProcesoManual(procesoDTO);
 
-//    @Test
-//    public void listarProcesos() {
-//    }
+        String result1 = processService.listarVariablesProcesos(procesoDTO);
+        System.out.print(result1);
+
+    }
 //
 //    @Test
 //    public void listarVariablesProcesos() {
