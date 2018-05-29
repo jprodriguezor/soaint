@@ -141,15 +141,15 @@ public class ECMConnectionRule implements TestRule {
 
     public DocumentoDTO newDocumento(String nombre) {
         DocumentoDTO doc = new DocumentoDTO();
-        doc.setTipoDocumento("application/pdf");
-        doc.setNombreDocumento(nombre);
-        doc.setVersionLabel("1.0");
-        doc.setNombreRemitente("UserTest");
         doc.setNroRadicado("1234567");
-        doc.setTipologiaDocumental("Principal");
-        doc.setDocumento(DOCUMENTO.getBytes());
+        doc.setTipologiaDocumental("");
+        doc.setNombreRemitente("UserTest");
         doc.setSede("1000_VICEPRESIDENCIA ADMINISTRATIVA");
         doc.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        doc.setNombreDocumento(nombre);
+        doc.setTipoDocumento("application/pdf");
+        doc.setVersionLabel("1.0");
+        doc.setDocumento(DOCUMENTO.getBytes());
         doc.setCodigoSede("1000");
         doc.setCodigoDependencia("10001040");
         documentoDTOList.add(doc);

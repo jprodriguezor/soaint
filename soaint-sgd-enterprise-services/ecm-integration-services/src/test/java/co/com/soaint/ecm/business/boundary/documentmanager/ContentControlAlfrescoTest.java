@@ -928,21 +928,22 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
 
             //Obtener arreglo de bytes a partir de la imagen
             String imgPath = "/Imagen.png";
-
-//            File imgFile = new File(imgPath);
-
-//            BufferedImage bufferedImage = ImageIO.read(imgFile);
-
             InputStream io = Class.class.getResourceAsStream(imgPath);
-
+            BufferedImage imBuff = ImageIO.read(io);
+//            BufferedImage bufferedImage = ImageIO.read(imBuff);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] bytes = new byte[2048];
-            int c;
-            while((c = io.read(bytes)) >= 0) {
-                baos.write(bytes, 0, c);
-            }
-
-//            ImageIO.write(bufferedImage, "jpg", baos);
+            ImageIO.write(imBuff, "png", baos);
+//            String imgPath = "/Imagen.png";
+//            InputStream io = Class.class.getResourceAsStream(imgPath);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//            byte[] bytes = new byte[2048];
+//            int c;
+//            while((c = io.read(bytes)) >= 0) {
+//                baos.write(bytes, 0, c);
+//            }
+//
+////            ImageIO.write(bufferedImage, "jpg", baos);
 
             byte[] imageInByte = baos.toByteArray();
 
