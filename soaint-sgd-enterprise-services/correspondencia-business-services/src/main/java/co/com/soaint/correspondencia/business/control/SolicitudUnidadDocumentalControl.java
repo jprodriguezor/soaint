@@ -174,7 +174,6 @@ public class SolicitudUnidadDocumentalControl {
         try {
             log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante");
 
-
             Date fechaIni = null;
             Date fechaFin = null;
 
@@ -183,8 +182,8 @@ public class SolicitudUnidadDocumentalControl {
                 calendar.setTime(fechaSolicitud);
                 calendar.add(Calendar.DATE, 1);
 
-                fechaIni = new Date(fechaSolicitud.getTime());;
-                fechaFin = calendar.getTime();;
+                fechaIni = new Date(fechaSolicitud.getTime());
+                fechaFin = calendar.getTime();
             }
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitante", SolicitudUnidadDocumentalDTO.class)
@@ -228,8 +227,8 @@ public class SolicitudUnidadDocumentalControl {
                 calendar.setTime(fechaSolicitud);
                 calendar.add(Calendar.DATE, 1);
 
-                fechaIni = new Date(fechaSolicitud.getTime());;
-                fechaFin = calendar.getTime();;
+                fechaIni = new Date(fechaSolicitud.getTime());
+                fechaFin = calendar.getTime();
             }
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", SolicitudUnidadDocumentalDTO.class)
