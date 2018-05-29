@@ -67,7 +67,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   reqDigitInmediataUnsubscriber:Subscription;
   dependencySelected?:DependenciaDTO;
 
-   formContactDataShown:Subscription;
+  formContactDataShown:Subscription;
 
    readonly tipoRadicacion = RADICACION_SALIDA;
 
@@ -250,13 +250,14 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         let formData = new FormData();
 
         formData.append("documento", blob, "etiqueta.png");
-        formData.append("idDocumento", ideEcm);
+        if(!isNullOrUndefined(ideEcm))
+         formData.append("idDocumento", ideEcm);
         formData.append("nroRadicado", nroRadicado);
         formData.append("codigoDependencia", codDependencia);
 
-
-        this._sandbox.uploadTemplate(formData).subscribe();
-
+        this._sandbox.uploadTemplate(formData).subscribe(null,() => {
+          this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
+        });
       });
     }
 
