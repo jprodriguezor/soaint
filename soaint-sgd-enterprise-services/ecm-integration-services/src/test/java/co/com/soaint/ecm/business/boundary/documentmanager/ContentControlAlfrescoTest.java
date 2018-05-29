@@ -973,7 +973,7 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
 
             documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
             //Obtener arreglo de bytes a partir de la imagen
-            String imgPath = "src\\test\\java\\resources\\Imagen.png";
+            String imgPath = "src\\test\\resources\\Imagen.png";
             File imgFile = new File(imgPath);
             BufferedImage bufferedImage = ImageIO.read(imgFile);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
