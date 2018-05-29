@@ -550,28 +550,21 @@ public class CorrespondenciaControl {
                     .setParameter("TIPO_AGENTE", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .getResultList();
 
-            if (correspondenciaDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.not_exist_by_reqDistFisica_and_tipo_comunicacion")
-                        .buildBusinessException();
-            }
-
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
-            for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
-                ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
-                        .correspondencia(correspondenciaDTO)
-                        .agenteList(agenteDTOList)
-                        .build();
-                comunicacionOficialDTOList.add(comunicacionOficialDTO);
+            if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
+                for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                    List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
+                    ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+                            .correspondencia(correspondenciaDTO)
+                            .agenteList(agenteDTOList)
+                            .build();
+                    comunicacionOficialDTOList.add(comunicacionOficialDTO);
+                }
             }
 
             return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
 
-        } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred", e);
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
