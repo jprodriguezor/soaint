@@ -296,4 +296,12 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      */
     MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException;
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento, Session session) throws SystemException;
 }

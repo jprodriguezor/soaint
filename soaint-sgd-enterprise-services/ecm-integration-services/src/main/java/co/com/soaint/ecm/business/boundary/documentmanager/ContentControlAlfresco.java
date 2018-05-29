@@ -25,6 +25,7 @@ import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
@@ -574,8 +575,16 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             ItemIterable<QueryResult> resultsPrincipalAdjunto = utilities.getPrincipalAdjuntosQueryResults(session, documento);
 
-            ArrayList<DocumentoDTO> documentosLista = new ArrayList<>();
+            List<DocumentoDTO> documentosLista = new ArrayList<>();
             for (QueryResult qResult : resultsPrincipalAdjunto) {
+                /*String objectId = qResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                objectId = objectId.indexOf(';') != -1 ? objectId.split(";")[0] : objectId;
+
+                Document document = (Document) session.getObject(session.createObjectId(objectId));
+                if (document.isLatestVersion()) {
+
+                    documentosLista.add(documentosLista.size(), utilities.transformarDocumento(document));
+                }*/
 
                 DocumentoDTO documentoDTO = new DocumentoDTO();
 
@@ -596,7 +605,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_LENGTH).toString());
-
+                documentoDTO.setVersionLabel(document.getVersionLabel());
 
                 documentoDTO.setDocumento(utilities.getDocumentBytes(document));
                 String nroRadicado = qResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_NRO_RADICADO);
@@ -1198,6 +1207,66 @@ public class ContentControlAlfresco implements ContentControl {
                     .build();
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    @Override
+    public MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento, Session session) throws SystemException {
+        if (ObjectUtils.isEmpty(documento)) {
+            throw new SystemException("No se ha especificado el DocumentoDTO");
+        }
+        final byte[] bytes = documento.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final String idDocPincipal = documento.getIdDocumentoPadre();
+        if (StringUtils.isEmpty(idDocPincipal)) {
+            throw new SystemException("No se ha especificado el ID del documento Principal");
+        }
+        final String nombreDoc = documento.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        try {
+            ObjectId objectId = new ObjectIdImpl(idDocPincipal);
+            CmisObject cmisObject = session.getObject(objectId);
+            Document document = (Document) cmisObject;
+            final DocumentoDTO docPrincipal = utilities.transformarDocumento(document);
+            final String docType = docPrincipal.getTipoPadreAdjunto();
+            if (StringUtils.isEmpty(docType) || docType.equalsIgnoreCase("principal")) {
+                throw new SystemException("El id proporcionado no coincide con el de un documento principal");
+            }
+            final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
+                    DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
+            ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                    BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(PropertyIds.NAME, nombreDoc);
+            properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Anexo");
+            properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocPincipal);
+            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentMimeType);
+            properties.put(ConstantesECM.CMCOR_NRO_RADICADO, docPrincipal.getNroRadicado());
+            properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
+            Folder folder = utilities.getFolderFrom(document);
+            if (null != folder) {
+                document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+                if (null != document) {
+                    properties.clear();
+                    properties.put("documentoAnexo", utilities.transformarDocumento(document));
+                    return MensajeRespuesta.newInstance()
+                            .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                            .mensaje("Operacion completada satisfactoriamente")
+                            .response(properties)
+                            .build();
+                }
+            }
+            throw new SystemException("Ocurrio un error al anezar el documento");
+
+        } catch (Exception e) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)
