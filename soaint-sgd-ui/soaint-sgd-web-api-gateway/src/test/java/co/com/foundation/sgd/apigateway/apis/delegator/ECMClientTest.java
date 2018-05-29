@@ -219,6 +219,28 @@ public class ECMClientTest {
     }
 
     @Test
+    public void uploadDocumentsAsociatesExceptionFromNullFiles() throws IOException {
+        // given
+        Map<String, InputPart> FILES = null;
+        String TIPO_COMUNICACION = "TC01";
+
+        // spying the test class to capture inner call arguments
+        ECMClient ecmClientSpy = spy(ecmClient);
+
+        // mocking the inner call uploadDocument
+        String path = "/subirDocumentoRelacionECM/" + TIPO_COMUNICACION;
+        JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+
+
+        // when
+        List<MensajeRespuesta> respuestas = ecmClientSpy.uploadDocumentsAsociates(null, FILES, null, null, TIPO_COMUNICACION, null, null);
+
+        // then
+        assertThat(respuestas.size()).isEqualTo(0);
+        verify(ecmClientSpy, times(0)).uploadDocument(any(DocumentoDTO.class), anyString());
+    }
+
+    @Test
     public void uploadDocumentsAsociatesExceptionFromInputStream() throws IOException {
         // given
         Map<String, InputPart> FILES = new HashMap<>();
