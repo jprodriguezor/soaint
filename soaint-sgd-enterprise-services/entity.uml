@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>co.com.soaint.correspondencia.domain.entity</OriginalElement>
+  <nodes>
+    <node x="663.5" y="1630.0">co.com.soaint.correspondencia.domain.entity.CorCorrespondencia</node>
+    <node x="489.49999999999994" y="380.0">co.com.soaint.correspondencia.domain.entity.Funcionarios</node>
+    <node x="296.9999999999999" y="856.0">co.com.soaint.correspondencia.domain.entity.CorAnexo</node>
+    <node x="0.0" y="1200.0">co.com.soaint.correspondencia.domain.entity.CorPlanAgen</node>
+    <node x="1716.625" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsConstantes</node>
+    <node x="559.0" y="812.0">co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento</node>
+    <node x="738.0" y="1321.0">co.com.soaint.correspondencia.domain.entity.CorReferido</node>
+    <node x="2789.625" y="0.0">co.com.soaint.correspondencia.domain.entity.ValidationError</node>
+    <node x="604.1999999999999" y="2756.0">co.com.soaint.correspondencia.domain.entity.CorAgente</node>
+    <node x="379.99999999999994" y="1222.0">co.com.soaint.correspondencia.domain.entity.PpdDocumento</node>
+    <node x="1077.5099206349205" y="168.0">co.com.soaint.correspondencia.domain.entity.AuditColumns</node>
+    <node x="484.49999999999994" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPkPk</node>
+    <node x="12.999999999999886" y="724.0">co.com.soaint.correspondencia.domain.entity.CorPlanillas</node>
+    <node x="1670.625" y="212.0">co.com.soaint.correspondencia.domain.entity.TvsPlantilla</node>
+    <node x="894.125" y="446.0">co.com.soaint.correspondencia.domain.entity.TvsPais</node>
+    <node x="2252.625" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsOrganigramaAdministrativo</node>
+    <node x="1296.3928571428569" y="2304.0">co.com.soaint.correspondencia.domain.entity.DctAsigUltimo</node>
+    <node x="993.875" y="845.0">co.com.soaint.correspondencia.domain.entity.TvsDepartamento</node>
+    <node x="1990.625" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsSolicitudUnidadDocumental</node>
+    <node x="1072.625" y="1299.0">co.com.soaint.correspondencia.domain.entity.TvsMunicipio</node>
+    <node x="3032.625" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsTarea</node>
+    <node x="2536.625" y="0.0">co.com.soaint.correspondencia.domain.entity.TvsDserial</node>
+    <node x="1335.625" y="1211.0">co.com.soaint.correspondencia.domain.entity.DctAsignacion</node>
+    <node x="502.49999999999994" y="146.0">co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk</node>
+    <node x="1689.625" y="468.0">co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato</node>
+    <node x="658.6999999999999" y="3386.0">co.com.soaint.correspondencia.domain.entity.TvsDatosContacto</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.DctAsignacion">
+      <point x="65.33333333333337" y="-312.0" />
+      <point x="875.8333333333333" y="1590.0" />
+      <point x="1356.3392857142856" y="1590.0" />
+      <point x="-124.28571428571429" y="169.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsMunicipio" target="co.com.soaint.correspondencia.domain.entity.TvsDepartamento">
+      <point x="-81.0" y="-81.0" />
+      <point x="1113.125" y="1175.0" />
+      <point x="1060.625" y="1175.0" />
+      <point x="-66.75" y="92.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsDepartamento" target="co.com.soaint.correspondencia.domain.entity.TvsPais">
+      <point x="-89.0" y="-92.0" />
+      <point x="1038.375" y="699.0" />
+      <point x="971.875" y="699.0" />
+      <point x="-77.75" y="81.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAgente" target="co.com.soaint.correspondencia.domain.entity.TvsDatosContacto">
+      <point x="79.25" y="290.0" />
+      <point x="841.9499999999999" y="3361.0" />
+      <point x="814.6999999999999" y="3361.0" />
+      <point x="52.0" y="-224.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAgente" target="co.com.soaint.correspondencia.domain.entity.DctAsignacion">
+      <point x="105.66666666666663" y="-290.0" />
+      <point x="868.3666666666666" y="2726.0" />
+      <point x="1596.8928571428569" y="2726.0" />
+      <point x="1596.8928571428569" y="1610.0" />
+      <point x="1563.4821428571427" y="1610.0" />
+      <point x="82.85714285714278" y="169.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsPais" target="co.com.soaint.correspondencia.domain.entity.TvsDepartamento">
+      <point x="77.75" y="81.0" />
+      <point x="0.0" y="-92.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsDepartamento" target="co.com.soaint.correspondencia.domain.entity.TvsMunicipio">
+      <point x="66.75" y="92.0" />
+      <point x="0.0" y="-81.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.PpdDocumento" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="84.5" y="158.0" />
+      <point x="633.5" y="1580.0" />
+      <point x="777.8333333333333" y="1580.0" />
+      <point x="-32.66666666666663" y="-312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsignacion" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="-41.428571428571445" y="169.0" />
+      <point x="1439.1964285714284" y="1610.0" />
+      <point x="941.1666666666665" y="1610.0" />
+      <point x="130.66666666666663" y="-312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsDatosContacto" target="co.com.soaint.correspondencia.domain.entity.CorAgente">
+      <point x="-52.0" y="-224.0" />
+      <point x="710.6999999999999" y="3361.0" />
+      <point x="683.4499999999999" y="3361.0" />
+      <point x="-79.25" y="290.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorPlanillas" target="co.com.soaint.correspondencia.domain.entity.CorPlanAgen">
+      <point x="66.0" y="213.0" />
+      <point x="210.9999999999999" y="1175.0" />
+      <point x="217.4999999999999" y="1175.0" />
+      <point x="72.49999999999989" y="-180.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorPlanAgen" target="co.com.soaint.correspondencia.domain.entity.CorPlanillas">
+      <point x="-72.50000000000006" y="-180.0" />
+      <point x="72.49999999999989" y="1175.0" />
+      <point x="78.99999999999989" y="1175.0" />
+      <point x="-66.0" y="213.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsignacion" target="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo">
+      <point x="0.0" y="169.0" />
+      <point x="1480.625" y="1610.0" />
+      <point x="1477.6428571428569" y="1610.0" />
+      <point x="36.25" y="-191.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsPais" target="co.com.soaint.correspondencia.domain.entity.AuditColumns">
+      <point x="0.0" y="-81.0" />
+      <point x="1049.625" y="360.0" />
+      <point x="1148.3849206349205" y="360.0" />
+      <point x="-23.625" y="70.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.PpdDocumento" target="co.com.soaint.correspondencia.domain.entity.CorAnexo">
+      <point x="-126.75" y="-158.0" />
+      <point x="422.24999999999994" y="1175.0" />
+      <point x="357.4999999999999" y="1175.0" />
+      <point x="-60.5" y="81.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorPlanAgen" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="108.75" y="180.0" />
+      <point x="253.75" y="1600.0" />
+      <point x="712.5" y="1600.0" />
+      <point x="-97.99999999999994" y="-312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAgente" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="0.0" y="-290.0" />
+      <point x="762.6999999999999" y="2284.0" />
+      <point x="810.5" y="2284.0" />
+      <point x="0.0" y="312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento" target="co.com.soaint.correspondencia.domain.entity.Funcionarios">
+      <point x="0.0" y="-125.0" />
+      <point x="0.0" y="147.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.CorPlanAgen">
+      <point x="-130.66666666666663" y="-312.0" />
+      <point x="679.8333333333333" y="1610.0" />
+      <point x="181.25" y="1610.0" />
+      <point x="36.25" y="180.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.Funcionarios" target="co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk">
+      <point x="-47.625" y="-147.0" />
+      <point x="632.375" y="360.0" />
+      <point x="591.25" y="360.0" />
+      <point x="-88.75" y="92.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsPlantilla" target="co.com.soaint.correspondencia.domain.entity.TvsConstantes">
+      <point x="0.0" y="-103.0" />
+      <point x="0.0" y="81.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo" target="co.com.soaint.correspondencia.domain.entity.CorAgente">
+      <point x="72.5" y="191.0" />
+      <point x="1513.8928571428569" y="2716.0" />
+      <point x="833.1444444444444" y="2716.0" />
+      <point x="70.44444444444446" y="-290.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAnexo" target="co.com.soaint.correspondencia.domain.entity.PpdDocumento">
+      <point x="60.5" y="81.0" />
+      <point x="478.4999999999999" y="1175.0" />
+      <point x="506.74999999999994" y="1175.0" />
+      <point x="-42.25" y="-158.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsDepartamento" target="co.com.soaint.correspondencia.domain.entity.AuditColumns">
+      <point x="89.0" y="-92.0" />
+      <point x="1216.375" y="699.0" />
+      <point x="1238.0" y="699.0" />
+      <point x="1238.0" y="360.0" />
+      <point x="1195.6349206349205" y="360.0" />
+      <point x="23.625" y="70.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAgente" target="co.com.soaint.correspondencia.domain.entity.CorPlanAgen">
+      <point x="-105.66666666666674" y="-290.0" />
+      <point x="657.0333333333332" y="2726.0" />
+      <point x="77.99999999999989" y="2726.0" />
+      <point x="77.99999999999989" y="1610.0" />
+      <point x="108.75" y="1610.0" />
+      <point x="-36.25" y="180.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.CorReferido">
+      <point x="0.0" y="-312.0" />
+      <point x="-72.5" y="59.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPkPk" target="co.com.soaint.correspondencia.domain.entity.Funcionarios">
+      <point x="-50.75" y="48.0" />
+      <point x="535.25" y="121.0" />
+      <point x="491.99999999999994" y="121.0" />
+      <point x="491.99999999999994" y="360.0" />
+      <point x="537.125" y="360.0" />
+      <point x="-142.875" y="-147.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsignacion" target="co.com.soaint.correspondencia.domain.entity.CorAgente">
+      <point x="124.28571428571422" y="169.0" />
+      <point x="1604.9107142857142" y="1610.0" />
+      <point x="1607.8928571428569" y="1610.0" />
+      <point x="1607.8928571428569" y="2736.0" />
+      <point x="903.5888888888888" y="2736.0" />
+      <point x="140.8888888888889" y="-290.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorAgente" target="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo">
+      <point x="35.22222222222217" y="-290.0" />
+      <point x="797.9222222222221" y="2706.0" />
+      <point x="1368.8928571428569" y="2706.0" />
+      <point x="-72.5" y="191.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.CorAgente">
+      <point x="-117.60000000000002" y="312.0" />
+      <point x="692.8999999999999" y="2284.0" />
+      <point x="740.6999999999999" y="2284.0" />
+      <point x="740.6999999999999" y="2726.0" />
+      <point x="692.2555555555555" y="2726.0" />
+      <point x="-70.44444444444446" y="-290.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorReferido" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="72.5" y="59.0" />
+      <point x="955.5" y="1580.0" />
+      <point x="843.1666666666667" y="1580.0" />
+      <point x="32.66666666666674" y="-312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo">
+      <point x="117.60000000000002" y="312.0" />
+      <point x="928.0999999999999" y="2274.0" />
+      <point x="1405.1428571428569" y="2274.0" />
+      <point x="-36.25" y="-191.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo" target="co.com.soaint.correspondencia.domain.entity.DctAsignacion">
+      <point x="108.75" y="-191.0" />
+      <point x="1550.1428571428569" y="2284.0" />
+      <point x="1507.922222222222" y="2284.0" />
+      <point x="1507.922222222222" y="1610.0" />
+      <point x="1522.053571428571" y="1610.0" />
+      <point x="41.42857142857133" y="169.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.DctAsigUltimo" target="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia">
+      <point x="-108.75" y="-191.0" />
+      <point x="1332.6428571428569" y="2284.0" />
+      <point x="869.3" y="2284.0" />
+      <point x="58.80000000000007" y="312.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorPlanAgen" target="co.com.soaint.correspondencia.domain.entity.CorAgente">
+      <point x="-108.75" y="180.0" />
+      <point x="36.25" y="1610.0" />
+      <point x="66.99999999999989" y="1610.0" />
+      <point x="66.99999999999989" y="2736.0" />
+      <point x="621.8111111111109" y="2736.0" />
+      <point x="-140.88888888888897" y="-290.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsPlantilla" target="co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato">
+      <point x="68.75" y="103.0" />
+      <point x="1876.875" y="443.0" />
+      <point x="1867.375" y="443.0" />
+      <point x="59.25" y="-70.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsMunicipio" target="co.com.soaint.correspondencia.domain.entity.AuditColumns">
+      <point x="81.0" y="-81.0" />
+      <point x="1275.125" y="1175.0" />
+      <point x="1271.375" y="1175.0" />
+      <point x="1271.375" y="350.0" />
+      <point x="1242.8849206349205" y="350.0" />
+      <point x="70.875" y="70.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato" target="co.com.soaint.correspondencia.domain.entity.TvsPlantilla">
+      <point x="-59.25" y="-70.0" />
+      <point x="1748.875" y="443.0" />
+      <point x="1739.375" y="443.0" />
+      <point x="-68.75" y="103.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk" target="co.com.soaint.correspondencia.domain.entity.Funcionarios">
+      <point x="88.75" y="92.0" />
+      <point x="768.75" y="360.0" />
+      <point x="727.625" y="360.0" />
+      <point x="47.625" y="-147.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento" target="co.com.soaint.correspondencia.domain.entity.PpdDocumento">
+      <point x="60.5" y="125.0" />
+      <point x="740.5" y="1175.0" />
+      <point x="675.75" y="1175.0" />
+      <point x="126.75" y="-158.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.PpdDocumento" target="co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento">
+      <point x="42.25" y="-158.0" />
+      <point x="591.25" y="1175.0" />
+      <point x="619.5" y="1175.0" />
+      <point x="-60.5" y="125.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.CorCorrespondencia" target="co.com.soaint.correspondencia.domain.entity.PpdDocumento">
+      <point x="-65.33333333333326" y="-312.0" />
+      <point x="745.1666666666667" y="1590.0" />
+      <point x="464.49999999999994" y="1590.0" />
+      <point x="-84.5" y="158.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk" target="co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPkPk">
+      <point x="1.1368683772161603E-13" y="-92.0" />
+      <point x="680.0" y="121.0" />
+      <point x="636.75" y="121.0" />
+      <point x="50.750000000000114" y="48.0" />
+    </edge>
+    <edge source="co.com.soaint.correspondencia.domain.entity.Funcionarios" target="co.com.soaint.correspondencia.domain.entity.AuditColumns">
+      <point x="142.875" y="-147.0" />
+      <point x="822.875" y="350.0" />
+      <point x="1101.1349206349205" y="350.0" />
+      <point x="-70.875" y="70.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.82" x="779.0975609756098" y="1438.0" />
+  <SelectedNodes>
+    <node>co.com.soaint.correspondencia.domain.entity.CorCorrespondencia</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
