@@ -545,7 +545,9 @@ public class CorrespondenciaControl {
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
                     .setParameter("TIPO_COM1", "SE")
-                    .setParameter("TIPO_COM1", "SI")
+                    .setParameter("TIPO_COM2", "SI")
+                    .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
+                    .setParameter("TIPO_AGENTE", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .getResultList();
 
             if (correspondenciaDTOList.isEmpty()) {
