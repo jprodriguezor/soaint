@@ -1164,7 +1164,7 @@ final class ContentControlUtilities implements Serializable {
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_PDF.getType());
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
 
-            contentControl.eliminardocumento(documentoDTO.getIdDocumento(), session);
+            document.delete(false);
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
                     BigInteger.valueOf(stampedDocument.length), DocumentMimeType.APPLICATION_PDF.getType(), new ByteArrayInputStream(stampedDocument));
@@ -1180,6 +1180,19 @@ final class ContentControlUtilities implements Serializable {
                     .withRootException(e)
                     .buildSystemException();
         }
+    }
+
+    Folder getFolderFrom(Document document) {
+        final List<Folder> parents = document.getParents();
+        for (Folder itFoldr : parents) {
+            if (itFoldr.getType().getId().startsWith("F:cmcor:CM_Unidad_D")) {
+                String idUd = itFoldr.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
+                if (StringUtils.isEmpty(idUd) || "".equals(idUd.trim())) {
+                    return itFoldr;
+                }
+            }
+        }
+        return null;
     }
 
     private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
@@ -1549,8 +1562,7 @@ final class ContentControlUtilities implements Serializable {
             folderImage = rootFolder.createFolder(map);
         }
         final Map<String, Object> map = new HashMap<>();
-        filename = filename.endsWith(".png") ? filename : filename + ".png";
-        map.put(PropertyIds.NAME, filename);
+        map.put(PropertyIds.NAME, "tag_" + filename + "_temp.png");
         map.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
         map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_ICON.getType());
         ContentStream stream = new ContentStreamImpl(filename, BigInteger.valueOf(bytes.length),
@@ -1577,7 +1589,7 @@ final class ContentControlUtilities implements Serializable {
             final ItemIterable<CmisObject> children = folder.getChildren();
             for (CmisObject cmisObject :
                     children) {
-                if (cmisObject.getName().startsWith(filename)) {
+                if (cmisObject.getName().contains(filename)) {
                     return (Document) cmisObject;
                 }
             }
@@ -1589,18 +1601,5 @@ final class ContentControlUtilities implements Serializable {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "png", baos);
         return baos.toByteArray();
-    }
-
-    private Folder getFolderFrom(Document document) {
-        final List<Folder> parents = document.getParents();
-        for (Folder itFoldr : parents) {
-            if (itFoldr.getType().getId().startsWith("F:cmcor:CM_Unidad_D")) {
-                String idUd = itFoldr.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
-                if (StringUtils.isEmpty(idUd) || "".equals(idUd.trim())) {
-                    return itFoldr;
-                }
-            }
-        }
-        return null;
     }
 }

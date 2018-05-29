@@ -73,7 +73,7 @@ public class ECMConnectionRule implements TestRule {
     }
 
     private boolean isLocal() {
-        return !System.getProperty("user.dir").startsWith("/var/lib/jenkins");
+        return System.getProperty(SystemParameters.API_SEARCH_ALFRESCO) == null;
     }
 
     public void usingContentControlAlfresco(ContentControlAlfresco contentControlAlfresco) {
@@ -93,10 +93,7 @@ public class ECMConnectionRule implements TestRule {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-        if(isLocal())
-            parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
-        else
-            parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
 
 
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
@@ -135,7 +132,7 @@ public class ECMConnectionRule implements TestRule {
         unidadDocumental.setCerrada(false);
         unidadDocumental.setEstado("Abierto");
         unidadDocumental.setDisposicion("Eliminar");
-        unidadDocumental.setFaseArchivo("archivo central");
+        unidadDocumental.setFaseArchivo("Archivo Central");
 
         unidadDocumentalDTOList.add(unidadDocumental);
 
@@ -144,15 +141,15 @@ public class ECMConnectionRule implements TestRule {
 
     public DocumentoDTO newDocumento(String nombre) {
         DocumentoDTO doc = new DocumentoDTO();
-        doc.setTipoDocumento("application/pdf");
-        doc.setNombreDocumento(nombre);
-        doc.setVersionLabel("1.0");
-        doc.setNombreRemitente("UserTest");
         doc.setNroRadicado("1234567");
-        doc.setTipologiaDocumental("Principal");
-        doc.setDocumento(DOCUMENTO.getBytes());
+        doc.setTipologiaDocumental("");
+        doc.setNombreRemitente("UserTest");
         doc.setSede("1000_VICEPRESIDENCIA ADMINISTRATIVA");
         doc.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        doc.setNombreDocumento(nombre);
+        doc.setTipoDocumento("application/pdf");
+        doc.setVersionLabel("1.0");
+        doc.setDocumento(DOCUMENTO.getBytes());
         doc.setCodigoSede("1000");
         doc.setCodigoDependencia("10001040");
         documentoDTOList.add(doc);

@@ -24,11 +24,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -846,9 +845,9 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
             DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
             UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
-            UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
-            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
+            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTO);
             List<String> disposicionFinalList = new ArrayList<>();
             disposicionFinalList.add("CT");
             disposicionFinalList.add("M");
@@ -857,7 +856,7 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
             disposicionFinalList.add("D");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
             assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
-            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (SystemException e) {
             assertEquals("No se ha identificado la Unidad Documental", e.getMessage());
         }
@@ -928,11 +927,24 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
 
             //Obtener arreglo de bytes a partir de la imagen
-            String imgPath = "src\\test\\java\\resources\\Imagen.png";
-            File imgFile = new File(imgPath);
-            BufferedImage bufferedImage = ImageIO.read(imgFile);
+            String imgPath = "/Imagen.png";
+            InputStream io = Class.class.getResourceAsStream(imgPath);
+            BufferedImage imBuff = ImageIO.read(io);
+//            BufferedImage bufferedImage = ImageIO.read(imBuff);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", baos);
+            ImageIO.write(imBuff, "png", baos);
+//            String imgPath = "/Imagen.png";
+//            InputStream io = Class.class.getResourceAsStream(imgPath);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//            byte[] bytes = new byte[2048];
+//            int c;
+//            while((c = io.read(bytes)) >= 0) {
+//                baos.write(bytes, 0, c);
+//            }
+//
+////            ImageIO.write(bufferedImage, "jpg", baos);
+
             byte[] imageInByte = baos.toByteArray();
 
 
@@ -961,7 +973,7 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
 
             documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
             //Obtener arreglo de bytes a partir de la imagen
-            String imgPath = "src\\test\\java\\resources\\Imagen.png";
+            String imgPath = "src\\test\\resources\\Imagen.png";
             File imgFile = new File(imgPath);
             BufferedImage bufferedImage = ImageIO.read(imgFile);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
