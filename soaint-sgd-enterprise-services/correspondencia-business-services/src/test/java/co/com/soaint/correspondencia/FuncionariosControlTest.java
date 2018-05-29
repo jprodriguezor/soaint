@@ -59,14 +59,14 @@ public class FuncionariosControlTest extends JPAHibernateContextTest {
     @Test
     public void listarFuncionariosByCodDependenciaAndCodEstado() throws Exception {
 
-        String funcCoddependencia="10401041";
+        String funcCoddependencia="10120141";
         String funcEstado="ACTIVO";
 
         FuncionariosDTO funcionario = funcionariosControl.listarFuncionariosByCodDependenciaAndCodEstado(funcCoddependencia,funcEstado);
 
         //then
         assertNotNull(funcionario);
-        assertNotEquals(0, funcionario);
+        assertNotEquals(0, funcionario.getFuncionarios().size());
         assertEquals(funcEstado,funcionario.getFuncionarios().get(0).getEstado());
     }
 
