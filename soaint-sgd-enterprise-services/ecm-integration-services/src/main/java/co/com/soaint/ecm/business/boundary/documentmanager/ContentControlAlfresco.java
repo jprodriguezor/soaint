@@ -111,7 +111,7 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             log.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(documentoDTO.getIdDocumento());
-            Optional<File> optionalFile = Optional.empty();
+            File file = null;
 
             if (documentoDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
@@ -119,15 +119,15 @@ public class ContentControlAlfresco implements ContentControl {
                 Optional<Document> version = versions.stream()
                         .filter(p -> p.getVersionLabel().equals(documentoDTO.getVersionLabel())).findFirst();
                 if (version.isPresent()) {
-                    optionalFile = utilities.getFile(documentoDTO, versionesLista, version.get());
+                    file = utilities.getFile(documentoDTO, versionesLista, version.get());
                 }
 
             } else {
-                optionalFile = utilities.convertInputStreamToFile(doc.getContentStream());
+                file = utilities.convertInputStreamToFile(doc.getContentStream());
             }
             log.info("Se procede a devolver el documento" + documentoDTO.getNombreDocumento());
-            if (optionalFile.isPresent()) {
-                byte[] data = FileUtils.readFileToByteArray(optionalFile.get());
+            if (null != file) {
+                byte[] data = FileUtils.readFileToByteArray(file);
                 documentoDTO1.setDocumento(data);
 
                 mensajeRespuesta.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
@@ -681,13 +681,14 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) throws SystemException {
 
         log.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
         MensajeRespuesta response = new MensajeRespuesta();
         //Se definen las propiedades del documento a subir
         Map<String, Object> properties = new HashMap<>();
+        final String nroRadicado = documento.getNroRadicado();
         properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
         //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
         if (!StringUtils.isEmpty(documento.getIdDocumentoPadre())) {
@@ -703,6 +704,17 @@ public class ContentControlAlfresco implements ContentControl {
             utilities.buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, ConstantesECM.PRODUCCION_DOCUMENTAL);
         } else {
             utilities.buscarCrearCarpetaRadicacion(session, documento, response, properties, selector);
+        }
+
+        if (!StringUtils.isEmpty(nroRadicado)) {
+            final List<DocumentoDTO> documentoDTOList = response.getDocumentoDTOList();
+            for (DocumentoDTO dto :
+                    documentoDTOList) {
+                if ("Principal".equals(dto.getTipoPadreAdjunto()) && !StringUtils.isEmpty(dto.getNroRadicado())) {
+                    utilities.estamparEtiquetaRadicacion(dto, session);
+                    break;
+                }
+            }
         }
 
         log.info("Se sale del metodo subirDocumentoPrincipalAdjunto");
@@ -1191,20 +1203,12 @@ public class ContentControlAlfresco implements ContentControl {
     public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         try {
-            final Document document = utilities.estamparEtiquetaRadicacion(documentoDTO, session);
-            if (null != document) {
-                final Map<String, Object> delDoc = new HashMap<>();
-                delDoc.put("documento", utilities.transformarDocumento(document));
-                return MensajeRespuesta.newInstance()
-                        .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
-                        .mensaje(ConstantesECM.SUCCESS)
-                        .response(delDoc)
-                        .build();
-            }
+            utilities.estamparEtiquetaRadicacion(documentoDTO, session);
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje("Imagen guardada satisfactoriamente")
                     .build();
+
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
             throw ExceptionBuilder.newBuilder()
