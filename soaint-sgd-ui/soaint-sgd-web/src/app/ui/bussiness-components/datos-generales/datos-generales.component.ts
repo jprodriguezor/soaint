@@ -113,7 +113,7 @@ export class DatosGeneralesComponent implements OnInit {
       fields.tiempoRespuesta = [{value: null, disabled: !this.editable}];
     else{
       if(this.tipoRadicacion == RADICACION_SALIDA)
-        fields.responderRemitente = [{value:this.showBlockDistribucionDig()}];
+        fields.responderRemitente = [!this.showBlockDistribucionDig()];
     }
 
       this.form = this.formBuilder.group(fields);
