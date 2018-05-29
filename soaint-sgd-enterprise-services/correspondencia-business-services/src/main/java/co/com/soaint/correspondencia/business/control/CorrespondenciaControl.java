@@ -555,10 +555,22 @@ public class CorrespondenciaControl {
                                                                                       String codDependencia,
                                                                                       String codTipoDoc,
                                                                                       String nroRadicado) throws BusinessException, SystemException {
+        log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
+        log.info("FechaInicio: " + fechaIni.toString());
+        log.info("FechaFin: " + fechaFin.toString());
+        log.info("codDependencia: " + codDependencia);
+        log.info("modEnvio: " + modEnvio);
+        log.info("claseEnvio: " + claseEnvio);
+        log.info("codTipoDoc: " + codTipoDoc);
+        log.info("nroRadicado: " + nroRadicado);
+
+        if (fechaIni != null && fechaFin != null) {
+            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
+                        .buildBusinessException();
+        }
         try {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaFin);
-            cal.add(Calendar.DATE, 1);
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
                     .setParameter("TIPO_COM1", "SE")
@@ -569,7 +581,7 @@ public class CorrespondenciaControl {
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
                     .setParameter("TIPO_AGENTE", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
                     .setParameter("COD_TIPO_DOC", codTipoDoc)
                     .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
