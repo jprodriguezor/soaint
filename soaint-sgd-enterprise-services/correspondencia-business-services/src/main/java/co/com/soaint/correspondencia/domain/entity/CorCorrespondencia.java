@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
                 "INNER JOIN c.ppdDocumentoList d " +
                 "INNER JOIN c.corAgenteList ca " +
                 "WHERE c.reqDistFisica = :REQ_DIST_FISICA " +
-                "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN))" +
+                "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) " +
                 "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND (:ESTADO_DISTRIBUCION IS NULL OR  ca.estadoDistribucion = :ESTADO_DISTRIBUCION) " +
                 "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
@@ -74,10 +74,11 @@ import java.util.stream.Collectors;
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.corAgenteList ca " +
                 "INNER JOIN c.ppdDocumentoList d " +
-                "WHERE c.fecRadicado BETWEEN :FECHA_INI AND :FECHA_FIN " +
-                "AND c.reqDistFisica = :REQ_DIST_FISICA AND (c.codTipoCmc = :TIPO_COM1 OR c.codTipoCmc = :TIPO_COM2) "+
+//                "WHERE ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) " +
+                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND ((:TIPO_COM1 IS NULL OR c.codTipoCmc = :TIPO_COM1) OR (:TIPO_COM2 IS NULL OR c.codTipoCmc = :TIPO_COM2)) "+
                 "AND c.codClaseEnvio = :CLASE_ENVIO AND c.codModalidadEnvio = :MOD_ENVIO "+
-                "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION AND ca.codTipAgent = :TIPO_AGENTE " +
+                "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) "+
+                "AND (:ESTADO_DISTRIBUCION IS NULL OR  ca.estadoDistribucion = :ESTADO_DISTRIBUCION) AND ca.codTipAgent = :TIPO_AGENTE " +
                 "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +

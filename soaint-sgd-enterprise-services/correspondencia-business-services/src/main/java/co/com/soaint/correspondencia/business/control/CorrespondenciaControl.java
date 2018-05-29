@@ -556,8 +556,8 @@ public class CorrespondenciaControl {
                                                                                       String codTipoDoc,
                                                                                       String nroRadicado) throws BusinessException, SystemException {
         log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
-        log.info("FechaInicio: " + fechaIni.toString());
-        log.info("FechaFin: " + fechaFin.toString());
+        log.info("FechaInicio: " + fechaIni);
+        log.info("FechaFin: " + fechaFin);
         log.info("codDependencia: " + codDependencia);
         log.info("modEnvio: " + modEnvio);
         log.info("claseEnvio: " + claseEnvio);
