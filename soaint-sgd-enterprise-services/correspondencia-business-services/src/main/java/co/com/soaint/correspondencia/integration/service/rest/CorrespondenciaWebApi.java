@@ -159,6 +159,20 @@ public class CorrespondenciaWebApi {
         }
     }
 
+    @GET
+    @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
+        log.info("processing rest request - listar comunicaciones distribucion fisica");
+        try {
+            return boundary.listarComunicacionDeSalidaConDistribucionFisica();
+        } catch (BusinessException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     /**
      * @param nroRadicado
      * @return

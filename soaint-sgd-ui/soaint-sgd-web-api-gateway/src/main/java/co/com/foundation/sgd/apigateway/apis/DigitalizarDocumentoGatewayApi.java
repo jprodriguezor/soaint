@@ -1,11 +1,10 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -27,9 +26,6 @@ import java.util.Map;
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
 public class DigitalizarDocumentoGatewayApi {
-
-    @Autowired
-    private DigitalizarDocumentoClient digitalizarDocumentoClient;
 
     @Autowired
     private ECMClient client;

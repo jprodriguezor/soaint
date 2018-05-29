@@ -121,6 +121,15 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
+        return control.listarComunicacionDeSalidaConDistribucionFisica();
+    }
+
+    /**
      *
      * @param nroRadicado
      * @return
