@@ -6,6 +6,7 @@ import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -19,6 +20,8 @@ public class TipoPlantillaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
+    private Client client = ClientBuilder.newClient();
+
     @Value("${contants.tipoplantilla.value}")
     private String tipoplantilla = "";
 
@@ -31,7 +34,7 @@ public class TipoPlantillaClient {
 
     public Response get(String codClasificacion, String estado) {
         log.info("TipoPlantilla - [trafic] - listing TipoPlantilla with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         return wt.path("/plantilla-web-api/plantilla/" + codClasificacion + "/" +estado)
                 .request()
                 .get();
