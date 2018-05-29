@@ -122,6 +122,28 @@ public class ECMClientTest {
     }
 
     @Test
+    public void uploadDocumentoAnexo() {
+        // given
+        String path = "/subirDocumentoAnexoECM/";
+        DocumentoDTO dto = mock(DocumentoDTO.class);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+
+        // when
+        ecmClient.uploadDocumentoAnexo(dto);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+        verify(JaxRsUtils.getResponseMock()).readEntity(MensajeRespuesta.class);
+
+        ArgumentCaptor<Entity<DocumentoDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+    }
+
+    @Test
     public void uploadDocument() {
         // given
         String TIPO_COMUNICACION = "TC01";

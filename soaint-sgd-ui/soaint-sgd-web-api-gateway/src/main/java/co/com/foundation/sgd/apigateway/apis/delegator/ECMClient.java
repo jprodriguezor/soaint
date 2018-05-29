@@ -61,7 +61,7 @@ public class ECMClient {
     }
 
     public MensajeRespuesta uploadDocumentoAnexo(DocumentoDTO documentoDTO) {
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget wt = client.target(endpoint);
         Response response = wt.path("/subirDocumentoAnexoECM/").request()
                 .post(Entity.json(documentoDTO));
 
