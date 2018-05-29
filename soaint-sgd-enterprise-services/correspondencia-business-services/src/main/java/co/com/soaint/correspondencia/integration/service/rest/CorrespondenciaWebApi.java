@@ -174,7 +174,7 @@ public class CorrespondenciaWebApi {
     @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
     public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
                                                                                       @QueryParam("fecha_fin") final String fechaFin,
-                                                                                      @QueryParam("mod_envio") final String modEnvio,
+                                                                                      @QueryParam("mod_correo") final String modEnvio,
                                                                                       @QueryParam("clase_envio") final String claseEnvio,
                                                                                       @QueryParam("cod_dep") final String codDependencia,
                                                                                       @QueryParam("cod_tipo_doc") final String codTipoDoc,
