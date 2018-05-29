@@ -158,13 +158,38 @@ public class CorrespondenciaWebApi {
                     .buildSystemException();
         }
     }
-
+    /**
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codTipoDoc
+     * @param modEnvio
+     * @param claseEnvio
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+                                                                                      @QueryParam("fecha_fin") final String fechaFin,
+                                                                                      @QueryParam("mod_envio") final String modEnvio,
+                                                                                      @QueryParam("clase_envio") final String claseEnvio,
+                                                                                      @QueryParam("cod_dep") final String codDependencia,
+                                                                                      @QueryParam("cod_tipo_doc") final String codTipoDoc,
+                                                                                      @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica();
+            Date fechaInicial = dateFormat.parse(fechaIni);
+            Date fechaFinal = dateFormat.parse(fechaFin);
+            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, codTipoDoc, nroRadicado);
+        } catch (ParseException e) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("date.parse.error")
+                    .withRootException(e)
+                    .buildSystemException();
         } catch (BusinessException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
