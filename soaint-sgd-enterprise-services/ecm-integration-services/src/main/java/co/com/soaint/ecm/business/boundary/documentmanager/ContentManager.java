@@ -336,4 +336,15 @@ public class ContentManager implements Serializable {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         return contentControl.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
     }
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    public MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento) throws SystemException {
+        log.info("processing rest request - Subir Documento Anexo al ECM:");
+        return contentControl.subirDocumentoAnexo(documento, conexion.getSession());
+    }
 }
