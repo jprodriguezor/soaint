@@ -74,8 +74,8 @@ import java.util.stream.Collectors;
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.corAgenteList ca " +
                 "INNER JOIN c.ppdDocumentoList d " +
-//                "WHERE ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) " +
                 "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND ((:TIPO_COM1 IS NULL OR c.codTipoCmc = :TIPO_COM1) OR (:TIPO_COM2 IS NULL OR c.codTipoCmc = :TIPO_COM2)) "+
+                "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) "+
                 "AND c.codClaseEnvio = :CLASE_ENVIO AND c.codModalidadEnvio = :MOD_ENVIO "+
                 "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) "+
                 "AND (:ESTADO_DISTRIBUCION IS NULL OR  ca.estadoDistribucion = :ESTADO_DISTRIBUCION) AND ca.codTipAgent = :TIPO_AGENTE " +
