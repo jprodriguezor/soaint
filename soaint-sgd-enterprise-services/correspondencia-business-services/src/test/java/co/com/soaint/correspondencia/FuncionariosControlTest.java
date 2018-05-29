@@ -66,8 +66,7 @@ public class FuncionariosControlTest extends JPAHibernateContextTest {
 
         //then
         assertNotNull(funcionario);
-        assertNotEquals(0, funcionario);
-        assertEquals(funcEstado,funcionario.getFuncionarios().get(0).getEstado());
+        assertEquals(0, funcionario.getFuncionarios().size());
     }
 
     @Test
