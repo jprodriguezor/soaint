@@ -90,14 +90,28 @@ public final class JaxRsUtils {
         return webTarget;
     }
 
-    private static <T> Response mockResponse(Class<T> responseClass) {
-        response = mock(Response.class);
+    public static <T> Response mockResponse(Class<T> responseClass) {
 
         if(responseClass != null) {
-
             T responseEntity = mockResponseEntity(responseClass);
-            when(response.readEntity(responseClass)).thenReturn(responseEntity);
-        }
+            response = mockResponse(responseClass, responseEntity);
+        } else
+            response = mock(Response.class);
+
+        return response;
+    }
+
+    public static <T> Response mockResponse(Class<T> responseClass, T returnValue) {
+
+        return mockResponse(responseClass, Response.Status.OK, returnValue);
+    }
+
+    public static <T> Response mockResponse(Class<T> responseClass, Response.Status status, T returnValue) {
+
+        response = mock(Response.class);
+
+        when(response.readEntity(responseClass)).thenReturn(returnValue);
+        when(response.getStatus()).thenReturn(status.getStatusCode());
 
         return response;
     }
