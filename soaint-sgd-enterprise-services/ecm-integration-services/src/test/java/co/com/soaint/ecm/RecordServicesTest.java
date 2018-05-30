@@ -58,9 +58,6 @@ public class RecordServicesTest {
     @Before
     public void setUp() throws Exception {
 
-
-
-
 //Se llenan los datos de la unidad documental
         unidadDocumentalDTO = new UnidadDocumentalDTO();
 
@@ -85,10 +82,6 @@ public class RecordServicesTest {
         unidadDocumentalDTO.setEstado("Abierto");
         unidadDocumentalDTO.setDisposicion("Eliminar");
 
-//        MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
-//                crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
-//
-//        unidadDocumentalDTOResultante = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
     }
 
