@@ -122,6 +122,28 @@ public class ECMClientTest {
     }
 
     @Test
+    public void uploadDocumentoAnexo() {
+        // given
+        String path = "/subirDocumentoAnexoECM/";
+        DocumentoDTO dto = mock(DocumentoDTO.class);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+
+        // when
+        ecmClient.uploadDocumentoAnexo(dto);
+
+        // then
+        verify(client).target(API_ENDPOINT);
+        verify(wt).path(path);
+        verify(JaxRsUtils.getResponseMock()).readEntity(MensajeRespuesta.class);
+
+        ArgumentCaptor<Entity<DocumentoDTO>> captor = ArgumentCaptor.forClass(Entity.class);
+
+        verify(requestBuilder).post(captor.capture());
+
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
+    }
+
+    @Test
     public void uploadDocument() {
         // given
         String TIPO_COMUNICACION = "TC01";
@@ -216,6 +238,28 @@ public class ECMClientTest {
                    assertThat(documentoDTO.getNroRadicado()).isEqualTo(NRO_RADICADO);
                    assertThat(documentoDTO.getNroRadicadoReferido()).isSameAs(REFRIDO_LIST);
                 });
+    }
+
+    @Test
+    public void uploadDocumentsAsociatesExceptionFromNullFiles() throws IOException {
+        // given
+        Map<String, InputPart> FILES = null;
+        String TIPO_COMUNICACION = "TC01";
+
+        // spying the test class to capture inner call arguments
+        ECMClient ecmClientSpy = spy(ecmClient);
+
+        // mocking the inner call uploadDocument
+        String path = "/subirDocumentoRelacionECM/" + TIPO_COMUNICACION;
+        JaxRsUtils.mockPostPath(wt, MensajeRespuesta.class, path);
+
+
+        // when
+        List<MensajeRespuesta> respuestas = ecmClientSpy.uploadDocumentsAsociates(null, FILES, null, null, TIPO_COMUNICACION, null, null);
+
+        // then
+        assertThat(respuestas.size()).isEqualTo(0);
+        verify(ecmClientSpy, times(0)).uploadDocument(any(DocumentoDTO.class), anyString());
     }
 
     @Test

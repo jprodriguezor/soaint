@@ -45,7 +45,7 @@ public class EcmManager implements Serializable {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(DocumentoDTO documento, String selector) {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento adjunto al content..");
         return contentManager.subirDocumentoPrincipalAdjuntoContent(documento, selector);
     }

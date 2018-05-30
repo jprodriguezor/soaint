@@ -5,6 +5,7 @@ import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -156,12 +157,12 @@ public class ECMConnectionRule implements TestRule {
         return doc;
     }
 
-    public MensajeRespuesta uploadNewDocument(String nombreDocumento) {
+    public MensajeRespuesta uploadNewDocument(String nombreDocumento) throws SystemException {
         DocumentoDTO doc = newDocumento(nombreDocumento);
         return contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
     }
 
-    public DocumentoDTO existingDocumento(String nombre) {
+    public DocumentoDTO existingDocumento(String nombre) throws SystemException {
         DocumentoDTO doc = newDocumento(nombre);
         MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
         doc.setIdDocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
