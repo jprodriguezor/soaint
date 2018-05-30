@@ -25,6 +25,7 @@ import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
@@ -110,7 +111,7 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             log.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(documentoDTO.getIdDocumento());
-            Optional<File> optionalFile = Optional.empty();
+            File file = null;
 
             if (documentoDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
@@ -118,15 +119,15 @@ public class ContentControlAlfresco implements ContentControl {
                 Optional<Document> version = versions.stream()
                         .filter(p -> p.getVersionLabel().equals(documentoDTO.getVersionLabel())).findFirst();
                 if (version.isPresent()) {
-                    optionalFile = utilities.getFile(documentoDTO, versionesLista, version.get());
+                    file = utilities.getFile(documentoDTO, versionesLista, version.get());
                 }
 
             } else {
-                optionalFile = utilities.convertInputStreamToFile(doc.getContentStream());
+                file = utilities.convertInputStreamToFile(doc.getContentStream());
             }
             log.info("Se procede a devolver el documento" + documentoDTO.getNombreDocumento());
-            if (optionalFile.isPresent()) {
-                byte[] data = FileUtils.readFileToByteArray(optionalFile.get());
+            if (null != file) {
+                byte[] data = FileUtils.readFileToByteArray(file);
                 documentoDTO1.setDocumento(data);
 
                 mensajeRespuesta.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
@@ -574,8 +575,16 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             ItemIterable<QueryResult> resultsPrincipalAdjunto = utilities.getPrincipalAdjuntosQueryResults(session, documento);
 
-            ArrayList<DocumentoDTO> documentosLista = new ArrayList<>();
+            List<DocumentoDTO> documentosLista = new ArrayList<>();
             for (QueryResult qResult : resultsPrincipalAdjunto) {
+                /*String objectId = qResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                objectId = objectId.indexOf(';') != -1 ? objectId.split(";")[0] : objectId;
+
+                Document document = (Document) session.getObject(session.createObjectId(objectId));
+                if (document.isLatestVersion()) {
+
+                    documentosLista.add(documentosLista.size(), utilities.transformarDocumento(document));
+                }*/
 
                 DocumentoDTO documentoDTO = new DocumentoDTO();
 
@@ -596,7 +605,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_LENGTH).toString());
-
+                documentoDTO.setVersionLabel(document.getVersionLabel());
 
                 documentoDTO.setDocumento(utilities.getDocumentBytes(document));
                 String nroRadicado = qResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_NRO_RADICADO);
@@ -672,13 +681,14 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) throws SystemException {
 
         log.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
         MensajeRespuesta response = new MensajeRespuesta();
         //Se definen las propiedades del documento a subir
         Map<String, Object> properties = new HashMap<>();
+        final String nroRadicado = documento.getNroRadicado();
         properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
         //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
         if (!StringUtils.isEmpty(documento.getIdDocumentoPadre())) {
@@ -694,6 +704,17 @@ public class ContentControlAlfresco implements ContentControl {
             utilities.buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, ConstantesECM.PRODUCCION_DOCUMENTAL);
         } else {
             utilities.buscarCrearCarpetaRadicacion(session, documento, response, properties, selector);
+        }
+
+        if (!StringUtils.isEmpty(nroRadicado)) {
+            final List<DocumentoDTO> documentoDTOList = response.getDocumentoDTOList();
+            for (DocumentoDTO dto :
+                    documentoDTOList) {
+                if ("Principal".equals(dto.getTipoPadreAdjunto()) && !StringUtils.isEmpty(dto.getNroRadicado())) {
+                    utilities.estamparEtiquetaRadicacion(dto, session);
+                    break;
+                }
+            }
         }
 
         log.info("Se sale del metodo subirDocumentoPrincipalAdjunto");
@@ -1182,22 +1203,74 @@ public class ContentControlAlfresco implements ContentControl {
     public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         try {
-            final Document document = utilities.estamparEtiquetaRadicacion(documentoDTO, session);
-            if (null != document) {
-                final Map<String, Object> delDoc = new HashMap<>();
-                delDoc.put("documento", utilities.transformarDocumento(document));
-                return MensajeRespuesta.newInstance()
-                        .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
-                        .mensaje(ConstantesECM.SUCCESS)
-                        .response(delDoc)
-                        .build();
-            }
+            utilities.estamparEtiquetaRadicacion(documentoDTO, session);
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje("Imagen guardada satisfactoriamente")
                     .build();
+
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    @Override
+    public MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento, Session session) throws SystemException {
+        if (ObjectUtils.isEmpty(documento)) {
+            throw new SystemException("No se ha especificado el DocumentoDTO");
+        }
+        final byte[] bytes = documento.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final String idDocPincipal = documento.getIdDocumentoPadre();
+        if (StringUtils.isEmpty(idDocPincipal)) {
+            throw new SystemException("No se ha especificado el ID del documento Principal");
+        }
+        final String nombreDoc = documento.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        try {
+            ObjectId objectId = new ObjectIdImpl(idDocPincipal);
+            CmisObject cmisObject = session.getObject(objectId);
+            Document document = (Document) cmisObject;
+            final DocumentoDTO docPrincipal = utilities.transformarDocumento(document);
+            final String docType = docPrincipal.getTipoPadreAdjunto();
+            if (StringUtils.isEmpty(docType) || docType.equalsIgnoreCase("principal")) {
+                throw new SystemException("El id proporcionado no coincide con el de un documento principal");
+            }
+            final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
+                    DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
+            ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                    BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(PropertyIds.NAME, nombreDoc);
+            properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Anexo");
+            properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocPincipal);
+            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentMimeType);
+            properties.put(ConstantesECM.CMCOR_NRO_RADICADO, docPrincipal.getNroRadicado());
+            properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
+            Folder folder = utilities.getFolderFrom(document);
+            if (null != folder) {
+                document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+                if (null != document) {
+                    properties.clear();
+                    properties.put("documentoAnexo", utilities.transformarDocumento(document));
+                    return MensajeRespuesta.newInstance()
+                            .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                            .mensaje("Operacion completada satisfactoriamente")
+                            .response(properties)
+                            .build();
+                }
+            }
+            throw new SystemException("Ocurrio un error al anezar el documento");
+
+        } catch (Exception e) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)

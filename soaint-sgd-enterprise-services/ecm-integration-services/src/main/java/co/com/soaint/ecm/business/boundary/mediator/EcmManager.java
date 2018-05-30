@@ -45,7 +45,7 @@ public class EcmManager implements Serializable {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(DocumentoDTO documento, String selector) {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento adjunto al content..");
         return contentManager.subirDocumentoPrincipalAdjuntoContent(documento, selector);
     }
@@ -316,5 +316,16 @@ public class EcmManager implements Serializable {
     public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) throws SystemException {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         return contentManager.estamparEtiquetaRadicacion(documentoDTO);
+    }
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    public MensajeRespuesta subirDocumentoAnexoECM(DocumentoDTO documento) throws SystemException {
+        log.info("processing rest request - Subir Documento Anexo al ECM: ");
+        return contentManager.subirDocumentoAnexo(documento);
     }
 }

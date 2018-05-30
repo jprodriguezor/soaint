@@ -122,14 +122,17 @@ public class ProduccionDocumentalGatewayApi {
             InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
             documentoDTO.setDocumento(IOUtils.toByteArray(inputStream));
 
+            documentoDTO.setIdDocumentoPadre(formDataInput.getFormDataPart("idDocumentoPadre", String.class, null));
             documentoDTO.setNombreDocumento(formDataInput.getFormDataPart("nombreDocumento", String.class, null));
             documentoDTO.setTipoDocumento(formDataInput.getFormDataPart("tipoDocumento", String.class, null));
             documentoDTO.setSede(formDataInput.getFormDataPart("sede", String.class, null));
             documentoDTO.setDependencia(formDataInput.getFormDataPart("dependencia", String.class, null));
             documentoDTO.setCodigoDependencia(formDataInput.getFormDataPart("codigoDependencia", String.class, null));
+            documentoDTO.setNroRadicado(formDataInput.getFormDataPart("nroRadicado", String.class, null));
 
-            clientResponse = this.clientECM.uploadVersionDocumento(documentoDTO, "PD");
-            log.info(clientResponse);
+            //clientResponse = this.clientECM.uploadVersionDocumento(documentoDTO, "PD");
+            clientResponse = clientECM.uploadDocumentoAnexo(documentoDTO);
+            //log.info(clientResponse);
 
         } catch (Exception ex) {
             return this.EcmErrorMessage(ex);
