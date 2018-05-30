@@ -9,6 +9,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ApiUtils {
@@ -42,7 +44,7 @@ public class ApiUtils {
 
             Assertions.assertThat(annotation.value())
                     .as("Produces media type")
-                    .containsOnly(mediaTypes);
+                    .contains(mediaTypes);
 
             return this;
         }
@@ -52,12 +54,12 @@ public class ApiUtils {
 
             Assertions.assertThat(annotation.value())
                     .as("Consumes media type")
-                    .containsOnly(mediaTypes);
+                    .contains(mediaTypes);
 
             return this;
         }
 
-        public ApiAssertions<T> hasJWTSecurity() {
+        public ApiAssertions<T> hasJWTTokenSecurity() {
 
             assertAnnotation(JWTTokenSecurity.class);
 
@@ -110,6 +112,40 @@ public class ApiUtils {
             Assertions.assertThat(thePath)
                     .as("Path mismatch")
                     .isEqualTo(path);
+
+            assertPathParams(thePath);
+        }
+
+        private void assertPathParams(String thePath) {
+
+            if(method.getParameterCount() == 0) return;
+
+            List<String> pathParams = Arrays.asList(method.getParameters()).stream()
+                    .filter(parameter -> parameter.isAnnotationPresent(PathParam.class))
+                    .map(parameter -> parameter.getAnnotation(PathParam.class).value() != null
+                            ? parameter.getAnnotation(PathParam.class).value()
+                            : parameter.getName())
+                    .collect(Collectors.toList());
+
+            if(pathParams.size() == 0) return;
+
+            Pattern pattern = Pattern.compile("(\\{.*})");
+            Matcher matcher = pattern.matcher(thePath);
+
+            List<String> params = new ArrayList<>();
+
+            while (matcher.find()) {
+                Arrays.asList(matcher
+                        .group(1)
+                        .replaceAll("[\\{}]", "")
+                        .split("/"))
+                    .forEach(params::add);
+            }
+
+            Assertions.assertThat(pathParams)
+                    .as("Path params")
+                    .allSatisfy(pathParam -> Assertions.assertThat(pathParam).isIn(params));
+
         }
 
         private <A extends Annotation> List<A> getAnnotations(Class<A> annotation) {

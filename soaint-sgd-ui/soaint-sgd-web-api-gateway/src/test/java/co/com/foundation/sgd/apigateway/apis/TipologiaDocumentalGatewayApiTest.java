@@ -36,7 +36,7 @@ public class TipologiaDocumentalGatewayApiTest {
                 .hasGetMapping("/tipologia-documental-gateway-api")
                 .produces(MediaType.APPLICATION_JSON)
                 .consumes(MediaType.APPLICATION_JSON)
-                .hasJWTSecurity();
+                .hasJWTTokenSecurity();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.getEntity()).isEqualTo(CONTENT);

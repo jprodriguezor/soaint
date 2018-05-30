@@ -44,7 +44,7 @@ public class TipoComunicacionGatewayApiTest {
                 .hasGetMapping("/tipo-comunicacion-gateway-api")
                 .produces(MediaType.APPLICATION_JSON)
                 .consumes(MediaType.APPLICATION_JSON)
-                .hasJWTSecurity();
+                .hasJWTTokenSecurity();
 
         verify(tipoComunicacionClient).list(PARENT_CODE);
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
