@@ -1,6 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.ActuaCalidadClient;
+import co.com.foundation.sgd.apigateway.apis.delegator.BisClient;
 import co.com.foundation.test.mocks.ApiUtils;
 import co.com.foundation.test.mocks.JaxRsUtils;
 import org.junit.Test;
@@ -13,29 +13,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ActuaCalidadGatewayApiTest {
-
+public class BisGatewayApiTest {
 
     @Test
     public void list() {
 
         // given
-        ActuaCalidadGatewayApi gatewayApi = new ActuaCalidadGatewayApi();
+        BisGatewayApi gatewayApi = new BisGatewayApi();
         String CONTENT = "{\"data\":100}";
 
         Response theResponse = JaxRsUtils.mockResponse(String.class, CONTENT, Response.Status.OK);
 
-        ActuaCalidadClient actuaCalidadClient = mock(ActuaCalidadClient.class);
-        when(actuaCalidadClient.list()).thenReturn(theResponse);
+        BisClient bisClient = mock(BisClient.class);
+        when(bisClient.list()).thenReturn(theResponse);
 
-        ReflectionTestUtils.setField(gatewayApi, "actuaCalidadClienta", actuaCalidadClient);
+        ReflectionTestUtils.setField(gatewayApi, "client", bisClient);
 
         // when
         Response response = gatewayApi.list();
 
         // then
-        ApiUtils.assertThat(ActuaCalidadGatewayApi.class, "list")
-                .hasGetMapping("/actua-calidad-gateway-api")
+        ApiUtils.assertThat(BisGatewayApi.class, "list")
+                .hasGetMapping("/bis-gateway-api")
                 .produces(MediaType.APPLICATION_JSON)
                 .consumes(MediaType.APPLICATION_JSON)
                 .hasJWTSecurity();

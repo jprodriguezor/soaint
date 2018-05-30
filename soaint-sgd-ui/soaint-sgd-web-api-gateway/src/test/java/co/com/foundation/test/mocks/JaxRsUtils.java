@@ -103,10 +103,10 @@ public final class JaxRsUtils {
 
     public static <T> Response mockResponse(Class<T> responseClass, T returnValue) {
 
-        return mockResponse(responseClass, Response.Status.OK, returnValue);
+        return mockResponse(responseClass, returnValue, Response.Status.OK);
     }
 
-    public static <T> Response mockResponse(Class<T> responseClass, Response.Status status, T returnValue) {
+    public static <T> Response mockResponse(Class<T> responseClass, T returnValue, Response.Status status) {
 
         response = mock(Response.class);
 
