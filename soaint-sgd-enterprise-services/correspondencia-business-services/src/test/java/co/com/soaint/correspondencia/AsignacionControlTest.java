@@ -160,17 +160,41 @@ public class AsignacionControlTest  {
 
         // then
 
-        //verify(dctAsigUltimoTQ, times(1)).setParameter("ID_ASIGNACION", ID_ASIGNACION);
-        verify(em).createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class);
-        verify(dctAsigUltimoTQ).setParameter("IDE_ASIGNACION", ID_ASIGNACION);
+        verify(em).createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class);//se ejecuta
+        verify(dctAsigUltimoTQ).setParameter("IDE_ASIGNACION", ID_ASIGNACION);//con parametros
 
         verify(em).createNamedQuery("DctAsigUltimo.updateIdInstancia");
         verify(dctAsigUltimoTypedQuery).setParameter("IDE_ASIG_ULTIMO", ID_ASIGNACION);
         verify(dctAsigUltimoTypedQuery).setParameter("ID_INSTANCIA", ID_INSTANCIA);
     }
 
+    @Test//(expected = BusinessException.class)
+    public void actualizarIdInstancia_Fail_1() throws SystemException, BusinessException {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        when(em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)).thenThrow(Exception.class);
+
+        fails.expect(SystemException.class);
+        fails.expectMessage("system.generic.error");
+
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
+    }
+
+    @Test(expected = SystemException.class)
+    public void actualizarIdInstancia_Fail_2() throws SystemException, BusinessException {
+
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+
+        when(em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)).thenThrow(BusinessException.class);
+
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
+    }
+
+
     @Test
     public void listarAsignacionesByFuncionarioAndNroRadicado() throws Exception {
+
     }
 
     @Test
