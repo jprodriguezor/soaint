@@ -1,5 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
+import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.DocumentMimeType;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -7,8 +8,10 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.logging.log4j.LogManager;
@@ -1020,5 +1023,182 @@ public class ContentControlAlfrescoTest {
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void testGenerarArbolSuccess() {
+        List<EstructuraTrdDTO> structure = new ArrayList<>();
+        List<OrganigramaDTO> organigramaItemList1 = new ArrayList<>();
+        List<ContenidoDependenciaTrdDTO> contenidoDependenciaList1 =  new ArrayList<>();
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO1=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO1.setCodSerie("0025633");
+        contenidoDependenciaTrdDTO1.setCodSubSerie("");
+        contenidoDependenciaTrdDTO1.setDiposicionFinal(1);
+        contenidoDependenciaTrdDTO1.setIdOrgAdm("900");
+        contenidoDependenciaTrdDTO1.setIdOrgOfc("900910");
+        contenidoDependenciaTrdDTO1.setNomSerie("CONTRATOS");
+        contenidoDependenciaTrdDTO1.setNomSubSerie("");
+        contenidoDependenciaTrdDTO1.setProcedimiento("Se deben conservar los documentos");
+        contenidoDependenciaTrdDTO1.setRetArchivoCentral(7L);
+        contenidoDependenciaTrdDTO1.setRetArchivoGestion(2L);
+
+        contenidoDependenciaList1.add(contenidoDependenciaTrdDTO1);
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO2=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO2.setCodSerie("100");
+        contenidoDependenciaTrdDTO2.setCodSubSerie("1");
+        contenidoDependenciaTrdDTO2.setDiposicionFinal(2);
+        contenidoDependenciaTrdDTO2.setIdOrgAdm("900");
+        contenidoDependenciaTrdDTO2.setIdOrgOfc("900910");
+        contenidoDependenciaTrdDTO2.setNomSerie("Créditos");
+        contenidoDependenciaTrdDTO2.setNomSubSerie("Créditos Hipotecarios");
+        contenidoDependenciaTrdDTO2.setProcedimiento("Eliminar");
+        contenidoDependenciaTrdDTO2.setRetArchivoCentral(6L);
+        contenidoDependenciaTrdDTO2.setRetArchivoGestion(6L);
+
+        contenidoDependenciaList1.add(contenidoDependenciaTrdDTO2);
+
+        OrganigramaDTO organigramaDTO1 = new OrganigramaDTO();
+        organigramaDTO1.setCodOrg("000");
+        organigramaDTO1.setIdeOrgaAdmin(46L);
+        organigramaDTO1.setNomOrg("000_SOAINT1");
+        organigramaDTO1.setTipo("P");
+        organigramaItemList1.add(organigramaDTO1);
+
+        OrganigramaDTO organigramaDTO2 = new OrganigramaDTO();
+        organigramaDTO2.setCodOrg("900");
+        organigramaDTO2.setIdeOrgaAdmin(77L);
+        organigramaDTO2.setNomOrg("900_VICEPRESIDENCIA DE TALENTO HUMANO");
+        organigramaDTO2.setTipo("H");
+        organigramaItemList1.add(organigramaDTO2);
+
+        OrganigramaDTO organigramaDTO3 = new OrganigramaDTO();
+        organigramaDTO3.setCodOrg("900910");
+        organigramaDTO3.setIdeOrgaAdmin(78L);
+        organigramaDTO3.setNomOrg("900.910_GERENCIA NACIONAL DE GESTIÓN DEL TALENTO HUMANO");
+        organigramaDTO3.setTipo("H");
+        organigramaItemList1.add(organigramaDTO3);
+
+        EstructuraTrdDTO estuEstructuraTrdDTO=new EstructuraTrdDTO();
+        estuEstructuraTrdDTO.setContenidoDependenciaList(contenidoDependenciaList1);
+        estuEstructuraTrdDTO.setOrganigramaItemList(organigramaItemList1);
+        structure.add(estuEstructuraTrdDTO);
+
+        //Segundo elemento de la estructura
+
+        List<OrganigramaDTO> organigramaItemList2 = new ArrayList<>();
+        List<ContenidoDependenciaTrdDTO> contenidoDependenciaList2 =  new ArrayList<>();
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO4=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO4.setCodSerie("00256");
+        contenidoDependenciaTrdDTO4.setCodSubSerie("1");
+        contenidoDependenciaTrdDTO4.setDiposicionFinal(1);
+        contenidoDependenciaTrdDTO4.setIdOrgAdm("100");
+        contenidoDependenciaTrdDTO4.setIdOrgOfc("100110");
+        contenidoDependenciaTrdDTO4.setNomSerie("CONTRATOS");
+        contenidoDependenciaTrdDTO4.setNomSubSerie("Contratos de Obra");
+        contenidoDependenciaTrdDTO4.setProcedimiento("Una vez cumplido su tiempo proceder con la disposición final");
+        contenidoDependenciaTrdDTO4.setRetArchivoCentral(4L);
+        contenidoDependenciaTrdDTO4.setRetArchivoGestion(1L);
+
+        contenidoDependenciaList2.add(contenidoDependenciaTrdDTO4);
+
+
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO5=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO5.setCodSerie("00256");
+        contenidoDependenciaTrdDTO5.setCodSubSerie("");
+        contenidoDependenciaTrdDTO5.setDiposicionFinal(2);
+        contenidoDependenciaTrdDTO5.setIdOrgAdm("100");
+        contenidoDependenciaTrdDTO5.setIdOrgOfc("100110");
+        contenidoDependenciaTrdDTO5.setNomSerie("CONTRATOS");
+        contenidoDependenciaTrdDTO5.setNomSubSerie("");
+        contenidoDependenciaTrdDTO5.setProcedimiento("ok");
+        contenidoDependenciaTrdDTO5.setRetArchivoCentral(10L);
+        contenidoDependenciaTrdDTO5.setRetArchivoGestion(5L);
+
+        contenidoDependenciaList2.add(contenidoDependenciaTrdDTO5);
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO6=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO6.setCodSerie("00256");
+        contenidoDependenciaTrdDTO6.setCodSubSerie("");
+        contenidoDependenciaTrdDTO6.setDiposicionFinal(2);
+        contenidoDependenciaTrdDTO6.setIdOrgAdm("100");
+        contenidoDependenciaTrdDTO6.setIdOrgOfc("100110");
+        contenidoDependenciaTrdDTO6.setNomSerie("CONTRATOS");
+        contenidoDependenciaTrdDTO6.setNomSubSerie("");
+        contenidoDependenciaTrdDTO6.setProcedimiento("ok");
+        contenidoDependenciaTrdDTO6.setRetArchivoCentral(10L);
+        contenidoDependenciaTrdDTO6.setRetArchivoGestion(5L);
+
+        contenidoDependenciaList2.add(contenidoDependenciaTrdDTO6);
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO7=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO7.setCodSerie("0056");
+        contenidoDependenciaTrdDTO7.setCodSubSerie("754");
+        contenidoDependenciaTrdDTO7.setDiposicionFinal(1);
+        contenidoDependenciaTrdDTO7.setIdOrgAdm("100");
+        contenidoDependenciaTrdDTO7.setIdOrgOfc("100110");
+        contenidoDependenciaTrdDTO7.setNomSerie("INFORMES");
+        contenidoDependenciaTrdDTO7.setNomSubSerie("Informes de gestión");
+        contenidoDependenciaTrdDTO7.setProcedimiento("Una vez cumplido su tiempo proceder con la disposición final");
+        contenidoDependenciaTrdDTO7.setRetArchivoCentral(1L);
+        contenidoDependenciaTrdDTO7.setRetArchivoGestion(2L);
+
+        contenidoDependenciaList2.add(contenidoDependenciaTrdDTO7);
+
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO8=new ContenidoDependenciaTrdDTO();
+        contenidoDependenciaTrdDTO8.setCodSerie("323");
+        contenidoDependenciaTrdDTO8.setCodSubSerie("134");
+        contenidoDependenciaTrdDTO8.setDiposicionFinal(1);
+        contenidoDependenciaTrdDTO8.setIdOrgAdm("100");
+        contenidoDependenciaTrdDTO8.setIdOrgOfc("100110");
+        contenidoDependenciaTrdDTO8.setNomSerie("ADMINISTRACION LEGAL");
+        contenidoDependenciaTrdDTO8.setNomSubSerie("Tutelas");
+        contenidoDependenciaTrdDTO8.setProcedimiento("Una vez cumplido su tiempo proceder con la disposición final");
+        contenidoDependenciaTrdDTO8.setRetArchivoCentral(4L);
+        contenidoDependenciaTrdDTO8.setRetArchivoGestion(1L);
+
+        contenidoDependenciaList2.add(contenidoDependenciaTrdDTO8);
+
+        OrganigramaDTO organigramaDTO4 = new OrganigramaDTO();
+        organigramaDTO4.setCodOrg("000");
+        organigramaDTO4.setIdeOrgaAdmin(46L);
+        organigramaDTO4.setNomOrg("000_SOAINT1");
+        organigramaDTO4.setTipo("P");
+        organigramaItemList2.add(organigramaDTO4);
+
+        OrganigramaDTO organigramaDTO5 = new OrganigramaDTO();
+        organigramaDTO5.setCodOrg("100");
+        organigramaDTO5.setIdeOrgaAdmin(80L);
+        organigramaDTO5.setNomOrg("100_PRESIDENCIA");
+        organigramaDTO5.setTipo("H");
+        organigramaItemList2.add(organigramaDTO5);
+
+        OrganigramaDTO organigramaDTO6 = new OrganigramaDTO();
+        organigramaDTO6.setCodOrg("100110");
+        organigramaDTO6.setIdeOrgaAdmin(81L);
+        organigramaDTO6.setNomOrg("100.110_OFICINA NACIONAL DE CONTROL INTERNO");
+        organigramaDTO6.setTipo("H");
+        organigramaItemList2.add(organigramaDTO6);
+
+        EstructuraTrdDTO estructuraTrdDTO1=new EstructuraTrdDTO();
+        estructuraTrdDTO1.setContenidoDependenciaList(contenidoDependenciaList1);
+        estructuraTrdDTO1.setOrganigramaItemList(organigramaItemList1);
+        structure.add(estructuraTrdDTO1);
+
+
+        Carpeta carpeta = new Carpeta();
+        carpeta.setFolder(conexion.getSession().getRootFolder());
+        assertEquals("0000",contentControlAlfresco.generarArbol(structure,carpeta).getCodMensaje());
+        Folder root = conexion.getSession().getRootFolder();
+        ItemIterable<CmisObject> children = root.getChildren();
+        for (CmisObject o : children) {
+           if("000_SOAINT1".equals(o.getName())){
+               Folder folder=(Folder)o;
+               folder.deleteTree(true, UnfileObject.DELETE, true);
+           }
+        }
     }
 }
