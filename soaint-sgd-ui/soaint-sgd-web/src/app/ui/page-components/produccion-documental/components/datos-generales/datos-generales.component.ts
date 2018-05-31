@@ -29,11 +29,12 @@ import {Subscription} from 'rxjs/Subscription';
 import { StatusDTO } from '../../models/StatusDTO';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
-import {FileUpload} from 'primeng/primeng';
+import {ConfirmationService, FileUpload} from 'primeng/primeng';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 import {DocumentUploaded} from '../../events/DocumentUploaded';
 import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {getTipoComunicacionArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -92,7 +93,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
               private messagingService: MessagingService,
-              private pdMessageService: PdMessageService) {
+              private pdMessageService: PdMessageService,
+              private _confirmationService:ConfirmationService
+  ) {
 
     this.initForm();
   }
@@ -226,15 +229,29 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   eliminarVersionDocumento(index) {
-    this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
-    this._produccionDocumentalApi.eliminarVersionDocumento({id: this.pd_currentVersion.id}).subscribe(
-      res => {
-        this.removeFromList(index, 'listaVersionesDocumento');
-        this.resetCurrentVersion();
+
+    this._confirmationService.confirm({
+      message: `Si elimina el documento principal se borrarn sus anexos.¿Está seguro que desea borrar este documento?`,
+      header: 'Confirmacion',
+      icon: 'fa fa-question-circle',
+      accept: () => {
+
+        this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
+        this._produccionDocumentalApi.eliminarVersionDocumento({id: this.pd_currentVersion.id}).subscribe(
+          res => {
+            this.removeFromList(index, 'listaVersionesDocumento');
+            this.resetCurrentVersion();
+          },
+          error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error})),
+          () => this.refreshView()
+        );
       },
-      error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error})),
-      () => this.refreshView()
-    );
+      reject: () => {
+
+      }
+    });
+
+
   }
 
   confirmarVersionDocumento() {

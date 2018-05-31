@@ -12,9 +12,4 @@ public enum DocumentMimeType {
     APPLICATION_ICON("image/png");
 
     private final String type;
-
-    public static boolean isValidAppMimeType(String type) {
-        return DocumentMimeType.APPLICATION_PDF.getType().equals(type)
-                || DocumentMimeType.APPLICATION_HTML.getType().equals(type);
-    }
 }
