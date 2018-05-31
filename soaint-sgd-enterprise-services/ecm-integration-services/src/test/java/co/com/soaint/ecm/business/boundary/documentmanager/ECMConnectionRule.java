@@ -5,6 +5,7 @@ import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -20,19 +21,21 @@ public class ECMConnectionRule implements TestRule {
     private List<UnidadDocumentalDTO> unidadDocumentalDTOList;
     private List<DocumentoDTO> documentoDTOList;
     private ContentControlAlfresco contentControlAlfresco;
-
+    private ContentManager contentManager;
 
 
     private Conexion conexion;
 
     public ECMConnectionRule() {
 
-        if(isLocal()) {
+        if (isLocal()) {
             System.setProperty(SystemParameters.API_SEARCH_ALFRESCO, "http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD, "http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS, "admin");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER, "admin");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+            System.setProperty(SystemParameters.API_CORE_ALFRESCO, "http://192.168.3.245:8080/alfresco/api/-default-/public/alfresco/versions/1");
+            System.setProperty(SystemParameters.API_SERVICE_ALFRESCO, "http://192.168.3.245:8080/alfresco/service/api/node/workspace/SpacesStore/");
         }
     }
 
@@ -78,6 +81,10 @@ public class ECMConnectionRule implements TestRule {
 
     public void usingContentControlAlfresco(ContentControlAlfresco contentControlAlfresco) {
         this.contentControlAlfresco = contentControlAlfresco;
+    }
+
+    public void usingContentManager(ContentManager contentManager) {
+        this.contentManager = contentManager;
     }
 
     public Conexion newConexion() {
@@ -156,12 +163,12 @@ public class ECMConnectionRule implements TestRule {
         return doc;
     }
 
-    public MensajeRespuesta uploadNewDocument(String nombreDocumento) {
+    public MensajeRespuesta uploadNewDocument(String nombreDocumento) throws SystemException {
         DocumentoDTO doc = newDocumento(nombreDocumento);
         return contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
     }
 
-    public DocumentoDTO existingDocumento(String nombre) {
+    public DocumentoDTO existingDocumento(String nombre) throws SystemException {
         DocumentoDTO doc = newDocumento(nombre);
         MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
         doc.setIdDocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
