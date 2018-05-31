@@ -1,6 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.ActuaCalidadClient;
+import co.com.foundation.sgd.apigateway.apis.delegator.TipoComplementoClient;
 import co.com.foundation.test.mocks.ApiUtils;
 import co.com.foundation.test.mocks.JaxRsUtils;
 import org.junit.Test;
@@ -13,35 +13,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ActuaCalidadGatewayApiTest {
-
+public class TipoComplementoGatewayApiTest {
 
     @Test
     public void list() {
-
         // given
-        ActuaCalidadGatewayApi gatewayApi = new ActuaCalidadGatewayApi();
+        TipoComplementoGatewayApi gatewayApi = new TipoComplementoGatewayApi();
         String CONTENT = "{\"data\":100}";
 
         Response theResponse = JaxRsUtils.mockResponse(String.class, CONTENT, Response.Status.OK);
 
-        ActuaCalidadClient actuaCalidadClient = mock(ActuaCalidadClient.class);
-        when(actuaCalidadClient.list()).thenReturn(theResponse);
+        TipoComplementoClient tipoComplementoClient = mock(TipoComplementoClient.class);
+        when(tipoComplementoClient.list()).thenReturn(theResponse);
 
-        ReflectionTestUtils.setField(gatewayApi, "actuaCalidadClienta", actuaCalidadClient);
+        ReflectionTestUtils.setField(gatewayApi, "client", tipoComplementoClient);
 
         // when
         Response response = gatewayApi.list();
 
         // then
-        ApiUtils.assertThat(ActuaCalidadGatewayApi.class, "list")
-                .hasGetMapping("/actua-calidad-gateway-api")
+        ApiUtils.assertThat(TipoComplementoGatewayApi.class, "list")
+                .hasGetMapping("/tipo-complemento-gateway-api")
                 .produces(MediaType.APPLICATION_JSON)
                 .consumes(MediaType.APPLICATION_JSON)
                 .hasJWTTokenSecurity();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.getEntity()).isEqualTo(CONTENT);
-
     }
 }

@@ -1,5 +1,6 @@
 package co.com.foundation.test.mocks;
 
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInputImpl;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -8,9 +9,14 @@ import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PartUtils {
+
+    public static List<InputPart> extractFrom(MultipartFormDataInput input, String name) {
+        return input.getFormDataMap().get(name);
+    }
 
     public static MultiPartBuilder newMultiPart() {
         return new MultiPartBuilder();
@@ -35,7 +41,11 @@ public class PartUtils {
         }
 
         public MultiPartBuilder addBinaryPart(String filename, String data) {
-            body += "\r\nContent-Disposition: form-data; name=\"" + filename + "\"; filename=\"" + filename + "\"\r\n"
+            return addBinaryPart(filename, filename, data);
+        }
+
+        public MultiPartBuilder addBinaryPart(String name, String filename, String data) {
+            body += "\r\nContent-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"\r\n"
                     + "Content-Type: application/octet-stream; charset=ISO-8859-1\r\n"
                     + "Content-Transfer-Encoding: binary\r\n"
                     + "\r\n"
@@ -43,7 +53,6 @@ public class PartUtils {
                     + "--" + boundary;
             return this;
         }
-
 
         public MultipartFormDataInput build() {
             body += "--";
