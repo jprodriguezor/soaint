@@ -246,7 +246,11 @@ public class RecordServices implements IRecordServices {
                     Document document = (Document) cmisObject;
                     ContentStream contentStream = document.getContentStream();
                     eliminarObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
-                    contentFolder.createDocument(contentControl.obtenerPropiedadesDocumento(document), contentStream, VersioningState.MAJOR);
+                    final Map<String, Object> map = contentControl.obtenerPropiedadesDocumento(document);
+                    String docName = document.getPropertyValue(PropertyIds.NAME);
+                    map.put(PropertyIds.NAME, docName);
+                    map.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
+                    contentFolder.createDocument(map, contentStream, VersioningState.MAJOR);
                 }
             }
             eliminarObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
@@ -326,6 +330,17 @@ public class RecordServices implements IRecordServices {
         }
     }
 
+    public Response modificarRecordFile(String idDocumento, Map<String, Object> propertyMap) {
+        JSONObject properties = new JSONObject();
+        properties.put("properties", propertyMap);
+        WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        return wt.path("/records/" + idDocumento)
+                .request()
+                .header(headerAuthorization, valueAuthorization + " " + encoding)
+                .header(headerAccept, valueApplicationType)
+                .put(Entity.json(properties.toString()));
+    }
+
     public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
         JSONObject properties = new JSONObject();
         Map<String, Object> nombreMap = new HashMap<>();
@@ -365,6 +380,7 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setCerrada(false);
             unidadDocumental.setInactivo(false);
             closeOrOpenUnidadDocumentalRecord(unidadDocumental);
+
             unidadDocumental.setId(idUnidadDocumental);
         } else {
             unidadDocumental.setCerrada(true);
@@ -409,6 +425,12 @@ public class RecordServices implements IRecordServices {
         //Se declara el record
         String s = declararRecord(documentoDTO);
         log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("cm:title", documentoDTO.getNombreDocumento());
+        properties.put("cm:name", documentoDTO.getNombreDocumento());
+        properties.put("cm:description", documentoDTO.getNombreDocumento());
+        Response response = modificarRecordFile(documentoDTO.getIdDocumento(), properties);
+        log.info("Status: {}", response.getStatus());
         //Se completa el record
         String s1 = completeRecord(documentoDTO.getIdDocumento());
         log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
