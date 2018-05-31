@@ -547,8 +547,8 @@ public class ContentControlAlfresco implements ContentControl {
                     }
                 }
                 bandera = 0;
-                response.setCodMensaje("OK");
-                response.setMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+                response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+                response.setMensaje("OK");
             }
         } catch (Exception e) {
             log.error("Error al crear arbol content ", e);

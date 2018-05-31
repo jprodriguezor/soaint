@@ -21,19 +21,21 @@ public class ECMConnectionRule implements TestRule {
     private List<UnidadDocumentalDTO> unidadDocumentalDTOList;
     private List<DocumentoDTO> documentoDTOList;
     private ContentControlAlfresco contentControlAlfresco;
-
+    private ContentManager contentManager;
 
 
     private Conexion conexion;
 
     public ECMConnectionRule() {
 
-        if(isLocal()) {
+        if (isLocal()) {
             System.setProperty(SystemParameters.API_SEARCH_ALFRESCO, "http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD, "http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS, "admin");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER, "admin");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+            System.setProperty(SystemParameters.API_CORE_ALFRESCO, "http://192.168.3.245:8080/alfresco/api/-default-/public/alfresco/versions/1");
+            System.setProperty(SystemParameters.API_SERVICE_ALFRESCO, "http://192.168.3.245:8080/alfresco/service/api/node/workspace/SpacesStore/");
         }
     }
 
@@ -79,6 +81,10 @@ public class ECMConnectionRule implements TestRule {
 
     public void usingContentControlAlfresco(ContentControlAlfresco contentControlAlfresco) {
         this.contentControlAlfresco = contentControlAlfresco;
+    }
+
+    public void usingContentManager(ContentManager contentManager) {
+        this.contentManager = contentManager;
     }
 
     public Conexion newConexion() {
