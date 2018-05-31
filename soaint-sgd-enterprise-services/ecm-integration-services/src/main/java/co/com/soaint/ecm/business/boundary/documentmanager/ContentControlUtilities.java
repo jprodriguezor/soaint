@@ -533,6 +533,7 @@ final class ContentControlUtilities implements Serializable {
             documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
             documentoDTO.setTamano(document.getContentStreamLength() + "");
             documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
+            documentoDTO.setVersionLabel(document.getVersionLabel());
             documentoDTO.setDocumento(getDocumentBytes(document));
 
             final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
@@ -730,11 +731,8 @@ final class ContentControlUtilities implements Serializable {
 
     byte[] getDocumentBytes(Document document) throws SystemException {
         try {
-            final Optional<File> optionalFile = convertInputStreamToFile(document.getContentStream());
-            if (optionalFile.isPresent()) {
-                return FileUtils.readFileToByteArray(optionalFile.get());
-            }
-            throw new SystemException("Error al obtener el documento en Bytes");
+            final File file = convertInputStreamToFile(document.getContentStream());
+            return FileUtils.readFileToByteArray(file);
         } catch (Exception e) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
@@ -948,13 +946,13 @@ final class ContentControlUtilities implements Serializable {
      * @return Objeto file
      * @throws IOException Tipo de excepcion
      */
-    Optional<File> getFile(DocumentoDTO documentoDTO, ArrayList<DocumentoDTO> versionesLista, Document version) throws SystemException {
+    File getFile(DocumentoDTO documentoDTO, ArrayList<DocumentoDTO> versionesLista, Document version) throws SystemException {
         if (version.getVersionLabel().equals(documentoDTO.getVersionLabel())) {
             documentoDTO.setNombreDocumento(version.getName());
             versionesLista.add(documentoDTO);
             return convertInputStreamToFile(version.getContentStream());
         }
-        return Optional.empty();
+        return null;
     }
 
     /**
@@ -1038,7 +1036,7 @@ final class ContentControlUtilities implements Serializable {
      * @return Un objeto File
      * @throws IOException En caso de error
      */
-    Optional<File> convertInputStreamToFile(ContentStream contentStream) throws SystemException {
+    File convertInputStreamToFile(ContentStream contentStream) throws SystemException {
         try {
             File file = File.createTempFile(contentStream.getFileName(), "");
             try (InputStream inputStream = contentStream.getStream(); OutputStream out = new FileOutputStream(file)) {
@@ -1051,7 +1049,7 @@ final class ContentControlUtilities implements Serializable {
                 log.error("Error al convertir el contentStream a File", e);
             }
             file.deleteOnExit();
-            return Optional.of(file);
+            return file;
         } catch (Exception e) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
@@ -1093,86 +1091,82 @@ final class ContentControlUtilities implements Serializable {
         }
     }
 
-    Document estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException {
+    void estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException {
         try {
-            if (ObjectUtils.isEmpty(documentoDTO)) {
-                throw new SystemException("No se especifico el documentoDTO");
-            }
             final String nroRadicado = documentoDTO.getNroRadicado();
             if (StringUtils.isEmpty(nroRadicado)) {
                 throw new SystemException("No se especifico el numero de radicado del documento");
             }
             byte[] documentBytes = documentoDTO.getDocumento();
-            String idDocument = documentoDTO.getIdDocumento();
-            if (StringUtils.isEmpty(idDocument) && ObjectUtils.isEmpty(documentBytes)) {
-                throw new SystemException("No se especifico el contenido de la estampilla");
+            if (ObjectUtils.isEmpty(documentBytes)) {
+                throw new SystemException("No se especifico el contenido del archivo");
             }
+            String idDocument = documentoDTO.getIdDocumento();
             if (StringUtils.isEmpty(idDocument)) {
                 saveStamperImageFile(documentBytes, nroRadicado);
-                return null;
+                return;
             }
+
+            idDocument = idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument;
+            CmisObject cmisObject = session.getObject(session.createObjectId(idDocument));
+
+            Document documentECM = (Document) cmisObject;
+            String docMimeType = documentECM.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
+            final Folder folder = getFolderFrom(documentECM);
+            if (null == folder) {
+                throw new SystemException("Ocurrio un error al estampar la etiqueta de radicacion");
+            }
+
+            byte[] imageBytes = null;
+            DocumentMimeType mimeType = DocumentMimeType.APPLICATION_PDF;
             Document documentImg = null;
-            if (ObjectUtils.isEmpty(documentBytes)) {
+            if (DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType)) {
+                documentBytes = getDocumentBytes(documentECM);
+                mimeType = DocumentMimeType.APPLICATION_HTML;
+            } else {
                 documentImg = getStamperImage(nroRadicado);
                 if (null == documentImg) {
                     throw new SystemException("No existe imagen con numero de radicado " + nroRadicado);
                 }
-                final Optional<File> optionalFile = convertInputStreamToFile(documentImg.getContentStream());
-                if (optionalFile.isPresent()) {
-                    documentBytes = getStamperImageBytes(optionalFile.get());
-                }
-            }
-            idDocument = idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument;
-            CmisObject cmisObject = session.getObject(session.createObjectId(idDocument));
-            if (!(cmisObject instanceof Document)) {
-                throw new SystemException("El ID solicitado no corresponde con el de un documento en el Gestor de documentos");
-            }
-            Document document = (Document) cmisObject;
-            String docMimeType = document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
-            final Folder folder = getFolderFrom(document);
-            if (null == folder) {
-                throw new SystemException("Ocurrio un error inesperado");
-            }
-            String docName = document.getName();
-            DocumentMimeType mimeType = DocumentMimeType.APPLICATION_HTML;
-            final String pdfSufix = ".pdf";
-            if (mimeType.getType().equals(docMimeType)) {
-                String sufix = "";
-                if (docName.endsWith(".htm")) {
-                    sufix = ".htm";
-                }
-                if (docName.endsWith(".html")) {
-                    sufix = ".html";
-                }
-                if (docName.endsWith(".xhtml")) {
-                    sufix = ".xhtml";
-                }
-                docName = "".equals(sufix) ? docName + pdfSufix : docName.replace(sufix, pdfSufix);
-            } else {
-                mimeType = DocumentMimeType.APPLICATION_PDF;
-                docName = !docName.endsWith(pdfSufix) ? docName + pdfSufix : docName;
+                final File file = convertInputStreamToFile(documentImg.getContentStream());
+                imageBytes = getStamperImageBytes(file);
             }
 
             final byte[] stampedDocument = contentStamper
-                    .getStampedDocument(documentBytes, getDocumentBytes(document), mimeType);
+                    .getStampedDocument(imageBytes, documentBytes, mimeType);
+
+            String docName = documentECM.getName();
+            final String pdfSufix = ".pdf";
+            String sufix = "";
+            if (docName.endsWith(".htm")) {
+                sufix = ".htm";
+            }
+            if (docName.endsWith(".html")) {
+                sufix = ".html";
+            }
+            if (docName.endsWith(".xhtml")) {
+                sufix = ".xhtml";
+            }
+            docName = "".equals(sufix) ? docName + pdfSufix : docName.replace(sufix, pdfSufix);
 
             documentoDTO.setNombreDocumento(docName);
 
-            Map<String, Object> properties = obtenerPropiedadesDocumento(document);
+            Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_PDF.getType());
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
 
-            document.delete(false);
+            documentECM.delete(false);
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
                     BigInteger.valueOf(stampedDocument.length), DocumentMimeType.APPLICATION_PDF.getType(), new ByteArrayInputStream(stampedDocument));
-            document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+
             if (null != documentImg) {
-                documentImg.delete();
+                //documentImg.delete();
             }
-            return document;
+
         } catch (Exception e) {
             log.error("Error al estampar la etiqueta de radicacion");
             throw ExceptionBuilder.newBuilder()
@@ -1415,7 +1409,7 @@ final class ContentControlUtilities implements Serializable {
         }
     }
 
-    private void crearInsertarCarpetaRadicacion(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String comunicacionOficial, String tipoComunicacionSelector, Optional<Carpeta> comunicacionOficialFolder) {
+    private void crearInsertarCarpetaRadicacion(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String comunicacionOficial, String tipoComunicacionSelector, Optional<Carpeta> comunicacionOficialFolder) throws SystemException {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         List<DocumentoDTO> documentoDTOList = new ArrayList<>();
@@ -1462,7 +1456,7 @@ final class ContentControlUtilities implements Serializable {
         }
     }
 
-    private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) {
+    private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) throws SystemException {
         String idDocumento;
         log.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
@@ -1482,15 +1476,18 @@ final class ContentControlUtilities implements Serializable {
         properties.put(PropertyIds.NAME, docName);
         documentoDTO.setNombreDocumento(docName);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
+        DocumentoDTO dto = transformarDocumento(newDocument);
 
-        idDocumento = newDocument.getId();
-        String[] parts = idDocumento.split(";");
-        idDocumento = parts[0];
-        documentoDTO.setVersionLabel(newDocument.getVersionLabel());
-        documentoDTO.setIdDocumento(idDocumento);
+        documentoDTO.setIdDocumentoPadre(dto.getIdDocumentoPadre());
+        documentoDTO.setIdDocumento(dto.getIdDocumento());
+        documentoDTO.setTipoDocumento(dto.getTipoDocumento());
+        documentoDTO.setNroRadicado(dto.getNroRadicado());
+        documentoDTO.setNombreDocumento(dto.getNombreDocumento());
+        documentoDTO.setTipoPadreAdjunto(dto.getTipoPadreAdjunto());
+        documentoDTO.setVersionLabel(dto.getVersionLabel());
         documentoDTOList.add(documentoDTO);
         response.setDocumentoDTOList(documentoDTOList);
-        return idDocumento;
+        return dto.getIdDocumento();
     }
 
     /**
@@ -1596,6 +1593,7 @@ final class ContentControlUtilities implements Serializable {
         }
         return null;
     }
+
     private byte[] getStamperImageBytes(File imgFile) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(imgFile);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
