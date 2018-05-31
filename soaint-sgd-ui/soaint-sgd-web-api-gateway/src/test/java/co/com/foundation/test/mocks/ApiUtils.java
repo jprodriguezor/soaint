@@ -1,17 +1,22 @@
 package co.com.foundation.test.mocks;
 
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.assertj.core.api.Assertions;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ApiUtils {
 
@@ -110,18 +115,42 @@ public class ApiUtils {
                     .collect(Collectors.joining());
 
             Assertions.assertThat(thePath)
-                    .as("Path mismatch")
+                    .as("Path mismatch for %s controller", method.getName())
                     .isEqualTo(path);
 
             assertPathParams(thePath);
+        }
+
+        public ApiAssertions<T> hasQueryParams(String ...queryParams) {
+            List<String> params = getParametersAnnotatedWith(QueryParam.class)
+                    .map(parameter -> parameter.getAnnotation(QueryParam.class).value())
+                    .collect(Collectors.toList());
+
+            Assertions.assertThat(params)
+                    .as("Query params")
+                    .containsOnly(queryParams);
+
+            return this;
+        }
+
+        public ApiAssertions<T> hasRequestBodyClass(Class<?> requestBodyClass) {
+            Optional<Class<?>> parameterClass = getParametersAnnotatedWith(RequestBody.class)
+                .findFirst()
+                .map(Parameter::getType);
+
+            Assertions.assertThat(parameterClass.isPresent())
+                .as("Request Body should be present")
+                .isTrue();
+            Assertions.assertThat(parameterClass).hasValue(requestBodyClass);
+
+            return this;
         }
 
         private void assertPathParams(String thePath) {
 
             if(method.getParameterCount() == 0) return;
 
-            List<String> pathParams = Arrays.asList(method.getParameters()).stream()
-                    .filter(parameter -> parameter.isAnnotationPresent(PathParam.class))
+            List<String> pathParams = getParametersAnnotatedWith(PathParam.class)
                     .map(parameter -> parameter.getAnnotation(PathParam.class).value() != null
                             ? parameter.getAnnotation(PathParam.class).value()
                             : parameter.getName())
@@ -169,6 +198,11 @@ public class ApiUtils {
             return method.isAnnotationPresent(annotation)
                     ? method.getAnnotation(annotation)
                     : controllerClass.getAnnotation(annotation);
+        }
+
+        private Stream<Parameter> getParametersAnnotatedWith(Class<? extends Annotation> annotation) {
+            return Arrays.asList(method.getParameters()).stream()
+                    .filter(parameter -> parameter.isAnnotationPresent(annotation));
         }
     }
 
