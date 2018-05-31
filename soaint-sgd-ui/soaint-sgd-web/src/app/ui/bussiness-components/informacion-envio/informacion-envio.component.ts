@@ -48,8 +48,8 @@ export class InformacionEnvioComponent implements OnInit {
       }
   }
 
-@Input() set comunicacionSeleccionada(value: number) {    
-    this.comunicacionSeleccionada = value;
+@Input() set comunicacionSeleccionada(value: ComunicacionOficialDTO) {    
+    this._comunicacionSeleccionada = value;
     this.ActualizarFormulario();    
  }
 
@@ -63,13 +63,13 @@ export class InformacionEnvioComponent implements OnInit {
 }
 
  Guardar() {
-  this._comunicacionSeleccionada.correspondencia.envio_nroguia = this.form.controls['envio_nroguia'].value;
-  this._comunicacionSeleccionada.correspondencia.envio_peso = this.form.controls['envio_peso'].value;
-  this._comunicacionSeleccionada.correspondencia.envio_valor = this.form.controls['envio_valor'].value;
+  this._comunicacionSeleccionada.correspondencia.envio_nroguia = this.form.controls['nro_guia'].value;
+  this._comunicacionSeleccionada.correspondencia.envio_peso = this.form.controls['peso'].value;
+  this._comunicacionSeleccionada.correspondencia.envio_valor = this.form.controls['valor'].value;
   this.completado.emit(this._comunicacionSeleccionada);
  }
  Cancelar() {
-  this.cancelado.emit();
+  this.cancelado.emit(null);
  }
 
 

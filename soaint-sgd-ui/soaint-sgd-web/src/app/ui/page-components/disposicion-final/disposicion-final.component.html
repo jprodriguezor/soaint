@@ -280,7 +280,7 @@
     (onHide)="state.CerrarDetalle()">
     <p-header>
     </p-header>
-    <app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
+    <app-detalle-unidad-conservacion [state]="state"></app-detalle-unidad-conservacion>
 </p-dialog>
 
 <p-dialog
@@ -292,5 +292,5 @@
     (onHide)="CerrarNotas()">
     <p-header>
     </p-header>
-    <app-popup-unidad-documental-notas [state]="State" [index]="indexUnidadSeleccionada" (completado)="CerrarNotas()" ></app-popup-unidad-documental-notas>
+    <app-popup-unidad-documental-notas [state]="state" [index]="indexUnidadSeleccionada" (completado)="CerrarNotas()" ></app-popup-unidad-documental-notas>
 </p-dialog>

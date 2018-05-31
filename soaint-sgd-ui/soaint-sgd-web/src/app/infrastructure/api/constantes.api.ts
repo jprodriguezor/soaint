@@ -69,6 +69,12 @@ export class ConstanteApiService extends CacheResponse {
       case 'soporteAnexo':
         endpoint = environment.soporteAnexo_endpoint;
         break;
+      case 'modalidadCorreo':
+        endpoint = environment.modalidadCorreo_endpoint;
+        break;
+      case 'claseEnvio':
+        endpoint = environment.claseEnvio_endpoint;
+        break;
     }
 
     if (endpoint !== null) {

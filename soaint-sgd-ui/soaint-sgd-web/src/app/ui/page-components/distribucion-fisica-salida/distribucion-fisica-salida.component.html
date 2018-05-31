@@ -1,6 +1,6 @@
 <div class="ui-fluid">
   <app-task-container>
-    <div customActions>
+    <div customActions *ngIf="!(closedTask | async)">
         <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
         (click)="abort()"></button>
       <button pButton type="button" label="Generar"
@@ -11,15 +11,16 @@
 
     <div taskBody>
         <p-panel header="Búsqueda de tareas" [style]="{border: 'none'}">
-          <div class="ui-g ui-fluid">
+          <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
             <div class="ui-g-12">
                 <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
                     <div class="ui-g form-group">
-                      <div class="ui-g-12 md-dropdownfield">
+                      <div class="ui-g-12">
                         <label for="claseEnvio">Clase de envío</label>
                       </div>
-                      <div class="ui-g-12">
-                        <p-dropdown [options]="dependencias | dropdownItem" id="claseEnvio"
+                      <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="modalidadCorreo | dropdownItem" 
+                                    id="claseEnvio"
                                     placeholder="Seleccione"
                                     [autoWidth]="false" formControlName="claseEnvio"
                                     (onBlur)="OnBlurEvents('claseEnvio')"
@@ -38,7 +39,7 @@
                           <label for="modalidadCorreo">Modalidad de correo</label>
                         </div>
                         <div class="ui-g-12 md-dropdownfield">
-                          <p-dropdown [options]="dependencias | dropdownItem" id="modalidadCorreo"
+                          <p-dropdown [options]="claseEnvio | dropdownItem" id="modalidadCorreo"
                                       placeholder="Seleccione"
                                       [autoWidth]="false" formControlName="modalidadCorreo"
                                       (onBlur)="OnBlurEvents('modalidadCorreo')"
@@ -133,7 +134,7 @@
           </div>
         </p-panel>
         <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
-          <div class="ui-g ui-fluid">
+          <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
             <div class="ui-g-12">
               <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                            [(selection)]="selectedComunications"
@@ -188,15 +189,15 @@
                 </p-column>
                 <p-column  header="Información envío" [style]="{'width':'120px','text-align':'center'}">                             
                     <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                        <button pButton type="button" style="width: 35px; float: right"
-                            (click)="InformacionEnvio(i)" icon="ui-icon-arrow-forward">
+                        <button pButton type="button" style="float: right"
+                            (click)="InformacionEnvio(i)" label="Información envío">
                          </button>
                     </ng-template>                            
                 </p-column>
                 <p-column  header="Ver Detalle" [style]="{'width':'120px','text-align':'center'}">                             
                     <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                        <button pButton type="button" style="width: 35px; float: right"
-                            (click)="VerDetalle(i)" icon="ui-icon-arrow-forward">
+                        <button pButton type="button" style="float: right" 
+                            (click)="VerDetalle(i)" label="Ver Detalle">
                          </button>
                     </ng-template>                            
                 </p-column>
@@ -236,7 +237,9 @@
   </p-header>
   <app-informacion-envio #popUpInformacionEnvio *ngIf="comunicacionSeleccionada"
     [comunicacionSeleccionada]="comunicacionSeleccionada" 
-    (completado)="ActualizarInformacionEnvio($event)">
+    (completado)="ActualizarInformacionEnvio($event)"
+    (cancelado)="ActualizarInformacionEnvio($event)"
+    >
     </app-informacion-envio>
 
 </p-dialog>
