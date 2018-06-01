@@ -15,7 +15,7 @@ public class MunicipioClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public MunicipioClient() {
         super();
@@ -23,7 +23,7 @@ public class MunicipioClient {
 
     public Response listarPorDepartamento(String departamento) {
         log.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios/" + departamento + "/A")
                 .request()
                 .get();
@@ -31,7 +31,7 @@ public class MunicipioClient {
 
     public Response listarMunicipiosPorCodigo(String codigos) {
         log.info("Municipios - [trafic] - listing Municipios by codes with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios")
                 .queryParam("codigos", codigos)
                 .request()
@@ -40,7 +40,7 @@ public class MunicipioClient {
 
     public Response listarMunicipiosActivos() {
         log.info("Municipios - [trafic] - listing Municipios with active status: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios/A")
                 .request()
                 .get();

@@ -19,7 +19,7 @@ public class ProduccionDocumentalClient {
     private String ecm_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    Client client = ClientBuilder.newClient();
+    //Client client = ClientBuilder.newClient();
 
     @Autowired
     private ProcesoClient procesoClient;
@@ -72,7 +72,7 @@ public class ProduccionDocumentalClient {
 
     public Response obtenerDatosDocumentoPorNroRadicado(String nro) {
         log.info("ProduccionDocumental - [trafic] - Obtener datos del documento por Nro Radicado: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/documento-web-api/documento/" .concat(nro))
                 .request()
                 .get();

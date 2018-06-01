@@ -18,7 +18,7 @@ public class TareaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public TareaClient() {
         super();
@@ -26,12 +26,12 @@ public class TareaClient {
 
     public Response guardarEstadoTarea(TareaDTO tareaDTO){
         log.info("Funcionario - [trafic] - buscar Funcionarios with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/tarea-web-api/tarea/").request().buildPost(Entity.json(tareaDTO)).invoke();
     }
 
     public Response listarEstadoTarea(final String idInstanciaProceso, final String idTareaProceso) {
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/tarea-web-api/tarea/" + idInstanciaProceso + "/" + idTareaProceso).request().get();
     }
 

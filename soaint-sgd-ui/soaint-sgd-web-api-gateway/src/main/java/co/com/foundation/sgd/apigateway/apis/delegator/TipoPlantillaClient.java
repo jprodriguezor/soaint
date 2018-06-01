@@ -20,7 +20,7 @@ public class TipoPlantillaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     @Value("${contants.tipoplantilla.value}")
     private String tipoplantilla = "";
@@ -34,7 +34,7 @@ public class TipoPlantillaClient {
 
     public Response get(String codClasificacion, String estado) {
         log.info("TipoPlantilla - [trafic] - listing TipoPlantilla with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/plantilla-web-api/plantilla/" + codClasificacion + "/" +estado)
                 .request()
                 .get();
