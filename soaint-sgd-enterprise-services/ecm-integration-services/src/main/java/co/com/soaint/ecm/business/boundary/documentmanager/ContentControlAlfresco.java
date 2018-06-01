@@ -705,7 +705,7 @@ public class ContentControlAlfresco implements ContentControl {
         } else {
             utilities.buscarCrearCarpetaRadicacion(session, documento, response, properties, selector);
         }
-
+/*
         if (!StringUtils.isEmpty(nroRadicado)) {
             final List<DocumentoDTO> documentoDTOList = response.getDocumentoDTOList();
             for (DocumentoDTO dto :
@@ -717,7 +717,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             }
         }
-
+*/
         log.info("Se sale del metodo subirDocumentoPrincipalAdjunto");
         return response;
     }
