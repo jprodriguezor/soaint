@@ -4,6 +4,8 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,7 +24,7 @@ public class CorrespondenciaClient {
 
     private String droolsAuthToken = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN);
 
-    private Client client = ClientBuilder.newClient();
+    private JerseyClient client = JerseyClientBuilder.createClient();
 
     public CorrespondenciaClient() {
         super();

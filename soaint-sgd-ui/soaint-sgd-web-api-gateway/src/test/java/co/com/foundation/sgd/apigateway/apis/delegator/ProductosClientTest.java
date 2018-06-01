@@ -1,15 +1,14 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.foundation.test.mocks.JaxRsUtils;
 import co.com.foundation.test.rules.EnvironmentRule;
-import co.com.foundation.sgd.utils.SystemParameters;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyWebTarget;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -24,17 +23,17 @@ public class ProductosClientTest {
 
     private ProductosClient productosClient;
 
-    private WebTarget wt;
+    private JerseyWebTarget wt;
 
-    private Client client;
+    private JerseyClient client;
 
     @Before
     public void setup() {
 
         productosClient = new ProductosClient();
 
-        client = mock(Client.class);
-        wt = mock(WebTarget.class);
+        client = mock(JerseyClient.class);
+        wt = mock(JerseyWebTarget.class);
 
         when(client.target(anyString())).thenReturn(wt);
 
