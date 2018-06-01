@@ -1116,10 +1116,11 @@ final class ContentControlUtilities implements Serializable {
                 throw new SystemException("Ocurrio un error al estampar la etiqueta de radicacion");
             }
 
-            byte[] imageBytes = null;
+            byte[] imageBytes;
             DocumentMimeType mimeType = DocumentMimeType.APPLICATION_PDF;
             Document documentImg = null;
             if (DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType)) {
+                imageBytes = documentBytes;
                 documentBytes = getDocumentBytes(documentECM);
                 mimeType = DocumentMimeType.APPLICATION_HTML;
             } else {
@@ -1128,7 +1129,7 @@ final class ContentControlUtilities implements Serializable {
                     throw new SystemException("No existe imagen con numero de radicado " + nroRadicado);
                 }
                 final File file = convertInputStreamToFile(documentImg.getContentStream());
-                imageBytes = getStamperImageBytes(file);
+                imageBytes = imageBytes(file);
             }
 
             final byte[] stampedDocument = contentStamper
@@ -1163,7 +1164,7 @@ final class ContentControlUtilities implements Serializable {
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
             if (null != documentImg) {
-                documentImg.delete();
+                //documentImg.delete();
             }
 
         } catch (Exception e) {
@@ -1590,10 +1591,13 @@ final class ContentControlUtilities implements Serializable {
         return null;
     }
 
-    private byte[] getStamperImageBytes(File imgFile) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(imgFile);
+    private byte[] imageBytes(File imgFile) throws IOException {
+        BufferedImage originalImage = ImageIO.read(imgFile);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", baos);
-        return baos.toByteArray();
+        ImageIO.write( originalImage, "png", baos );
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+        return imageInByte;
     }
 }

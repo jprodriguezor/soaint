@@ -31,12 +31,14 @@ public final class ContentStamperImpl implements ContentStamper {
     @Override
     public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, DocumentMimeType mimeType) throws SystemException {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
+        float absoluteY = 720F;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
             if (mimeType == DocumentMimeType.APPLICATION_HTML) {
                 final Charset UTF8_CHARSET = Charset.forName("UTF-8");
                 final String htmlCad = new String(contentBytes, UTF8_CHARSET);
                 contentBytes = (top() + htmlCad + bottom()).getBytes(UTF8_CHARSET);
                 contentBytes = convertHtmlToPdf(contentBytes);
+                absoluteY = 650F;
             }
             PdfReader reader = new PdfReader(contentBytes);
             PdfStamper stamper = new PdfStamper(reader, out);
@@ -44,7 +46,7 @@ public final class ContentStamperImpl implements ContentStamper {
             PdfImage stream = new PdfImage(image, "", null);
             PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
             image.setDirectReference(ref.getIndirectReference());
-            image.setAbsolutePosition(380F, 650F);
+            image.setAbsolutePosition(380F, absoluteY);
             image.scalePercent(40);
             PdfContentByte over = stamper.getOverContent(1);
             over.addImage(image);

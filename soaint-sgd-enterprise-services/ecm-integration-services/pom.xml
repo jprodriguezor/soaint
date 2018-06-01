@@ -151,23 +151,23 @@
             <artifactId>flying-saucer-pdf-itext5</artifactId>
             <version>9.1.12</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.52</version>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf.tool</groupId>
-            <artifactId>xmlworker</artifactId>
-            <version>5.5.11</version>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>com.itextpdf</groupId>
+                    <artifactId>itextpdf</artifactId>
+                    <version>5.5.11</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                    <version>1.52</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.itextpdf.tool</groupId>
+                    <artifactId>xmlworker</artifactId>
+                    <version>5.5.11</version>
+                </dependency>
+        -->
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             DEPENDENCY - Alfresco OpenCMIS
