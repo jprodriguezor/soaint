@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -25,7 +26,7 @@ public class SecurityClient {
 
     public Response verificarCredenciales(CredencialesDTO credenciales) {
         log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/funcionarios-web-api/funcionarios/verificar-credenciales")
                 .request()
                 .post(Entity.json(credenciales));

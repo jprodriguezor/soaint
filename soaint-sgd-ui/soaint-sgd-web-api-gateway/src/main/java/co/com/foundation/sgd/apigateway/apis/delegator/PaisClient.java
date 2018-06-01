@@ -25,7 +25,7 @@ public class PaisClient {
 
     public Response list() {
         log.info("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/paises-web-api/paises/A")
                 .request()
                 .get();

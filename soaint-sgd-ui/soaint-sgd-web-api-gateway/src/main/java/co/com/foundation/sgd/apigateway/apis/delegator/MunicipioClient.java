@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +24,7 @@ public class MunicipioClient {
 
     public Response listarPorDepartamento(String departamento) {
         log.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios/" + departamento + "/A")
                 .request()
                 .get();
@@ -31,7 +32,7 @@ public class MunicipioClient {
 
     public Response listarMunicipiosPorCodigo(String codigos) {
         log.info("Municipios - [trafic] - listing Municipios by codes with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios")
                 .queryParam("codigos", codigos)
                 .request()
@@ -40,7 +41,7 @@ public class MunicipioClient {
 
     public Response listarMunicipiosActivos() {
         log.info("Municipios - [trafic] - listing Municipios with active status: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios/A")
                 .request()
                 .get();
