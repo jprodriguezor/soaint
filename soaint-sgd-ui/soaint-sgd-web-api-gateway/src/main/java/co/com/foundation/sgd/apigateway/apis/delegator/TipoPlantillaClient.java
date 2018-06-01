@@ -8,6 +8,7 @@ import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class TipoPlantillaClient {
 
     public Response get(String codClasificacion, String estado) {
         log.info("TipoPlantilla - [trafic] - listing TipoPlantilla with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/plantilla-web-api/plantilla/" + codClasificacion + "/" +estado)
                 .request()
                 .get();

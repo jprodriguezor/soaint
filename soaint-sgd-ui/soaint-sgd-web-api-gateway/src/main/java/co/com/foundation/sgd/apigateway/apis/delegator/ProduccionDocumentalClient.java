@@ -8,6 +8,7 @@ import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.*;
@@ -72,7 +73,7 @@ public class ProduccionDocumentalClient {
 
     public Response obtenerDatosDocumentoPorNroRadicado(String nro) {
         log.info("ProduccionDocumental - [trafic] - Obtener datos del documento por Nro Radicado: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/documento-web-api/documento/" .concat(nro))
                 .request()
                 .get();

@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +24,7 @@ public class DependeciaGrupoClient {
 
     public Response listBySedeAdministrativa(String codigoSedeAdministrativa) {
         log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/organigrama-web-api/organigrama/dependencias/" + codigoSedeAdministrativa)
                 .request()
                 .get();
@@ -31,7 +32,7 @@ public class DependeciaGrupoClient {
 
     public Response obtenerPorCodigo(String codigo) {
         log.info("DependeciaGrupo - [trafic] - Get by code with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencia/".concat(codigo))
                 .request()
                 .get();
@@ -39,7 +40,7 @@ public class DependeciaGrupoClient {
 
     public Response obtenerPorDependencias(String codigosDependencia) {
         log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencia")
                 .queryParam("codigos", codigosDependencia)
                 .request()
@@ -48,7 +49,7 @@ public class DependeciaGrupoClient {
 
     public Response listarDependencias() {
         log.info("DependeciaGrupo - [trafic] - listing Dependecias with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencias")
                 .request()
                 .get();
