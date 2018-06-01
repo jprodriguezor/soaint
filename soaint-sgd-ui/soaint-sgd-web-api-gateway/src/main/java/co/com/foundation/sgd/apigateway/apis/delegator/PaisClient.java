@@ -17,8 +17,6 @@ public class PaisClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private JerseyClient client = JerseyClientBuilder.createClient();
-
     public PaisClient() {
         super();
     }

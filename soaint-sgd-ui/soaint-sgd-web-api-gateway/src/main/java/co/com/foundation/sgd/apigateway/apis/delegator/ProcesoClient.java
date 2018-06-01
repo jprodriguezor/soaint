@@ -6,8 +6,6 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ItemDevolucionDTO;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -25,8 +23,6 @@ import java.util.Map;
 public class ProcesoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL);
-
-    private JerseyClient client = JerseyClientBuilder.createClient();
 
     public Response list() {
         log.info("Proccess - [trafic] - listing Proccess with endpoint: " + endpoint);

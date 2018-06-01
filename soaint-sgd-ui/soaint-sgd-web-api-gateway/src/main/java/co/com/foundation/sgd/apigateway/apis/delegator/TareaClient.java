@@ -19,8 +19,6 @@ public class TareaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private JerseyClient client = JerseyClientBuilder.createClient();
-
     public TareaClient() {
         super();
     }
