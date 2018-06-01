@@ -712,6 +712,7 @@ public class ContentControlAlfresco implements ContentControl {
                     documentoDTOList) {
                 if ("Principal".equals(dto.getTipoPadreAdjunto()) && !StringUtils.isEmpty(dto.getNroRadicado())) {
                     utilities.estamparEtiquetaRadicacion(dto, session);
+                    dto.setDocumento(null);
                     break;
                 }
             }
@@ -1231,18 +1232,19 @@ public class ContentControlAlfresco implements ContentControl {
         if (StringUtils.isEmpty(idDocPincipal)) {
             throw new SystemException("No se ha especificado el ID del documento Principal");
         }
-        final String nombreDoc = documento.getNombreDocumento();
+        String nombreDoc = documento.getNombreDocumento();
         if (StringUtils.isEmpty(nombreDoc)) {
             throw new SystemException("No se ha especificado el nombre del documento");
         }
         try {
+            nombreDoc += !nombreDoc.endsWith(".pdf") ? ".pdf" : "";
             ObjectId objectId = new ObjectIdImpl(idDocPincipal);
             CmisObject cmisObject = session.getObject(objectId);
             Document document = (Document) cmisObject;
             final DocumentoDTO docPrincipal = utilities.transformarDocumento(document);
             final String docType = docPrincipal.getTipoPadreAdjunto();
-            if (StringUtils.isEmpty(docType) || docType.equalsIgnoreCase("principal")) {
-                throw new SystemException("El id proporcionado no coincide con el de un documento principal");
+            if (StringUtils.isEmpty(docType) || !docType.equalsIgnoreCase("principal")) {
+                throw new SystemException("El identificador proporcionado no coincide con el de un documento principal");
             }
             final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
                     DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
@@ -1255,6 +1257,7 @@ public class ContentControlAlfresco implements ContentControl {
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentMimeType);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, docPrincipal.getNroRadicado());
             properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
+            properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
             Folder folder = utilities.getFolderFrom(document);
             if (null != folder) {
                 document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);

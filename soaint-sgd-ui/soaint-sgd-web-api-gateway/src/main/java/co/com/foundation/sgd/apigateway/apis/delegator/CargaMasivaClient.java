@@ -3,6 +3,8 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 
@@ -21,8 +23,8 @@ import java.io.InputStream;
 public class CargaMasivaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
-    
-    private Client client = ClientBuilder.newClient();
+
+    private JerseyClient client = JerseyClientBuilder.createClient();
 
     public CargaMasivaClient() {
         super();
