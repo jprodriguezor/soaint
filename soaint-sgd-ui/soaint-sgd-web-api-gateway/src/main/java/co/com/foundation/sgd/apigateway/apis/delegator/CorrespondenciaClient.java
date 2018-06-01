@@ -57,6 +57,21 @@ public class CorrespondenciaClient {
                 .get();
     }
 
+    public Response listarComunicacionesSalidaDistibucionFisica(String fechaIni, String fechaFin, String codDependencia, String modEnvio, String claseEnvio, String codTipoDoc, String nroRadicado) {
+        log.info("Correspondencia - [trafic] - listar comunicacion salida para distribucion fisica with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/listar-comunicacion-salida-distribucion-fisica")
+                .queryParam("fecha_ini", fechaIni)
+                .queryParam("fecha_fin", fechaFin)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("mod_correo", modEnvio)
+                .queryParam("clase_envio", claseEnvio)
+                .queryParam("cod_tipo_doc", codTipoDoc)
+                .queryParam("nro_radicado", nroRadicado)
+                .request()
+                .get();
+    }
+
     public Response listarObservaciones(BigInteger idCorrespondencia) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

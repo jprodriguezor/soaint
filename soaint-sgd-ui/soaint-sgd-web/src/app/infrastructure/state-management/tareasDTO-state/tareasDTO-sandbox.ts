@@ -16,7 +16,9 @@ import {
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
   TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL,
   TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO, TASK_COMPLETAR_DATOS_DISTRIBUCION, TASK_VERIFICAR_TRANSFERENCIA_DOCUMENTAL,
-  TASK_APROBAR_TRANSFERENCIA_DOCUMENTAL
+  TASK_APROBAR_TRANSFERENCIA_DOCUMENTAL,
+  TASK_GENERAR_PLANILLA_SALIDA,
+  TASK_CARGAR_PLANILLA_SALIDA
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -205,6 +207,14 @@ export class Sandbox {
 
         case TASK_VERIFICAR_TRANSFERENCIA_DOCUMENTAL:
         this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.transferenciasDocumentales}/2`, task]));
+        break;
+
+        case TASK_GENERAR_PLANILLA_SALIDA:
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.generarPlanillaSalida}`, task]));
+        break;
+
+        case TASK_CARGAR_PLANILLA_SALIDA:
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.generarPlanillaSalida}`, task]));
         break;
 
       default:
