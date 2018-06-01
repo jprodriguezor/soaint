@@ -1,8 +1,10 @@
 package co.com.foundation.test.mocks;
 
+import org.glassfish.jersey.client.JerseyInvocation;
+import org.glassfish.jersey.client.JerseyWebTarget;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -18,73 +20,73 @@ public final class JaxRsUtils {
         return response;
     }
 
-    public static Invocation.Builder mockPostPath(WebTarget wt, String path) {
+    public static Invocation.Builder mockPostPath(JerseyWebTarget wt, String path) {
         return mockPostPath(wt, null, path);
     }
 
-    public static Invocation.Builder mockPutPath(WebTarget wt, String path) {
+    public static Invocation.Builder mockPutPath(JerseyWebTarget wt, String path) {
         return mockPutPath(wt, null, path);
     }
 
-    public static WebTarget mockGetPath(WebTarget wt, String path) {
+    public static JerseyWebTarget mockGetPath(JerseyWebTarget wt, String path) {
         return mockGetPath(wt, null, path);
     }
 
-    public static WebTarget mockDeletePath(WebTarget wt, String path) {
+    public static JerseyWebTarget mockDeletePath(JerseyWebTarget wt, String path) {
         return mockDeletePath(wt, null, path);
     }
 
-    public static <T> Invocation.Builder mockPostPath(WebTarget wt, Class<T> responseClass, String path) {
+    public static <T> Invocation.Builder mockPostPath(JerseyWebTarget wt, Class<T> responseClass, String path) {
 
         Response response = mockResponse(responseClass);
-        Invocation.Builder requestBuilder = mockRequestBuilder();
+        JerseyInvocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.post(any(Entity.class))).thenReturn(response);
 
-        Invocation invocation = mock(Invocation.class);
+        JerseyInvocation invocation = mock(JerseyInvocation.class);
         when(requestBuilder.buildPost(any(Entity.class))).thenReturn(invocation);
         when(invocation.invoke()).thenReturn(response);
 
-        WebTarget webTarget = mockWebTarget(requestBuilder);
+        JerseyWebTarget webTarget = mockJerseyWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
         return requestBuilder;
     }
 
-    public static <T> Invocation.Builder mockPutPath(WebTarget wt, Class<T> responseClass, String path) {
+    public static <T> Invocation.Builder mockPutPath(JerseyWebTarget wt, Class<T> responseClass, String path) {
 
         Response response = mockResponse(responseClass);
-        Invocation.Builder requestBuilder = mockRequestBuilder();
+        JerseyInvocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.put(any(Entity.class))).thenReturn(response);
 
-        Invocation invocation = mock(Invocation.class);
+        JerseyInvocation invocation = mock(JerseyInvocation.class);
         when(requestBuilder.buildPut(any(Entity.class))).thenReturn(invocation);
         when(invocation.invoke()).thenReturn(response);
 
-        WebTarget webTarget = mockWebTarget(requestBuilder);
+        JerseyWebTarget webTarget = mockJerseyWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
         return requestBuilder;
     }
 
-    public static <T> WebTarget mockGetPath(WebTarget wt, Class<T> responseClass, String path) {
+    public static <T> JerseyWebTarget mockGetPath(JerseyWebTarget wt, Class<T> responseClass, String path) {
 
         Response response = mockResponse(responseClass);
-        Invocation.Builder requestBuilder = mockRequestBuilder();
+        JerseyInvocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.get()).thenReturn(response);
 
-        WebTarget webTarget = mockWebTarget(requestBuilder);
+        JerseyWebTarget webTarget = mockJerseyWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
         return webTarget;
     }
 
-    public static <T> WebTarget mockDeletePath(WebTarget wt, Class<T> responseClass, String path) {
+    public static <T> JerseyWebTarget mockDeletePath(JerseyWebTarget wt, Class<T> responseClass, String path) {
 
         Response response = mockResponse(responseClass);
-        Invocation.Builder requestBuilder = mockRequestBuilder();
+        JerseyInvocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.delete()).thenReturn(response);
 
-        WebTarget webTarget = mockWebTarget(requestBuilder);
+        JerseyWebTarget webTarget = mockJerseyWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
         return webTarget;
@@ -116,16 +118,16 @@ public final class JaxRsUtils {
         return response;
     }
 
-    private static <T> Invocation.Builder mockRequestBuilder() {
+    private static <T> JerseyInvocation.Builder mockRequestBuilder() {
 
-        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
+        JerseyInvocation.Builder requestBuilder = mock(JerseyInvocation.Builder.class);
         when(requestBuilder.header(anyString(), any())).thenReturn(requestBuilder);
 
         return requestBuilder;
     }
 
-    private static WebTarget mockWebTarget(Invocation.Builder requestBuilder) {
-        WebTarget webTarget = mock(WebTarget.class);
+    private static JerseyWebTarget mockJerseyWebTarget(JerseyInvocation.Builder requestBuilder) {
+        JerseyWebTarget webTarget = mock(JerseyWebTarget.class);
         when(webTarget.request()).thenReturn(requestBuilder);
         when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
         return webTarget;
