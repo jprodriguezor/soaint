@@ -33,8 +33,7 @@ public enum SelectorType implements Serializable {
         if (!StringUtils.isEmpty(nroRadicado) && nroRadicado.length() >= 2) {
             final SelectorType[] values = SelectorType.values();
             nroRadicado = nroRadicado.toUpperCase();
-            for (SelectorType selectorType :
-                    values) {
+            for (SelectorType selectorType : values) {
                 if (nroRadicado.contains(selectorType.name())) {
                     log.info("Retrieving selector {}", selectorType.name());
                     return selectorType;

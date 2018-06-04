@@ -1161,7 +1161,7 @@ final class ContentControlUtilities implements Serializable {
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
             if (null != documentImg) {
-                //documentImg.delete();
+                documentImg.delete();
             }
 
         } catch (Exception e) {
