@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentStamper;
-import co.com.soaint.ecm.domain.entity.DocumentMimeType;
 import co.com.soaint.ecm.domain.entity.ImagePositionType;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -10,6 +9,7 @@ import com.itextpdf.text.pdf.*;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +34,11 @@ public final class ContentStamperImpl implements ContentStamper {
     }
 
     @Override
-    public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, DocumentMimeType mimeType) throws SystemException {
+    public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, String mimeType) throws SystemException {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
         Document document = new Document(PageSize.A4);
         try(final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            if (mimeType == DocumentMimeType.APPLICATION_HTML) {
+            if (MimeTypes.getMIMEType("html").equals(mimeType)) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 PdfWriter writer = PdfWriter.getInstance(document, outputStream);
                 document.open();
@@ -55,7 +55,6 @@ public final class ContentStamperImpl implements ContentStamper {
                 outputStream.close();
                 is.close();
             }
-
             PdfReader reader = new PdfReader(contentBytes);
             PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
             Image image = getImage(stamperImg);

@@ -18,6 +18,7 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1114,12 +1115,12 @@ final class ContentControlUtilities implements Serializable {
             }
 
             byte[] imageBytes;
-            DocumentMimeType mimeType = DocumentMimeType.APPLICATION_PDF;
+            String mimeType = MimeTypes.getMIMEType("pdf");
             Document documentImg = null;
-            if (DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType)) {
+            if (MimeTypes.getMIMEType("html").equals(docMimeType)) {
                 imageBytes = documentBytes;
                 documentBytes = getDocumentBytes(documentECM);
-                mimeType = DocumentMimeType.APPLICATION_HTML;
+                mimeType = MimeTypes.getMIMEType("html");
             } else {
                 documentImg = getStamperImage(nroRadicado);
                 if (null == documentImg) {
@@ -1151,13 +1152,13 @@ final class ContentControlUtilities implements Serializable {
             Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
-            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_PDF.getType());
+            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, MimeTypes.getMIMEType("pdf"));
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
 
             documentECM.delete(false);
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
-                    BigInteger.valueOf(stampedDocument.length), DocumentMimeType.APPLICATION_PDF.getType(), new ByteArrayInputStream(stampedDocument));
+                    BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
             if (null != documentImg) {
@@ -1286,11 +1287,13 @@ final class ContentControlUtilities implements Serializable {
 
     private DocumentoDTO crearDocumento(Carpeta carpeta, DocumentoDTO documento) throws SystemException {
         final Map<String, Object> properties = new HashMap<>();
-        final String nombreDoc = documento.getNombreDocumento();
         final byte[] bytes = documento.getDocumento();
         final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
-                DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
-        ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
+        final String sufix = MimeTypes.getExtension(documentMimeType);
+        String nombreDoc = documento.getNombreDocumento();
+        nombreDoc += !nombreDoc.endsWith(sufix) ? sufix : "";
+        final ContentStream contentStream = new ContentStreamImpl(nombreDoc,
                 BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
 
         properties.put(PropertyIds.NAME, nombreDoc);
@@ -1661,11 +1664,12 @@ final class ContentControlUtilities implements Serializable {
             folderImage = rootFolder.createFolder(map);
         }
         final Map<String, Object> map = new HashMap<>();
+        final String mimeType = MimeTypes.getMIMEType("png");
         map.put(PropertyIds.NAME, "tag_" + filename + "_temp.png");
         map.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-        map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_ICON.getType());
+        map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, mimeType);
         ContentStream stream = new ContentStreamImpl(filename, BigInteger.valueOf(bytes.length),
-                DocumentMimeType.APPLICATION_ICON.getType(), new ByteArrayInputStream(bytes));
+                mimeType, new ByteArrayInputStream(bytes));
         folderImage.createDocument(map, stream, VersioningState.MAJOR);
     }
 
