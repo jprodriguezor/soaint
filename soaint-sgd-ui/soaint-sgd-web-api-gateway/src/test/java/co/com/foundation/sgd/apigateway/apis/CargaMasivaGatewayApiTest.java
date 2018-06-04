@@ -128,4 +128,36 @@ public class CargaMasivaGatewayApiTest {
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(response.getEntity()).isEqualTo(JSON_CONTENT);
     }
+
+    @Test
+    public void cargarDocumentoRandomFilename() {
+        // given
+        String FILE_NAME = "randomName";
+        String DATA = "PDF/DATA";
+        MultipartFormDataInput FILES = PartUtils.newMultiPart()
+                .addPart("file", DATA)
+                .build();
+
+        String COD_SEDE = "CS01";
+        String COD_DEPENDENCIA = "CD01";
+        String COD_FUNCIONARIO_RADICA = "CFR01";
+
+        Response theResponse = JaxRsUtils.mockResponse(String.class, JSON_CONTENT);
+        when(client.cargarDocumento(any(InputPart.class), anyString(), anyString(), anyString(), anyString())).thenReturn(theResponse);
+
+        // when
+        Response response = gatewayApi.cargarDocumento(COD_SEDE, COD_DEPENDENCIA, COD_FUNCIONARIO_RADICA, FILES);
+
+        // then
+        verify(client).cargarDocumento(PartUtils.extractFrom(FILES, "file").get(0), COD_SEDE, COD_DEPENDENCIA, COD_FUNCIONARIO_RADICA, FILE_NAME);
+
+        ApiUtils.assertThat(CargaMasivaGatewayApi.class, "cargarDocumento")
+                .hasPostMapping("/carga-masiva-gateway-api/cargar-fichero/{codigoSede}/{codigoDependencia}/{codfunRadica}")
+                .produces(MediaType.APPLICATION_JSON)
+                .consumes(MediaType.MULTIPART_FORM_DATA)
+                .hasJWTTokenSecurity();
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        assertThat(response.getEntity()).isEqualTo(JSON_CONTENT);
+    }
 }
