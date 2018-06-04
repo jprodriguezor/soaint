@@ -1,11 +1,14 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
+import co.com.soaint.ecm.domain.entity.CronType;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
  * @author sarias
  */
+@Getter
 @Component
 public class Configuracion {
 
@@ -50,11 +53,10 @@ public class Configuracion {
     @Value("${carpetaPlantilla}")
     private String acarpetaPlantilla;
 
+    private final CronType cronType;
 
-    private Configuracion(){
-        /*
-         *a
-          */
+    private Configuracion(@Value("${scheduling.job.cron}") String cronName){
+       this.cronType = CronType.valueOf(cronName.toUpperCase());
     }
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
