@@ -684,23 +684,24 @@ public class ContentControlAlfresco implements ContentControl {
         final String idDocPrincipal = documento.getIdDocumentoPadre();
         if (StringUtils.isEmpty(idDocPrincipal)) {
             DocumentoDTO dto;
+            SelectorType selectorType = null;
+            final String nroRadicado = documento.getNroRadicado();
             if (!StringUtils.isEmpty(selector) && "PD".equals(selector.toUpperCase())) {
                 dto = utilities.subirDocumentoPrincipalPD(documento, session);
             } else {
-                final String nroRadicado = documento.getNroRadicado();
                 if (StringUtils.isEmpty(nroRadicado)) {
                     throw new SystemException("No se ha especificado el numero de radicado");
                 }
-                SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                selectorType = SelectorType.getSelectorBy(nroRadicado);
                 if (null == selectorType) {
                     throw new SystemException("El selector no valido '" + nroRadicado + "'");
                 }
                 dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, session);
             }
-            /*final String nroRadicado = dto.getNroRadicado();
-            if (!StringUtils.isEmpty(nroRadicado) && "Principal".equals(dto.getTipoPadreAdjunto())) {
+            if (null != selectorType && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)
+                    && "Principal".equals(dto.getTipoPadreAdjunto())) {
                 utilities.estamparEtiquetaRadicacion(dto, session);
-            }*/
+            }
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             documentoDTOS.add(documentoDTOS.size(), dto);
             return MensajeRespuesta.newInstance()
