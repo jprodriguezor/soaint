@@ -4,7 +4,10 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.domain.entity.*;
+import co.com.soaint.ecm.domain.entity.Carpeta;
+import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.FinalDispositionType;
+import co.com.soaint.ecm.domain.entity.SelectorType;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -26,6 +29,7 @@ import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -837,9 +841,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         byte[] bytes = documento.getDocumento();
         if ("html".equals(documento.getTipoDocumento())) {
-            documento.setTipoDocumento(DocumentMimeType.APPLICATION_HTML.getType());
+            documento.setTipoDocumento(MimeTypes.getMIMEType("html"));
         } else {
-            documento.setTipoDocumento(DocumentMimeType.APPLICATION_PDF.getType());
+            documento.setTipoDocumento(MimeTypes.getMIMEType("pdf"));
         }
 
         if (documento.getIdDocumento() == null) {
@@ -1257,7 +1261,7 @@ public class ContentControlAlfresco implements ContentControl {
                 throw new SystemException("El id proporcionado no coincide con el de un documento principal");
             }
             final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
-                    DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
+                    MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
             ContentStream contentStream = new ContentStreamImpl(nombreDoc,
                     BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
             Map<String, Object> properties = new HashMap<>();
