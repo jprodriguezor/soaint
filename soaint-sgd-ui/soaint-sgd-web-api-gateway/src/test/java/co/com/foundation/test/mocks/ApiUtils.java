@@ -114,6 +114,8 @@ public class ApiUtils {
                     .filter(p -> !p.equals("/"))
                     .collect(Collectors.joining());
 
+            thePath = thePath.endsWith("/") ? thePath.substring(0, thePath.length()-1) : thePath;
+
             Assertions.assertThat(thePath)
                     .as("Path mismatch for %s controller", method.getName())
                     .isEqualTo(path);
