@@ -40,7 +40,7 @@ public class RecordTaskProcessor implements Serializable {
     @Autowired
     private ContentControl contentControl;
 
-    @Scheduled(cron = "${scheduling.job.cron}")
+    @Scheduled(cron = "#{'${scheduling.job.cron.custom}' ne '' ? '${scheduling.job.cron.custom}' : configuracion.cronType.cron}")
     public void tasksExecuter() {
         log.info("Running tasks executer for a day {}", GregorianCalendar.getInstance().getTime());
         autoCloseExecutor();

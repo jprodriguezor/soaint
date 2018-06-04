@@ -744,15 +744,12 @@ final class ContentControlUtilities implements Serializable {
         //Obtener el documentosAdjuntos
         String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado";
         boolean where = false;
-
         if (!ObjectUtils.isEmpty(documento.getIdDocumento())) {
             where = true;
-
             query += " WHERE " + PropertyIds.OBJECT_ID + " = '" + documento.getIdDocumento() + "'" +
                     " OR " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + documento.getIdDocumento() + "'";
         }
         if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
-
             query += (where ? " AND " : " WHERE ") + ConstantesECM.CMCOR_NRO_RADICADO + " = '" + documento.getNroRadicado() + "'";
             where = true;
         }
@@ -1033,7 +1030,7 @@ final class ContentControlUtilities implements Serializable {
      *
      * @param contentStream contentStream
      * @return Un objeto File
-     * @throws IOException En caso de error
+     * @throws SystemException En caso de error
      */
     File convertInputStreamToFile(ContentStream contentStream) throws SystemException {
         try {
@@ -1164,7 +1161,7 @@ final class ContentControlUtilities implements Serializable {
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
             if (null != documentImg) {
-                //documentImg.delete();
+                documentImg.delete();
             }
 
         } catch (Exception e) {
@@ -1225,6 +1222,114 @@ final class ContentControlUtilities implements Serializable {
         }
         return Optional.empty();
     }
+
+    DocumentoDTO subirDocumentoPrincipalPD(DocumentoDTO documentoDTO, Session session) throws SystemException {
+        if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
+            throw new SystemException("No se ha identificado el codigo de la Dependencia");
+        }
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA, ConstantesECM.CMCOR_DEP_CODIGO,
+                documentoDTO.getCodigoDependencia(), session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final String nameFolder = SelectorType.PD.getSelectorName();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), nameFolder);
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, nameFolder, "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        return crearDocumento(carpeta, documentoDTO);
+    }
+
+    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, Session session) throws SystemException {
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+
+        final String query = "SELECT * FROM cmcor:CM_Subserie" +
+                " WHERE " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
+                " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
+
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Iterator<QueryResult> iterator = queryResults.iterator();
+        if (iterator.hasNext()) {
+            final QueryResult next = iterator.next();
+            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            Folder communicationFolder = (Folder) session.getObject(session.createObjectId(objectId));
+            Carpeta carpeta = new Carpeta();
+            carpeta.setFolder(communicationFolder);
+            Optional<Folder> optionalFolder = sonFolderExistsFrom(communicationFolder, selectorType.getSelectorName());
+            if (!optionalFolder.isPresent()) {
+                carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+            } else {
+                carpeta.setFolder(optionalFolder.get());
+            }
+            return crearDocumento(carpeta, documentoDTO);
+        }
+        throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
+    }
+
+    private DocumentoDTO crearDocumento(Carpeta carpeta, DocumentoDTO documento) throws SystemException {
+        final Map<String, Object> properties = new HashMap<>();
+        final String nombreDoc = documento.getNombreDocumento();
+        final byte[] bytes = documento.getDocumento();
+        final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
+                DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
+        ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
+
+        properties.put(PropertyIds.NAME, nombreDoc);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+        properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, !StringUtils.isEmpty(documento.getTipoPadreAdjunto())
+                ? documento.getTipoPadreAdjunto() : "Principal");
+        properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, documento.getIdDocumentoPadre());
+        properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentMimeType);
+        properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documento.getNroRadicado());
+        properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
+        try {
+            final Folder folder = carpeta.getFolder();
+            final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            return transformarDocumento(document);
+        } catch (CmisContentAlreadyExistsException ccaee) {
+            log.error(ConstantesECM.ECM_ERROR_DUPLICADO, ccaee);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("El documento ya existe en el ECM")
+                    .withRootException(ccaee)
+                    .buildSystemException();
+        } catch (Exception e) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    private Optional<Folder> sonFolderExistsFrom(Folder folder, String selectorName) {
+        final ItemIterable<CmisObject> children = folder.getChildren();
+        for (CmisObject cmisObject :
+                children) {
+            if (cmisObject instanceof Folder && cmisObject.getName().equals(selectorName)) {
+                return Optional.of((Folder) cmisObject);
+            }
+        }
+        return Optional.empty();
+    }
+
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
