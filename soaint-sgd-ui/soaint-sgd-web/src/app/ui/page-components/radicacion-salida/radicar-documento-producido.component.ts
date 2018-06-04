@@ -98,7 +98,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     return {
       codDependencia:this.dependencySelected.codigo,
       numeroRadicado:noRadicado,
-      requiereDistribucion:generales.reqDistFisica ? "1" : "2"
+      requiereDistribucion:generales.reqDistFisica
     }
   }
 
