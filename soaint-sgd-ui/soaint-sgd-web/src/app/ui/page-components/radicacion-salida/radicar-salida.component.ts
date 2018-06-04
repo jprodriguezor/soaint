@@ -319,10 +319,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
      valueGeneral.numeroFolio.toString(),
      this.radicacion.correspondencia.nroRadicado.toString(),
      this.radicacion.correspondencia.fecRadicado.toString(),
-     destinatario.nombre,
-     valueRemitente.sedeAdministrativa.nombre,
-     valueRemitente.dependenciaGrupo.nombre,
-     valueRemitente.funcionarioGrupo.nombre
+      valueRemitente.funcionarioGrupo.nombre,
+      valueRemitente.sedeAdministrativa.nombre,
+      valueRemitente.dependenciaGrupo.nombre,
+      destinatario.nombre
   );
   }
 
