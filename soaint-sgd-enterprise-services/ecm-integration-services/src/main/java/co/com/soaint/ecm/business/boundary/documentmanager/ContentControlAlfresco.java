@@ -1272,12 +1272,12 @@ public class ContentControlAlfresco implements ContentControl {
             if (null != folder) {
                 document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
                 if (null != document) {
-                    properties.clear();
-                    properties.put("documentoAnexo", utilities.transformarDocumento(document));
+                    final List<DocumentoDTO> response = new ArrayList<>();
+                    response.add(response.size(), utilities.transformarDocumento(document));
                     return MensajeRespuesta.newInstance()
                             .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                             .mensaje("Operacion completada satisfactoriamente")
-                            .response(properties)
+                            .documentoDTOList(response)
                             .build();
                 }
             }
