@@ -30,10 +30,9 @@ import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-sa
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
-import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 import {isNullOrUndefined} from "util";
-import * as domtoimage from 'dom-to-image';
+import {DomToImageService} from "../../../infrastructure/api/dom-to-image";
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -75,7 +74,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     protected _store: Store<RootState>
     ,protected _changeDetectorRef: ChangeDetectorRef
     ,protected _sandbox:RadicacionSalidaService
-    ,protected _taskSandbox:TaskSandBox) {
+    ,protected _taskSandbox:TaskSandBox
+   ,protected  _domToImage:DomToImageService
+  ) {
 
   }
 
@@ -241,20 +242,20 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       if(!isNullOrUndefined(node)) {
 
-      domtoimage.toBlob(node).then((blob) => {
+        this._domToImage.convertToBlob(node).then(blob => {
 
-        let formData = new FormData();
+          let formData = new FormData();
 
-        formData.append("documento", blob, "etiqueta.png");
-        if(!isNullOrUndefined(ideEcm))
-         formData.append("idDocumento", ideEcm);
-        formData.append("nroRadicado", nroRadicado);
-        formData.append("codigoDependencia", codDependencia);
+          formData.append("documento", blob, "etiqueta.png");
+          if(!isNullOrUndefined(ideEcm))
+            formData.append("idDocumento", ideEcm);
+          formData.append("nroRadicado", nroRadicado);
+          formData.append("codigoDependencia", codDependencia);
 
-        this._sandbox.uploadTemplate(formData).subscribe(null,() => {
-          this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
+          this._sandbox.uploadTemplate(formData).subscribe(null,() => {
+            this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
+          });
         });
-      });
     }
 
   }
