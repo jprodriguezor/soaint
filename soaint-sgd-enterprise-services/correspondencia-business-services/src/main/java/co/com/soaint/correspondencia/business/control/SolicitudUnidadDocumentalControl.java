@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
@@ -44,6 +45,7 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
+    @Transactional
     public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
@@ -67,6 +69,7 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
+    @Transactional
     public void insertarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
@@ -319,6 +322,38 @@ public class SolicitudUnidadDocumentalControl {
                 .executeUpdate();
 
                 return solicitudUnidadDocumentalDTO;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @return
+     */
+    public List<SolicitudUnidadDocumentalDTO> listarSolicitudes() throws SystemException {
+        try {
+            return em.createNamedQuery("TvsSolicitudUM.findAll", SolicitudUnidadDocumentalDTO.class)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @return
+     */
+    public Long obtenerCantidadSolicitudes() throws SystemException {
+        try {
+            return em.createNamedQuery("TvsSolicitudUM.countAll", Long.class)
+                   .getSingleResult();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

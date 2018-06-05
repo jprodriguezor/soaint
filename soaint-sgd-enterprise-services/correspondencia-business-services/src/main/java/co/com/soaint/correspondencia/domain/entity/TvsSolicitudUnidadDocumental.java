@@ -27,7 +27,12 @@ import java.util.List;
 @Entity
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
-    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
+    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO" +
+            " (t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede," +
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
+            " FROM TvsSolicitudUnidadDocumental t"),
+        @NamedQuery(name = "TvsSolicitudUM.countAll", query = "SELECT COUNT(*)" +
+            " FROM TvsSolicitudUnidadDocumental"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
             " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
