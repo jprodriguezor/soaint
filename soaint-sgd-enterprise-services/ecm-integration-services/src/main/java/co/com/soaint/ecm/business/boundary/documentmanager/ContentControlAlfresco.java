@@ -16,6 +16,8 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.alfresco.cmis.client.AlfrescoDocument;
+import org.alfresco.cmis.client.impl.AlfrescoItemImpl;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -697,7 +699,7 @@ public class ContentControlAlfresco implements ContentControl {
                     throw new SystemException("No se ha especificado el numero de radicado");
                 }
                 selectorType = SelectorType.getSelectorBy(nroRadicado);
-                if (null == selectorType) {
+               if (null == selectorType) {
                     throw new SystemException("El selector no valido '" + nroRadicado + "'");
                 }
                 dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, session);
@@ -755,6 +757,16 @@ public class ContentControlAlfresco implements ContentControl {
             if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
                     cmisObject.getType().getId().startsWith("D:cmcor:")) {
                 documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
+                continue;
+            }
+            if (cmisObject instanceof Item) {
+                String docId = cmisObject.getPropertyValue(PropertyIds.DESCRIPTION);
+                final Session session = obtenerConexion().getSession();
+                cmisObject = session.getObject(docId);
+                if (cmisObject instanceof Document) {
+                    documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
+                    System.out.println("Este es un link!!!!");
+                }
             }
         }
         return documentoDTOS;
@@ -782,20 +794,40 @@ public class ContentControlAlfresco implements ContentControl {
             if (ObjectUtils.isEmpty(listaDocumentos)) {
                 throw new SystemException("No se han especificado los documentos para archivar en la Unidad Documental");
             }
-            listaDocumentos.forEach(documentoDTO -> {
+
+            for (DocumentoDTO documentoDTO :
+                    listaDocumentos) {
                 CmisObject documentObj = session.getObject(new ObjectIdImpl(documentoDTO.getIdDocumento()));
                 if (documentObj.getType().getId().startsWith("D:cmcor:")) {
                     Document document = (Document) documentObj;
-                    final String docName = documentoDTO.getNombreDocumento();
-                    if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
-                        document.rename(docName);
-                    }
-                    final List<Folder> parents = document.getParents();
-                    final Optional<Folder> sourceTarget = parents.parallelStream()
-                            .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
-                                    StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
-                    sourceTarget.ifPresent(folder -> {
-                        document.move(folder, targetFolder);
+                    final Folder sourceFolder = utilities.getFolderFrom(document);
+                    if (null != sourceFolder) {
+                        final String folderName = sourceFolder.getName();
+                        final boolean isCommunication = folderName.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                                || folderName.startsWith(ConstantesECM.COMUNICACION_INTERNA);
+                        final String docName = documentoDTO.getNombreDocumento();
+                        if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
+                            document.rename(docName);
+                        }
+                        if (isCommunication) {
+                            utilities.crearLink(targetFolder, document, session);
+                        } else {
+                            document.move(sourceFolder, targetFolder);
+                            /*final List<Folder> parents = document.getParents();
+                            final Optional<Folder> sourceTarget = parents.parallelStream()
+                                    .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
+                                            StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
+                            sourceTarget.ifPresent(folder -> {
+                                document.move(folder, targetFolder);
+                                final Map<String, Object> properties = new HashMap<>();
+                                Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
+                                if (ObjectUtils.isEmpty(startDate)) {
+                                    properties.put(ConstantesECM.CMCOR_UD_FECHA_INICIAL, GregorianCalendar.getInstance());
+                                }
+                                properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
+                                targetFolder.updateProperties(properties);
+                            });*/
+                        }
                         final Map<String, Object> properties = new HashMap<>();
                         Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
                         if (ObjectUtils.isEmpty(startDate)) {
@@ -803,9 +835,12 @@ public class ContentControlAlfresco implements ContentControl {
                         }
                         properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
                         targetFolder.updateProperties(properties);
-                    });
+                    }
                 }
-            });
+            }
+            /*listaDocumentos.forEach(documentoDTO -> {
+
+            });*/
             unidadDocumentalDTO = utilities.transformarUnidadDocumental(targetFolder);
             final List<DocumentoDTO> documentsFromFolder = getDocumentsFromFolder(targetFolder);
             unidadDocumentalDTO.setListaDocumentos(documentsFromFolder);
@@ -1323,11 +1358,22 @@ public class ContentControlAlfresco implements ContentControl {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                 final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
                 final ItemIterable<CmisObject> children = udFolder.getChildren();
+                final String nameFolder = udFolder.getName();
+                final boolean isCommunication = nameFolder.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA);
                 for (CmisObject cmisObject :
                         children) {
                     if (cmisObject.getType().getId().contains("D:" + ConstantesECM.CMCOR)) {
-                        DocumentoDTO documentoDTO = utilities.transformarDocumento((Document) cmisObject);
+                        final Document document = (Document) cmisObject;
+                        final AlfrescoDocument alfrescoDocument = (AlfrescoDocument) document;
+                        DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
                         documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
+                        final Collection<ObjectType> aspects = alfrescoDocument.getAspects();
+                        Optional<ObjectType> optionalType = aspects.stream().
+                                filter(objectType -> objectType.getId().equals(ConstantesECM.P_APP_LINKED)).findFirst();
+                        if (isCommunication && optionalType.isPresent()) {
+                            continue;
+                        }
                         dtos.add(dtos.size(), documentoDTO);
                     }
                 }

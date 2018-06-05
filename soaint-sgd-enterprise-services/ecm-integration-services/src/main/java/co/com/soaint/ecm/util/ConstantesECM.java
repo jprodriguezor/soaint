@@ -90,6 +90,7 @@ public final class ConstantesECM {
     public static final String SUCCESS = "SUCCESS";
     public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
     public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
+    public static final String P_APP_LINKED = "P:app:linked";
 
     private ConstantesECM(){}
 }
