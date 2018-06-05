@@ -205,12 +205,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         self.radicacion.correspondencia.codDependencia,
         self.radicacion.correspondencia.nroRadicado,
         comunicacionOficialDTV.getDocumento().ideEcm
-      )},1000)
+      )},1000);
 
-      this.uploadTemplate(this.radicacion.correspondencia.codDependencia,
-                          this.radicacion.correspondencia.nroRadicado,
-                          comunicacionOficialDTV.getDocumento().ideEcm
-       );
 
       this.disableEditionOnForms();
 
@@ -243,7 +239,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     const node = document.getElementById("ticket-rad");
 
-    if(!isNullOrUndefined(node)) {
+      if(!isNullOrUndefined(node)) {
 
       domtoimage.toBlob(node).then((blob) => {
 
