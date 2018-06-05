@@ -40,6 +40,19 @@ public class PartUtils {
             return this;
         }
 
+        public MultiPartBuilder addPartList(String name, String ...values) {
+            for (String value: values) {
+                body += "\r\nContent-Disposition: form-data; name=\"" + name + "\"\r\n"
+                        + "Content-Type: text/plain; charset=US-ASCII\r\n"
+                        + "Content-Transfer-Encoding: 8bit\r\n"
+                        + "\r\n"
+                        + value + "\r\n"
+                        + "--" + boundary;
+            }
+
+            return this;
+        }
+
         public MultiPartBuilder addBinaryPart(String filename, String data) {
             return addBinaryPart(filename, filename, data);
         }
