@@ -58,7 +58,7 @@
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                    [inlineStyles]="printStyle" label="Imprimir"></button>
+                    [inlineStyles]="printStyle" label="Imprimir" [disabled]="!printButtonEnabled"></button>
           </div>
         </p-footer>
 

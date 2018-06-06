@@ -65,6 +65,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   dependencySubscription:Subscription;
   reqDigitInmediataUnsubscriber:Subscription;
   dependencySelected?:DependenciaDTO;
+  printButtonEnabled:boolean = false;
 
   formContactDataShown:Subscription;
 
@@ -260,6 +261,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
          element.style.border = '0';
 
+          this.printButtonEnabled = true;
         });
     }
 
