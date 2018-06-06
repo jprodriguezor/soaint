@@ -73,7 +73,7 @@ public class CorrespondenciaGatewayApi {
                                                            @QueryParam("cod_tipo_doc") final String codTipoDoc,
                                                            @QueryParam("nro_radicado") final String nroRadicado) {
 
-        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribución física");
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribuciï¿½n fï¿½sica");
         Response response = client.listarComunicacionesSalidaDistibucionFisica(fechaIni, fechaFin, codDependencia, modEnvio, claseEnvio, codTipoDoc, nroRadicado);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
@@ -392,6 +392,25 @@ public class CorrespondenciaGatewayApi {
         log.info("processing rest request - cargar planilla distribucion");
         Response response = client.cargarPlantilla(planilla);
         String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/generar-plantilla-salida")
+    public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla salida distribucion");
+        Response response = client.generarPlantilla(planilla);
+        PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
+
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciarTercero(entradaProceso);
+
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 

@@ -133,7 +133,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this._constSandbox.loadDatosGeneralesDispatch();
     this.InitDataForm();
-    this.InitPropiedadesTarea();
+    // this.InitPropiedadesTarea();
     this.InitSubscriptions();
     this.initForm();
   }
@@ -169,7 +169,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
       const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-      return radicacionEntradaDTV.getDatosDestinatarios();
+      const destinatarioDTV = radicacionEntradaDTV.getDatosDestinatarios();
+      return destinatarioDTV;
   }
 
   getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
@@ -276,9 +277,9 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
       payload.cod_tipo_doc = this.form.get('tipologia').value.codigo;
     }
     if (this.form.value.nroRadicado) {
-      payload.nro_radicado = this.form.get('nroRadicado').value.codigo;
+      payload.nro_radicado = this.form.get('nroRadicado').value;
     }
-
+    return payload;
   }
 
   generarDatosExportar(): PlanillaDTO {
@@ -343,7 +344,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
   
-      this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
           dependenciaDestinoArray.push(element.correspondencia.codDependencia);
@@ -353,11 +354,12 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
-        this.CompletedTask();
-        this._detectChanges.detectChanges();
       });
     } else {
-      this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'La información de envío no está completa en las comunicaciones seleccionadas'}));
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warning', 
+        summary: 'Complete información de envío en las comunicacion(es) seleccionada(s)'
+      }));
     }
 
   }
