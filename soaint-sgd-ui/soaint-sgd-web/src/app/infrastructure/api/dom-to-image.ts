@@ -59,16 +59,13 @@ export  class DomToImageFactory {
 
   readonly browser = detectBrowser.detect();
   getInstance():IDomToImage{
-    
-    switch(this.browser.name){
 
+    switch(this.browser.name){
       case 'edge' :  return new EdgeDomToImage();
       case 'safari' : return new SafariDomToImage();
     }
-
     return new DomToImage();
   }
-
 }
 
 @Injectable()

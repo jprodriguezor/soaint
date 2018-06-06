@@ -750,6 +750,7 @@ public class ContentControlAlfresco implements ContentControl {
     public List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws SystemException {
         final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
         if (folder == null) {
+            log.error("El Folder introducido es null");
             return documentoDTOS;
         }
         for (CmisObject cmisObject :
@@ -765,7 +766,6 @@ public class ContentControlAlfresco implements ContentControl {
                 cmisObject = session.getObject(docId);
                 if (cmisObject instanceof Document) {
                     documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
-                    System.out.println("Este es un link!!!!");
                 }
             }
         }
@@ -968,11 +968,12 @@ public class ContentControlAlfresco implements ContentControl {
             if (!StringUtils.isEmpty(tipologiaDocumental)) {
                 updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
             }
-            if (!updateProperties.isEmpty()) {
-                object.updateProperties(updateProperties);
-            }
+            CmisObject cmisObject = object.updateProperties(updateProperties);
             log.info("### Modificados los metadatos de correctamente");
+            updateProperties.clear();
+            updateProperties.put("idECM", cmisObject.getId());
             response.setMensaje("OK");
+            response.setResponse(updateProperties);
             response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
 
         } catch (CmisObjectNotFoundException e) {
