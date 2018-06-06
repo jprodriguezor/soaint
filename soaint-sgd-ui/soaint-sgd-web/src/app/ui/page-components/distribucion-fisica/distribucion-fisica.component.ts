@@ -119,9 +119,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    const destinatarioDTV = radicacionEntradaDTV.getDatosDestinatarios();
-    return destinatarioDTV;
+      const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+      return radicacionEntradaDTV.getDatosDestinatarios();
 
   }
 
@@ -263,13 +262,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       this.planillaGenerada = result;
       this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
-      this._processSandbox.IniciarProcesso({
-        idProceso: "proceso.gestion-planillas-salida",
-        idDespliegue: "co.com.soaint.sgd.process:proceso-gestion-planillas-salida:1.0.0-SNAPSHOT",
-        paramtros: {
-          
-        }
-      });
+
     });
   }
 

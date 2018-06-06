@@ -5,6 +5,7 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './asignacionDTO-actions';
 import {ApiBase} from '../../api/api-base';
 import {ObservacionDTO} from '../../../domain/observacionDTO';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class Sandbox {
@@ -48,7 +49,7 @@ export class Sandbox {
   }
 
   obtenerComunicacionPorNroRadicado(nroRadicado: string) {
-    return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
+      return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
   }
 
   registrarObservacion(payload: ObservacionDTO) {

@@ -345,6 +345,14 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
+        this._processSandbox.IniciarProcesso({
+          idProceso: "proceso.gestion-planillas-salida",
+          idDespliegue: "co.com.soaint.sgd.process:proceso-gestion-planillas-salida:1.0.0-SNAPSHOT",
+          paramtros: {
+            numPlanilla:this.planillaGenerada.nroPlanilla ,
+            codDependencia: '10401040'
+          }
+        });
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
@@ -354,7 +362,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     }
 
   }
-  
+
   Finalizar(): void {
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
