@@ -49,7 +49,7 @@ import { go } from '@ngrx/router-store';
   styleUrls: ['./distribucion-fisica-salida.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDestroy {
+export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
@@ -98,11 +98,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
   detalleDialogVisible = false;
 
   validations: any = {};
-
-  // tarea
-  task: TareaDTO;
-  taskVariables: VariablesTareaDTO = {};
-  closedTask:  Observable<boolean> ;
 
 
   @ViewChild('popUpInformacionEnvio') popUpInformacionEnvio;
@@ -157,12 +152,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     });
   }
 
-  InitPropiedadesTarea() {
-    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
-    this._store.select(getActiveTask).subscribe((activeTask) => {
-      this.task = activeTask;
-  });
-  }
 
   getDatosRemitente(comunicacion): Observable<AgentDTO> {
     const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
@@ -340,7 +329,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     return planilla;
   };
 
-  generarPlanilla() {
+  generarPlanilla(): void {
     if (this.InformacionEnvioCompletada()) {
       const dependenciaDestinoArray= [];
       const sedeDestinoArray= [];
@@ -356,7 +345,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
-        this._detectChanges.detectChanges();
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
@@ -366,7 +354,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     }
 
   }
-  Cancelar(): void {
+  
+  Finalizar(): void {
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
@@ -416,24 +405,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   hideDetallePlanillaDialog() {
     this.detalleDialogVisible = false;
-  }
-
-  abort() {
-    this._store.dispatch(new AbortTaskAction({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      instanciaProceso: this.task.idInstanciaProceso
-  }))
-  }
-
-  CompletedTask() {
-    this._taskSandBox.completeTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      idTarea: this.task.idTarea,
-      parametros: {
-      }
-    });
   }
 
   save(): Observable<any> {
