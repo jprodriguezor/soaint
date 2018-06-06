@@ -10,6 +10,7 @@ import {isNullOrUndefined} from "util";
 import * as domtoimage from 'dom-to-image';
 import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
+import {DomToImageService} from "../../../infrastructure/api/dom-to-image";
 
 @Component({
   selector: 'app-radicar-documento-producido',
@@ -29,9 +30,10 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     , protected _changeDetectorRef: ChangeDetectorRef
     , protected _sandbox: RadicacionSalidaService
     , protected _taskSandbox: TaskSandBox
+    ,protected  _domtoImageService:DomToImageService
   ) {
 
-    super(_store, _changeDetectorRef, _sandbox, _taskSandbox);
+    super(_store, _changeDetectorRef, _sandbox, _taskSandbox,_domtoImageService);
   }
 
   ngOnInit() {
@@ -98,7 +100,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     return {
       codDependencia:this.dependencySelected.codigo,
       numeroRadicado:noRadicado,
-      requiereDistribucion:generales.reqDistFisica ? "1" : "2"
+      requiereDistribucion:generales.reqDistFisica
     }
   }
 

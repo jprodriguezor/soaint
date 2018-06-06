@@ -62,6 +62,27 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/listar-comunicaciones-salida-distribucion-fisica")
+    @JWTTokenSecurity
+    public Response listarComunicacionesDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+                                                           @QueryParam("fecha_fin") final String fechaFin,
+                                                           @QueryParam("mod_correo") final String modEnvio,
+                                                           @QueryParam("clase_envio") final String claseEnvio,
+                                                           @QueryParam("cod_dep") final String codDependencia,
+                                                           @QueryParam("cod_tipo_doc") final String codTipoDoc,
+                                                           @QueryParam("nro_radicado") final String nroRadicado) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribución física");
+        Response response = client.listarComunicacionesSalidaDistibucionFisica(fechaIni, fechaFin, codDependencia, modEnvio, claseEnvio, codTipoDoc, nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
     @POST
     @Path("/radicar")
     @JWTTokenSecurity

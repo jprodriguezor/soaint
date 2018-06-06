@@ -3,8 +3,6 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 
@@ -23,8 +21,8 @@ import java.io.InputStream;
 public class CargaMasivaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
-
-    private JerseyClient client = JerseyClientBuilder.createClient();
+    
+    //private Client client = ClientBuilder.newClient();
 
     public CargaMasivaClient() {
         super();
@@ -32,7 +30,7 @@ public class CargaMasivaClient {
 
     public Response listCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/listadocargamasiva")
                 .request()
                 .get();
@@ -40,7 +38,7 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva")
                 .request()
                 .get();
@@ -48,7 +46,7 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasivaDadoId(String id) {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva dado Id with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva/" + id)
                 .request()
                 .get();
@@ -57,7 +55,7 @@ public class CargaMasivaClient {
     public Response cargarDocumento(InputPart part, String codigoSede, String codigoDependencia, String codfunRadica, String fileName) {
         log.info("Carga Masiva - [trafic] - Subiendo fichero de carga masiva: ".concat(endpoint));
 
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
 
         InputStream inputStream = null;

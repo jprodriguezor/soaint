@@ -6,9 +6,9 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ItemDevolucionDTO;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -25,11 +25,11 @@ public class ProcesoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL);
 
-    private JerseyClient client = JerseyClientBuilder.createClient();
+    //private Client client = ClientBuilder.newClient();
 
     public Response list() {
         log.info("Proccess - [trafic] - listing Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         return wt.path("/bpm/proceso/listar")
                 .request()
@@ -38,7 +38,7 @@ public class ProcesoClient {
 
     public Response iniciar(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Proccess - [trafic] - starting Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/iniciar")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -46,7 +46,7 @@ public class ProcesoClient {
 
     public Response iniciarTercero(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Proccess - [trafic] - starting Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/iniciar-tercero")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -66,7 +66,7 @@ public class ProcesoClient {
 
     public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Proccess - [trafic] - manual starting Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/iniciar/manual")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -74,7 +74,7 @@ public class ProcesoClient {
 
     public Response listarPorIdProceso(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - listing Tasks By Id Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = entrada;
         return wt.path("/bpm/tareas/listar/estados-instancia/")
                 .request()
@@ -83,7 +83,7 @@ public class ProcesoClient {
 
     public Response listarPorUsuarioYPorIdProceso(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - listing Tasks By Usuario y Id Proccess with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = entrada;
         return wt.path("/bpm/tareas/listar/asignado/")
                 .request()
@@ -92,7 +92,7 @@ public class ProcesoClient {
 
     public Response listarTareas(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - listing Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/listar/estados/")
                 .request()
                 .post(Entity.json(entrada));
@@ -100,7 +100,7 @@ public class ProcesoClient {
 
     public Response listarTareasCompletadas(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - listing Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/listar/completadas")
                 .request()
                 .post(Entity.json(entrada));
@@ -108,7 +108,7 @@ public class ProcesoClient {
 
     public Response listarEstadisticasTareas(EntradaProcesoDTO entrada) {
         log.info("Listando Estadisticas de Tareas " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/listar/usuario")
                 .request()
                 .post(Entity.json(entrada));
@@ -116,7 +116,7 @@ public class ProcesoClient {
 
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/iniciar")
                 .request()
                 .post(Entity.json(entrada));
@@ -124,7 +124,7 @@ public class ProcesoClient {
 
     public Response reservarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - reserve Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/reservar")
                 .request()
                 .post(Entity.json(entrada));
@@ -132,7 +132,7 @@ public class ProcesoClient {
 
     public Response completarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - complete Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/completar")
                 .request()
                 .post(Entity.json(entrada));
@@ -140,7 +140,7 @@ public class ProcesoClient {
 
     public Response abortarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - abort Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/abortar")
                 .request()
                 .post(Entity.json(entrada));
@@ -148,7 +148,7 @@ public class ProcesoClient {
 
     public Response reasignarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - reasign Task with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/reasignar")
                 .request()
                 .post(Entity.json(entrada));
@@ -156,7 +156,7 @@ public class ProcesoClient {
 
     public Response listarIntanciasProceso() {
         log.info("Task - [trafic] - list process instances with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
         return wt.path("/bpm/proceso/listar-instancias/")
@@ -166,7 +166,7 @@ public class ProcesoClient {
 
     public Response obtenerVariablesTarea(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Task - [trafic] - get task variables with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/listar-variables")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));

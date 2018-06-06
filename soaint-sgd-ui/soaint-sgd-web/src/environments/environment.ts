@@ -60,7 +60,7 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
-  listarCorrespondencia_salida_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida`,
+  listarCorrespondencia_salida_distribucion_fisica_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida-distribucion-fisica`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,

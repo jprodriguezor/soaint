@@ -190,7 +190,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this.form = this.formBuilder.group({
       'claseEnvio': [null, [Validators.required]],
       'modalidadCorreo': [null, [Validators.required]],
-      'dependencia': [null],
+      'dependencia': [null, [Validators.required]],
       'nroRadicado': [null],
       'tipologia': [null],
     });
@@ -254,7 +254,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
   }
 
   listarDistribuciones() {
-    this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalida(this.GetPayload());
+    this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalidaDistibucionFisica(this.GetPayload());
     this.comunicaciones$.subscribe(response => {
       this.listadoComunicaciones = response;
       this.selectedComunications = [];
@@ -266,14 +266,14 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     const payload: any = {
       fecha_ini: this.convertDate(this.start_date),
       fecha_fin: this.convertDate(this.end_date),
-      claseEnvio: this.form.get('claseEnvio').value.codigo,
-      modalidadCorreo: this.form.get('modalidadCorreo').value.codigo,
+      clase_envio: this.form.get('claseEnvio').value.codigo,
+      mod_correo: this.form.get('modalidadCorreo').value.codigo,
     };   
     if (this.form.value.dependencia) {
-      payload.cod_dependencia = this.form.get('dependencia').value.codigo;
+      payload.cod_dep = this.form.get('dependencia').value.codigo;
     }
     if (this.form.value.tipologia) {
-      payload.cod_tipologia_documental = this.form.get('tipologia').value.codigo;
+      payload.cod_tipo_doc = this.form.get('tipologia').value.codigo;
     }
     if (this.form.value.nroRadicado) {
       payload.nro_radicado = this.form.get('nroRadicado').value.codigo;
