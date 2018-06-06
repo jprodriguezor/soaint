@@ -46,7 +46,7 @@ public interface ContentControl extends Serializable {
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector);
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws SystemException;
 
     /**
      * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
@@ -99,7 +99,7 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      * @throws IOException exception
      */
-    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente);
+    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws SystemException;
 
 
     /**
@@ -296,4 +296,12 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      */
     MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException;
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento, Session session) throws SystemException;
 }

@@ -22,4 +22,7 @@ export interface CorrespondenciaDTO {
   inicioConteo: string;
   codClaseEnvio:string;
   codModalidadEnvio:string;
+  envio_nroguia?: string;
+  envio_peso?: string;
+  envio_valor?: string;
 }

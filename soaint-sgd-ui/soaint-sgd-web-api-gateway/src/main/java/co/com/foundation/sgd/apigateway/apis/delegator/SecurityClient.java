@@ -17,7 +17,7 @@ public class SecurityClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public SecurityClient() {
         super();
@@ -25,7 +25,7 @@ public class SecurityClient {
 
     public Response verificarCredenciales(CredencialesDTO credenciales) {
         log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/funcionarios-web-api/funcionarios/verificar-credenciales")
                 .request()
                 .post(Entity.json(credenciales));

@@ -22,7 +22,7 @@ public class CargaMasivaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
     
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public CargaMasivaClient() {
         super();
@@ -30,7 +30,7 @@ public class CargaMasivaClient {
 
     public Response listCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/listadocargamasiva")
                 .request()
                 .get();
@@ -38,7 +38,7 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva")
                 .request()
                 .get();
@@ -46,7 +46,7 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasivaDadoId(String id) {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva dado Id with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva/" + id)
                 .request()
                 .get();
@@ -55,7 +55,7 @@ public class CargaMasivaClient {
     public Response cargarDocumento(InputPart part, String codigoSede, String codigoDependencia, String codfunRadica, String fileName) {
         log.info("Carga Masiva - [trafic] - Subiendo fichero de carga masiva: ".concat(endpoint));
 
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
 
         InputStream inputStream = null;

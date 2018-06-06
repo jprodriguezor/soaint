@@ -15,7 +15,7 @@ public class ProductosClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public ProductosClient() {
         super();
@@ -23,7 +23,7 @@ public class ProductosClient {
 
     public Response list() {
         log.info("ProductosClient - [trafic] - listing products with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/productos-web-api")
                 .request()
                 .get();

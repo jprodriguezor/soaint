@@ -15,7 +15,7 @@ public class DependeciaGrupoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public DependeciaGrupoClient() {
         super();
@@ -23,7 +23,7 @@ public class DependeciaGrupoClient {
 
     public Response listBySedeAdministrativa(String codigoSedeAdministrativa) {
         log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/organigrama-web-api/organigrama/dependencias/" + codigoSedeAdministrativa)
                 .request()
                 .get();
@@ -31,7 +31,7 @@ public class DependeciaGrupoClient {
 
     public Response obtenerPorCodigo(String codigo) {
         log.info("DependeciaGrupo - [trafic] - Get by code with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencia/".concat(codigo))
                 .request()
                 .get();
@@ -39,7 +39,7 @@ public class DependeciaGrupoClient {
 
     public Response obtenerPorDependencias(String codigosDependencia) {
         log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencia")
                 .queryParam("codigos", codigosDependencia)
                 .request()
@@ -48,7 +48,7 @@ public class DependeciaGrupoClient {
 
     public Response listarDependencias() {
         log.info("DependeciaGrupo - [trafic] - listing Dependecias with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/dependencia-web-api/dependencias")
                 .request()
                 .get();

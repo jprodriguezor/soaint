@@ -121,12 +121,25 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codTipoDoc
+     * @param modEnvio
+     * @param claseEnvio
+     * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica() throws BusinessException, SystemException {
-        return control.listarComunicacionDeSalidaConDistribucionFisica();
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(Date fechaIni,
+                                                                                      Date fechaFin,
+                                                                                      String modEnvio,
+                                                                                      String claseEnvio,
+                                                                                      String codDependencia,
+                                                                                      String codTipoDoc,
+                                                                                      String nroRadicado) throws BusinessException, SystemException {
+        return control.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, codTipoDoc, nroRadicado);
     }
 
     /**

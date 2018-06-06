@@ -15,7 +15,7 @@ public class DepartamentoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private Client client = ClientBuilder.newClient();
+    //private Client client = ClientBuilder.newClient();
 
     public DepartamentoClient() {
         super();
@@ -23,7 +23,7 @@ public class DepartamentoClient {
 
     public Response listarPorPais(String pais) {
         log.info("Departamento - [trafic] - listing Departamento with endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/departamentos-web-api/departamentos/" + pais + "/A")
                 .request()
                 .get();
@@ -31,7 +31,7 @@ public class DepartamentoClient {
 
     public Response listarDepartamentosActivos() {
         log.info("Departamento - [trafic] - listar departamentos activos  con endpoint: " + endpoint);
-        WebTarget wt = client.target(endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/departamentos-web-api/departamentos/A")
                 .request()
                 .get();

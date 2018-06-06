@@ -4,7 +4,7 @@
       <div  class="page-buttons text-right">
         <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()" ></button>
         <button pButton type="button" label="Enviar Solicitud UD" style="width: auto; margin-bottom: 10px" (click)="solicitarCreacionUd(selectUD)"  *ngIf="showSolicitarButton" [disabled]="solicitudUDModel.Solicitudes.length === 0"></button>
-        <button pButton type="button"  class="ui-button-success" label="Finalizar" style="width: auto; margin-bottom: 10px" (click)="finalizar()" ></button>
+        <button pButton type="button"  class="ui-button-success" label="Finalizar" style="width: auto; margin-bottom: 10px" (click)="finalizar()" *ngIf="!showSolicitarButton || solicitudUDModel.SolicitudEnvida" ></button>
       </div>
         <div class="ui-g ui-fluid">
           <div class="ui-g-12">
