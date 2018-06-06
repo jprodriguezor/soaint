@@ -257,11 +257,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
           });
 
-         const element:any =  document.querySelector('#ticket-rad > div:nth-child(2)');
-
-         element.style.border = '0';
-
+          const element:any =  document.querySelector('#ticket-rad > .ticket-content');
+          element.style.border = '0';
           this.printButtonEnabled = true;
+          this._changeDetectorRef.detectChanges();
         });
     }
 
