@@ -42,6 +42,11 @@ export class Sandbox implements OnDestroy {
       }, this.authPayload));
   }
 
+  IniciarProcesso(payload: any) {
+    return this._api.post(environment.startProcess_endpoint,
+      Object.assign({}, payload, this.authPayload));
+  }
+
   loadTasksInsideProcess(payload: any) {
     const params = payload.data || payload;
     return this._api.post(environment.tasksInsideProcess_endpoint,

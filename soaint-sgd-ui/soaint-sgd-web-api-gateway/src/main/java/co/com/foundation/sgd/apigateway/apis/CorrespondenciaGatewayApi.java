@@ -397,6 +397,7 @@ public class CorrespondenciaGatewayApi {
 
     @POST
     @Path("/generar-plantilla-salida")
+    @JWTTokenSecurity
     public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla salida distribucion");
         Response response = client.generarPlantilla(planilla);
@@ -409,7 +410,7 @@ public class CorrespondenciaGatewayApi {
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
         entradaProceso.setParametros(parametros);
-        this.procesoClient.iniciarTercero(entradaProceso);
+        this.procesoClient.iniciar(entradaProceso);
 
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
