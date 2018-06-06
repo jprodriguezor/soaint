@@ -18,7 +18,7 @@
 
                         </p-dropdown>
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.serie">
+                             *ngIf="validations.serie && operation=='solicitarUnidadDocumental'">
                           {{ validations.serie }}
                         </div>
                       </div>
@@ -37,7 +37,7 @@
                                     formControlName="subserie" (blur)="listenForBlurEvents('subserie')">
                         </p-dropdown>
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.subserie">
+                             *ngIf="validations.subserie && operation=='solicitarUnidadDocumental'">
                           {{ validations.subserie }}
                         </div>
                       </div>
@@ -55,7 +55,7 @@
                         <input type="text" pInputText id="identificador" formControlName="identificador"
                                (blur)="listenForBlurEvents('identificador')"/>
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.identificador">
+                             *ngIf="validations.identificador && operation=='solicitarUnidadDocumental'">
                           {{ validations.identificador }}
                         </div>
                       </div>
@@ -73,7 +73,7 @@
                         <input type="text" pInputText id="nombre" formControlName="nombre"
                                (blur)="listenForBlurEvents('nombre')">
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.nombre">
+                             *ngIf="validations.nombre && operation=='solicitarUnidadDocumental'">
                           {{ validations.nombre }}
                         </div>
                       </div>
@@ -93,7 +93,7 @@
                         <input type="text" pInputText id="descriptor1" formControlName="descriptor1"
                                (blur)="listenForBlurEvents('descriptor1')">
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.descriptor1">
+                             *ngIf="validations.descriptor1 && operation=='solicitarUnidadDocumental'">
                           {{ validations.descriptor1 }}
                         </div>
                       </div>
@@ -111,7 +111,7 @@
                         <input type="text" pInputText id="descriptor2" formControlName="descriptor2"
                                (blur)="listenForBlurEvents('descriptor2')">
                         <div class="ui-message ui-messages-error"
-                             *ngIf="validations.descriptor2">
+                             *ngIf="validations.descriptor2 && operation=='solicitarUnidadDocumental'">
                           {{ validations.descriptor2 }}
                         </div>
                       </div>
