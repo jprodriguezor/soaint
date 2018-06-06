@@ -38,6 +38,8 @@ import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tare
 import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 import { getModalidadCorreoArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/modalidad-correo-selectors';
 import { getClaseEnvioArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/clase-envio-selectors';
+import { ROUTES_PATH } from '../../../app.route-names';
+import { go } from '@ngrx/router-store';
 
 
 
@@ -354,6 +356,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
+        this._detectChanges.detectChanges();
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
@@ -362,6 +365,9 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
       }));
     }
 
+  }
+  Cancelar(): void {
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
   InformacionEnvioCompletada(): boolean {

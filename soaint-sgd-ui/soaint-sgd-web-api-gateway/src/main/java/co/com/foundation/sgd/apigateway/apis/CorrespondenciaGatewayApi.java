@@ -409,7 +409,7 @@ public class CorrespondenciaGatewayApi {
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
         entradaProceso.setParametros(parametros);
-        this.procesoClient.iniciarTercero(entradaProceso);
+        this.procesoClient.iniciar(entradaProceso);
 
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
