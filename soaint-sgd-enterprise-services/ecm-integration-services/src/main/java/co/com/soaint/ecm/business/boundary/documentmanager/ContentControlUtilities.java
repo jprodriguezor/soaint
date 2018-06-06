@@ -1355,10 +1355,8 @@ final class ContentControlUtilities implements Serializable {
             final String idUnidadDocumental = queryResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_UD_ID);
             if (!StringUtils.isEmpty(idUnidadDocumental) && !idUnidadDocumental.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                final Folder folder = (Folder) session.getObject(session.getObject(objectId));
-                if (ObjectUtils.isEmpty(dto) || hasDatesInRange(folder, dto)) {
-                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
-                }
+                final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
             }
         }
         return unidadDocumentalDTOS;
@@ -1416,61 +1414,6 @@ final class ContentControlUtilities implements Serializable {
             folderAux = aux;
         }
         return folderAux;
-    }
-
-    /**
-     * Metodo que verifica la existencia de fechas en el dto y el rango de seleccion
-     *
-     * @param folder {@link Folder}
-     * @param dto    {@link UnidadDocumentalDTO}
-     * @return boolean {@link Boolean}
-     */
-    private boolean hasDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
-
-        Calendar dtoFechaCierre = dto.getFechaCierre();
-        Calendar folderFechaCierre = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_CIERRE);
-
-        Calendar dtoFechaInicial = dto.getFechaExtremaInicial();
-        Calendar folderFechaInicial = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
-
-        Calendar dtoFechaFinal = dto.getFechaExtremaFinal();
-        Calendar folderFechaFinal = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_FINAL);
-
-        if (dtoFechaCierre == null && dtoFechaInicial == null && dtoFechaFinal == null) {
-            return true;
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) && dtoFechaFinal == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null) && dtoFechaInicial == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0);
-        }
-        if (dtoFechaCierre != null && folderFechaCierre != null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0);
-        }
-        if ((dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if (dtoFechaInicial != null && folderFechaInicial != null) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        return ((dtoFechaFinal != null && folderFechaFinal != null) &&
-                (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0));
     }
 
     /**
