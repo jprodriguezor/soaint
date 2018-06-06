@@ -62,10 +62,12 @@ public final class ConstantesECM {
     public static final String EXISTE_CARPETA = "Existe la Carpeta: ";
 
     // ECM sms
-    public static final String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
-    public static final String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
-    public static final String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
-    public static final String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
+    public static final String COMUNICACION_INTERNA = "Comunicaciones Oficiales Internas";
+    public static final String COMUNICACION_EXTERNA = "Comunicaciones Oficiales Externas";
+    public static final String COMUNICACIONES_INTERNAS_RECIBIDAS = COMUNICACION_INTERNA + " Recibidas ";
+    public static final String COMUNICACIONES_INTERNAS_ENVIADAS  = COMUNICACION_INTERNA + " Enviadas ";
+    public static final String COMUNICACIONES_EXTERNAS_RECIBIDAS = COMUNICACION_EXTERNA + " Recibidas ";
+    public static final String COMUNICACIONES_EXTERNAS_ENVIADAS  = COMUNICACION_EXTERNA + " Enviadas ";
 
     public static final String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
     public static final String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
@@ -88,6 +90,7 @@ public final class ConstantesECM {
     public static final String SUCCESS = "SUCCESS";
     public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
     public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
+    public static final String P_APP_LINKED = "P:app:linked";
 
     private ConstantesECM(){}
 }

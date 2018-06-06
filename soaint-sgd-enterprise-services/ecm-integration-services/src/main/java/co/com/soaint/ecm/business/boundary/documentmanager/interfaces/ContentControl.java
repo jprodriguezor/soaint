@@ -99,7 +99,7 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      * @throws IOException exception
      */
-    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente);
+    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws SystemException;
 
 
     /**

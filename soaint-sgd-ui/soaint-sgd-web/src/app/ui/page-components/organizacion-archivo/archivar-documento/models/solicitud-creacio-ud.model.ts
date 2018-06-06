@@ -4,6 +4,8 @@ import {isNullOrUndefined} from "util";
 
 export class SolicitudCreacioUdModel{
 
+  private _solicitudEnviada:boolean = false;
+
   constructor(private _solicitudService:SolicitudCreacionUdService,private _solicitudes:SolicitudCreacionUDDto[] = [],private _selectedIndex:number = -1 ){}
 
   get Solicitudes():SolicitudCreacionUDDto[] { return this._solicitudes}
@@ -14,9 +16,12 @@ export class SolicitudCreacioUdModel{
 
   set SelectedIndex(value:number){ this._selectedIndex = value;}
 
+  get SolicitudEnvida():boolean { return this._solicitudEnviada;}
+
   Solicitar(){
     return  this._solicitudService
-      .solicitarUnidadDocumental({solicitudesUnidadDocumentalDTOS:this.Solicitudes});
+      .solicitarUnidadDocumental({solicitudesUnidadDocumentalDTOS:this.Solicitudes})
+      .do(() => { this._solicitudEnviada = true;});
   }
 
   get SolicitudSelected():SolicitudCreacionUDDto{ return  this.SelectedIndex > -1 ? this.Solicitudes[this.SelectedIndex] : null;}

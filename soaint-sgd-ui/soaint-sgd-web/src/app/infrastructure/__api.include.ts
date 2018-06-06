@@ -13,6 +13,7 @@ import { CorrespondenciaApiService } from './api/correspondencia.api';
 import { DependenciaApiService } from './api/dependencia.api';
 import { LocalizacionApiService } from './api/localizacion.api';
 import {TipologiaDocumentaService} from "./api/tipologia-documenta.service";
+import {domToImageProvider} from "./api/dom-to-image";
 
 export const API_SERVICES = [
   ApiBase,
@@ -29,7 +30,8 @@ export const API_SERVICES = [
   CorrespondenciaApiService,
   DependenciaApiService,
   LocalizacionApiService,
-  TipologiaDocumentaService
+  TipologiaDocumentaService,
+  domToImageProvider
 ];
 
 export {

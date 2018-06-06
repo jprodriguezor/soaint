@@ -1,0 +1,8 @@
+.ticket-panel.chrome,.ticket-panel.opera,.ticket-panel.edge,.ticket-panel.safari{
+  padding: 1px 0;
+}
+
+.ticket-panel.firefox{
+  padding: 0;
+  background-color: #fff;
+}
