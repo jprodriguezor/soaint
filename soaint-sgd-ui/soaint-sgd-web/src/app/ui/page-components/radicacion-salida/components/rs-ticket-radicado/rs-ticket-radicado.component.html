@@ -1,6 +1,6 @@
-<div id="{{idTicket}}" class="ticket-panel" style="padding: 0;background-color: #fff;"  *ngIf="ticket">
-  
-   <div style="display: table;border: dashed 1pt; float: right;background-color: #fff;">
+<div id="{{idTicket}}" class="ticket-panel {{browser.name}}"   *ngIf="ticket">
+<div class="clearfix" *ngIf="browser.name != 'firefox'"></div>
+   <div style="display: table;border: dashed 1pt; float: right;background-color: #fff;" class="ticket-content">
     <div style="padding-top: 0 !important; padding-bottom: 0 !important;">
       <div style="position: absolute; float: left;z-index: 1000;background-color: #fff;">
         <img width="115" src="assets/layout/images/logo.png" >
@@ -83,7 +83,7 @@
                  style="margin: 0 auto"></ngx-barcode>
 
   </div>
-
+  <div class="clearfix" *ngIf="browser.name != 'firefox'"></div>
 </div>
 <div style="clear: both"></div>
 

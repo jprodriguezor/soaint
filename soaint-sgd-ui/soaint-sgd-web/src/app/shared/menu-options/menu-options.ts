@@ -7,6 +7,7 @@ export const MENU_OPTIONS = [
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Radicación Contingencia', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
+  // {label: 'Distribución física Salida', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisicaSalida]},
   {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]}
 ];
   

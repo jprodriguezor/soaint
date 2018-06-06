@@ -30,6 +30,7 @@ import {ArchivarDocumentoComponent} from "./ui/page-components/organizacion-arch
 import {DistribucionComponent} from "./ui/page-components/radicacion-salida/components/distribucion/distribucion.component";
 import {TransferenciasDocumentalesComponent} from './ui/page-components/transferencias-documentales/transferencias-documentales.component'
 import { DistribucionFisicaSalidaComponent } from './ui/page-components/distribucion-fisica-salida/distribucion-fisica-salida.component';
+import { CargarPlanillaSalidaComponent } from './ui/page-components/cargar-planilla-salida/cargar-planilla-salida.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -123,13 +124,8 @@ export const routes: Routes = [
         canActivate: [AuthenticatedGuard]
       },
       {
-        path: ROUTES_PATH.generarPlanillaSalida,
-        component: DistribucionFisicaSalidaComponent,
-        canActivate: [AuthenticatedGuard]
-      },
-      {
         path: ROUTES_PATH.cargarPlanillaSalida,
-        component: DistribucionFisicaSalidaComponent,
+        component: CargarPlanillaSalidaComponent,
         canActivate: [AuthenticatedGuard]
       },
 
@@ -160,6 +156,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.distribucionFisica,
     component: DistribucionFisicaComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.distribucionFisicaSalida,
+    component: DistribucionFisicaSalidaComponent,
     canActivate: [AuthenticatedGuard]
   },
   {

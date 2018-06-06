@@ -32,6 +32,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.net.HttpURLConnection;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -106,6 +107,8 @@ public class RecordServices implements IRecordServices {
 
     public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
     public static String RMA_IS_CLOSED = "rma:isClosed";
+    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
+    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
 
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
@@ -185,7 +188,7 @@ public class RecordServices implements IRecordServices {
         parametro.put("query", query);
         Map<String, Object> mapProperties = new HashMap<>();
         mapProperties.put(ConstantesECM.RMC_X_IDENTIFICADOR, documentalDTO.getId());
-        mapProperties.put("rmc:xFaseArchivo", PhaseType.ARCHIVO_GESTION.getName());
+        mapProperties.put(RMC_X_FASE_ARCHIVO, PhaseType.ARCHIVO_GESTION.getName());
 
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", documentalDTO.getNombreUnidadDocumental());
@@ -286,7 +289,7 @@ public class RecordServices implements IRecordServices {
     @Override
     public Optional<Folder> getRecordFolderByUdId(String idUnidadDocumental) {
         log.info("Invocando el metodo obtener  record folder con Id {}", idUnidadDocumental);
-        String query = "select * from rmc:rmarecordFolderCustomProperties where rmc:xIdentificador = '" + idUnidadDocumental + "'";
+        String query = "select * from rmc:rmarecordFolderCustomProperties where " + RMC_X_IDENTIFICADOR + " = '" + idUnidadDocumental + "'";
         Session session = contentControl.obtenerConexion().getSession();
         ItemIterable<QueryResult> queryResults = session.query(query, false);
         Iterator<QueryResult> iterator = queryResults.iterator();
@@ -326,6 +329,17 @@ public class RecordServices implements IRecordServices {
         }
     }
 
+    public Response modificarRecordFile(String idDocumento, Map<String, Object> propertyMap) {
+        JSONObject properties = new JSONObject();
+        properties.put("properties", propertyMap);
+        WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        return wt.path("/records/" + idDocumento)
+                .request()
+                .header(headerAuthorization, valueAuthorization + " " + encoding)
+                .header(headerAccept, valueApplicationType)
+                .put(Entity.json(properties.toString()));
+    }
+
     public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
         JSONObject properties = new JSONObject();
         Map<String, Object> nombreMap = new HashMap<>();
@@ -333,7 +347,7 @@ public class RecordServices implements IRecordServices {
             nombreMap.put(RMA_IS_CLOSED, documentalDTO.getCerrada());
         }
         if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
-            nombreMap.put("rmc:xFaseArchivo", documentalDTO.getFaseArchivo());
+            nombreMap.put(RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
         }
         if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
             nombreMap.put("rmc:xEstado", documentalDTO.getEstado());
@@ -341,11 +355,12 @@ public class RecordServices implements IRecordServices {
         if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
             nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
         }
-        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            Calendar fechaAutoCierre = documentalDTO.getFechaAutoCierre();
-            nombreMap.put(RMC_X_AUTO_CIERRE, Utilities.calendarToString(fechaAutoCierre));
+        if (!ObjectUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
+            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
         }
-
+        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
+            nombreMap.put(RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+        }
         properties.put("properties", nombreMap);
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         return wt.path("/record-folders/" + documentalDTO.getId())
@@ -358,10 +373,9 @@ public class RecordServices implements IRecordServices {
     private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
         final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
         if (isClosed) {
-            final Calendar currentDay = GregorianCalendar.getInstance();
             final String idUnidadDocumental = unidadDocumental.getId();
             unidadDocumental.setId(udRecordFolder.getId());
-            unidadDocumental.setFechaCierre(Utilities.sumarDiasAFecha(currentDay, AUTO_CLOSE_NUM_DAYS));
+            unidadDocumental.setFechaAutoCierre(LocalDateTime.now().plusDays(AUTO_CLOSE_NUM_DAYS).toString());
             unidadDocumental.setCerrada(false);
             unidadDocumental.setInactivo(false);
             closeOrOpenUnidadDocumentalRecord(unidadDocumental);
@@ -370,6 +384,7 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setCerrada(true);
             unidadDocumental.setInactivo(true);
         }
+        unidadDocumental.setFechaAutoCierre(null);
         actualizarUnidadDocumental(unidadDocumental);
     }
 
@@ -383,6 +398,7 @@ public class RecordServices implements IRecordServices {
                 unidadDocumental = optionalDto.get();
                 unidadDocumental.setCerrada(true);
                 unidadDocumental.setInactivo(true);
+                unidadDocumental.setFechaAutoCierre("none");
                 final String faseArchivo = unidadDocumental.getFaseArchivo();
                 if (StringUtils.isEmpty(faseArchivo) || !PhaseType.ARCHIVO_CENTRAL.getName().equals(faseArchivo)) {
                     unidadDocumental.setFaseArchivo(PhaseType.ARCHIVO_GESTION.getName());
@@ -396,7 +412,9 @@ public class RecordServices implements IRecordServices {
                 unidadDocumental.setId(idRecordFolder);
                 closeOrOpenUnidadDocumentalRecord(unidadDocumental);
                 unidadDocumental.setId(idUnidadDocumental);
-                unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                if (null == unidadDocumental.getFechaCierre()) {
+                    unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                }
             }
         } else {
             unidadDocumental.setCerrada(false);
@@ -409,6 +427,12 @@ public class RecordServices implements IRecordServices {
         //Se declara el record
         String s = declararRecord(documentoDTO);
         log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("cm:title", documentoDTO.getNombreDocumento());
+        properties.put("cm:name", documentoDTO.getNombreDocumento());
+        properties.put("cm:description", documentoDTO.getNombreDocumento());
+        Response response = modificarRecordFile(documentoDTO.getIdDocumento(), properties);
+        log.info("Status: {}", response.getStatus());
         //Se completa el record
         String s1 = completeRecord(documentoDTO.getIdDocumento());
         log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);

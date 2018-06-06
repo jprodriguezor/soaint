@@ -2,10 +2,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TicketRadicado} from '../../../../bussiness-components/ticket-radicado/ticket-radicado.component';
 import {
   DESTINATARIO_EXTERNO,
-  DESTINATARIO_INTERNO,
-  DESTINATARIO_PRINCIPAL
+  DESTINATARIO_INTERNO
 } from '../../../../../shared/bussiness-properties/radicacion-properties';
 import {Guid} from "../../../../../infrastructure/utils/guid-generator";
+import * as detectBrowser from "detect-browser";
+
 
 export class RsTicketRadicado implements  TicketRadicado {
 
@@ -40,6 +41,7 @@ export class RsTicketRadicado implements  TicketRadicado {
 @Component({
   selector: 'rs-ticket-radicado',
   templateUrl: './rs-ticket-radicado.component.html',
+  styleUrls:['./rs-ticket-radicado.component.css'],
 })
 export class RsTicketRadicadoComponent  {
 
@@ -47,8 +49,7 @@ export class RsTicketRadicadoComponent  {
 
    @Input() idTicket= Guid.next();
 
-  constructor() { }
-
+  readonly browser = detectBrowser.detect();
   ngOnInit() {
   }
 
@@ -56,5 +57,6 @@ export class RsTicketRadicadoComponent  {
 
      this.ticket = ticket;
   }
+
 
 }

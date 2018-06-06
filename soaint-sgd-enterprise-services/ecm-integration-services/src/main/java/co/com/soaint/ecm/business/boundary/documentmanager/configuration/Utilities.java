@@ -5,14 +5,19 @@
  */
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.ws.rs.core.Response;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * @author ADMIN
@@ -67,8 +72,12 @@ public class Utilities {
         return calendar;
     }
 
-    public static String calendarToString(Calendar calendar) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(calendar.getTime());
+    public static LocalDateTime toLocalDateTime(Calendar calendar) {
+        if (calendar == null) {
+            calendar = Calendar.getInstance();
+        }
+        TimeZone tz = calendar.getTimeZone();
+        ZoneId zid = tz == null ? ZoneId.systemDefault() : tz.toZoneId();
+        return LocalDateTime.ofInstant(calendar.toInstant(), zid);
     }
 }

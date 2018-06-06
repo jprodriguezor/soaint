@@ -11,6 +11,7 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.alfresco.cmis.client.AlfrescoDocument;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -554,27 +555,28 @@ final class ContentControlUtilities implements Serializable {
     /**
      * Metodo para crear el link
      *
-     * @param session      Objeto session
-     * @param documentoDTO Identificador del dcumento
-     * @param carpetaLink  Carpeta donde se va a crear el link
+     * @param session  Objeto session
+     * @param document Obj Document Ecm
+     * @param target   Obj Folder Ecm
      */
-    void crearLink(Session session, DocumentoDTO documentoDTO, Carpeta carpetaLink) {
-
+    void crearLink(Folder target, Document document, Session session) {
         log.info("Se entra al metodo crearLink");
 
         Map<String, Object> properties = new HashMap<>();
         properties.put(PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_ITEM.value());
-
+        String id = document.getId().split(";")[0];
         // define a name and a description for the link
-        properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento() + ".link");
-        properties.put("cmis:description", "Documento Vinculado");
+        properties.put(PropertyIds.NAME, document.getName());
+        properties.put(PropertyIds.DESCRIPTION, id);
         properties.put(PropertyIds.OBJECT_TYPE_ID, "I:app:filelink");
 
         //define the destination node reference
-        properties.put("cm:destination", "workspace://SpacesStore/" + documentoDTO);
+        properties.put("cm:destination", "workspace://SpacesStore/" + id);
         //Se crea el link
-        session.createItem(properties, carpetaLink.getFolder());
+        session.createItem(properties, target);
 
+        AlfrescoDocument alfrescoDocument = (AlfrescoDocument) document;
+        alfrescoDocument.addAspect(ConstantesECM.P_APP_LINKED);
         log.info("Se crea el link y se sale del método crearLink");
     }
 
@@ -1159,12 +1161,12 @@ final class ContentControlUtilities implements Serializable {
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
                     BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-
+            final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            idDocument = document.getId();
+            documentoDTO.setIdDocumento(idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument);
             if (null != documentImg) {
                 documentImg.delete();
             }
-
         } catch (Exception e) {
             log.error("Error al estampar la etiqueta de radicacion");
             throw ExceptionBuilder.newBuilder()
@@ -1353,10 +1355,8 @@ final class ContentControlUtilities implements Serializable {
             final String idUnidadDocumental = queryResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_UD_ID);
             if (!StringUtils.isEmpty(idUnidadDocumental) && !idUnidadDocumental.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                final Folder folder = (Folder) session.getObject(session.getObject(objectId));
-                if (ObjectUtils.isEmpty(dto) || hasDatesInRange(folder, dto)) {
-                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
-                }
+                final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
             }
         }
         return unidadDocumentalDTOS;
@@ -1414,61 +1414,6 @@ final class ContentControlUtilities implements Serializable {
             folderAux = aux;
         }
         return folderAux;
-    }
-
-    /**
-     * Metodo que verifica la existencia de fechas en el dto y el rango de seleccion
-     *
-     * @param folder {@link Folder}
-     * @param dto    {@link UnidadDocumentalDTO}
-     * @return boolean {@link Boolean}
-     */
-    private boolean hasDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
-
-        Calendar dtoFechaCierre = dto.getFechaCierre();
-        Calendar folderFechaCierre = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_CIERRE);
-
-        Calendar dtoFechaInicial = dto.getFechaExtremaInicial();
-        Calendar folderFechaInicial = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
-
-        Calendar dtoFechaFinal = dto.getFechaExtremaFinal();
-        Calendar folderFechaFinal = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_FINAL);
-
-        if (dtoFechaCierre == null && dtoFechaInicial == null && dtoFechaFinal == null) {
-            return true;
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) && dtoFechaFinal == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null) && dtoFechaInicial == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0);
-        }
-        if (dtoFechaCierre != null && folderFechaCierre != null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0);
-        }
-        if ((dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if (dtoFechaInicial != null && folderFechaInicial != null) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        return ((dtoFechaFinal != null && folderFechaFinal != null) &&
-                (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0));
     }
 
     /**
@@ -1703,7 +1648,7 @@ final class ContentControlUtilities implements Serializable {
     private byte[] imageBytes(File imgFile) throws IOException {
         BufferedImage originalImage = ImageIO.read(imgFile);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write( originalImage, "png", baos );
+        ImageIO.write(originalImage, "png", baos);
         baos.flush();
         byte[] imageInByte = baos.toByteArray();
         baos.close();
