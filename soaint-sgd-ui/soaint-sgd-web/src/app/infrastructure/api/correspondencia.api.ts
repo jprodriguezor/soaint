@@ -16,7 +16,8 @@ export class CorrespondenciaApiService {
   }
 
   ListarComunicacionesSalidaDistibucionFisica(payload: any): Observable<ComunicacionOficialDTO[]> {
-    // return  this._api.list(environment.listarCorrespondencia_salida_distribucion_fisica_endpoint, payload);
+    // return  this._api.list(environment.listarCorrespondencia_salida_distribucion_fisica_endpoint, payload)
+    //         .map(_map => _map.comunicacionesOficiales);
     return Observable.of([
       {correspondencia:{
         ideDocumento:1566,
