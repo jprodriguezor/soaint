@@ -1119,10 +1119,12 @@ final class ContentControlUtilities implements Serializable {
             byte[] imageBytes;
             String mimeType = MimeTypes.getMIMEType("pdf");
             Document documentImg = null;
+            boolean isHtmlDoc = false;
             if (MimeTypes.getMIMEType("html").equals(docMimeType)) {
                 imageBytes = documentBytes;
                 documentBytes = getDocumentBytes(documentECM);
                 mimeType = MimeTypes.getMIMEType("html");
+                isHtmlDoc = true;
             } else {
                 documentImg = getStamperImage(nroRadicado);
                 if (null == documentImg) {
@@ -1151,11 +1153,14 @@ final class ContentControlUtilities implements Serializable {
 
             documentoDTO.setNombreDocumento(docName);
 
-            Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
+            final Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, MimeTypes.getMIMEType("pdf"));
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
+            if (isHtmlDoc) {
+                properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocument);
+            }
 
             documentECM.delete(false);
 
