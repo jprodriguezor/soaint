@@ -34,6 +34,7 @@ import { afterTaskComplete } from '../../../infrastructure/state-management/tare
 import { ConstanteDTO } from '../../../domain/constanteDTO';
 import { TIPO_AGENTE_DESTINATARIO } from '../../../shared/bussiness-properties/radicacion-properties';
 import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-corregir-radicacion',
@@ -106,7 +107,10 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this.closedTask = afterTaskComplete.map(() => true).startWith(false);
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
         this.task = activeTask;
-        this.restore();
+        if(!isNullOrUndefined(this.task)) {
+          this.restore();
+        }
+
     });
   }
 
@@ -139,7 +143,6 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   }
 
   restore() {
-    if (this.task) {
       this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado)
       .subscribe((result) => {
         this.comunicacion = result;
@@ -152,7 +155,6 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
           this._changeDetectorRef.detectChanges();
         }, 0);
       });
-    }
   }
 
   InitGenerales() {
@@ -271,7 +273,8 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 }
 
 ngOnDestroy() {
-  this._changeDetectorRef.detach();
+  this.activeTaskUnsubscriber.unsubscribe();
+  // this._changeDetectorRef.detach();
 }
 
 
