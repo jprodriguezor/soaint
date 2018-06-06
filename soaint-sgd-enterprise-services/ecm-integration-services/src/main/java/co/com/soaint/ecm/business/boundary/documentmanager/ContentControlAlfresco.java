@@ -17,7 +17,6 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.alfresco.cmis.client.AlfrescoDocument;
-import org.alfresco.cmis.client.impl.AlfrescoItemImpl;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -937,29 +936,38 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      */
     @Override
-    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws SystemException {
+    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) {
         log.info("### Modificar documento: " + idDocumento);
+        final DocumentoDTO dto = new DocumentoDTO();
+        dto.setIdDocumento(idDocumento);
         MensajeRespuesta response = new MensajeRespuesta();
+        final Map<String, Object> idResponse = new HashMap<>();        
+        idResponse.put("idECM", null);
+        response.setCodMensaje("1223");
+        response.setResponse(idResponse);
         if (StringUtils.isEmpty(idDocumento)) {
-            throw new SystemException("Especifique el id del documento a modificar");
+            response.setMensaje("Especifique el id del documento a modificar");
+            return response;
         }
         try {
-            final ObjectId idDoc = new ObjectIdImpl(idDocumento);
-            final CmisObject object = session.getObject(idDoc);
+            final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
+            final CmisObject object = session.getObject(idDocObject);
             final Map<String, Object> updateProperties = new HashMap<>();
+
             if (!StringUtils.isEmpty(nroRadicado)) {
                 updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
                 final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
                 if ("Anexo".equals(docType)) {
-                    throw new SystemException("No se debe modificar el numero de radicado de un documento anexo");
-                }
-                final DocumentoDTO dto = new DocumentoDTO();
-                dto.setIdDocumento(idDocumento);
+                    response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
+                    return response;
+                }                
                 final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
                 principalAdjuntosQueryResults.forEach(queryResult -> {
                     String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                     CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                    tmpObject.updateProperties(updateProperties);
+                    Document document = (Document) tmpObject;
+                    document.updateProperties(updateProperties);
                 });
             }
             if (!StringUtils.isEmpty(nombreRemitente)) {
@@ -968,20 +976,39 @@ public class ContentControlAlfresco implements ContentControl {
             if (!StringUtils.isEmpty(tipologiaDocumental)) {
                 updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
             }
+            updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, "");
             CmisObject cmisObject = object.updateProperties(updateProperties);
             log.info("### Modificados los metadatos de correctamente");
             updateProperties.clear();
-            updateProperties.put("idECM", cmisObject.getId());
+            updateProperties.put("idECM", cmisObject.getId().split(";")[0]);
             response.setMensaje("OK");
             response.setResponse(updateProperties);
             response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
-
+            return response;
         } catch (CmisObjectNotFoundException e) {
+            final ItemIterable<QueryResult> queryResultItemIterable = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+            String idDoc = null;
+            final Iterator<QueryResult> iterator = queryResultItemIterable.iterator();
+            while (iterator.hasNext() && null == idDoc) {
+                QueryResult next = iterator.next();
+                final String idTmp = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                final Document document = (Document) session.getObject(session.createObjectId(idTmp));
+                final String docType = document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+                if ("Principal".equals(docType)) {
+                    idDoc = idTmp.split(";")[0];
+                }
+            }
+            if (null == idDoc) {
+                log.error("*** Error al modificar el documento *** ", e);
+                response.setMensaje("Documento no encontrado");
+                return response;
+            }
+            return modificarMetadatosDocumento(session, idDoc, nroRadicado, tipologiaDocumental, nombreRemitente);
+        } catch (Exception e) {
             log.error("*** Error al modificar el documento *** ", e);
-            response.setMensaje("Documento no encontrado");
-            response.setCodMensaje("00006");
+            response.setMensaje(e.getMessage());
+            return response;
         }
-        return response;
     }
 
     /**
