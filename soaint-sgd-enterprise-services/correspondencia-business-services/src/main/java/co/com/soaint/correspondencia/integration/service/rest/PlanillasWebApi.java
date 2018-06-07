@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlanillaSalidaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillasDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ReportDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -95,6 +96,20 @@ public class PlanillasWebApi {
     public PlanillaDTO listarPlanillasByNroPlanilla(@PathParam("nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
         log.info("processing rest request - listar planilla distribucion by nroPlanilla");
         return boundary.listarPlanillasByNroPlanilla(nroPlanilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/planillas-salida/{nro_planilla}")
+    public PlanillaSalidaDTO listarPlanillasSalidaByNroPlanilla(@PathParam("nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
+        log.info("processing rest request - listar planilla distribucion by nroPlanilla");
+        return boundary.listarPlanillasSalidaByNroPlanilla(nroPlanilla);
     }
 
     /**
