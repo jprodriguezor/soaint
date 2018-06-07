@@ -415,6 +415,8 @@ public class CorrespondenciaGatewayApi {
         EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
         entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
         entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        entradaProceso.setUsuario("arce");
+        entradaProceso.setPass("arce");
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
