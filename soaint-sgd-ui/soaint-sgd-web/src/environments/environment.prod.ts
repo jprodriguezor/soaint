@@ -94,7 +94,7 @@ export const environment = {
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
   generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
-
+  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla-salida`,
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
 
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,

@@ -61,7 +61,7 @@ import java.util.List;
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "INNER JOIN c.dctAsigUltimoList dau " +
-                "WHERE (:COD_ESTADO IS NULL OR c.codEstado = :COD_ESTADO) AND c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
+                "WHERE (:COD_ESTADO IS NULL OR c.codEstado = :COD_ESTADO) AND (:COD_DEPENDENCIA IS NULL OR c.codDependencia = :COD_DEPENDENCIA) AND c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodDependencia", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
