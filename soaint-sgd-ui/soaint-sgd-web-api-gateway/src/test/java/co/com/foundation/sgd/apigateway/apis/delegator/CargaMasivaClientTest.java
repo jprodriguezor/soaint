@@ -1,8 +1,10 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.foundation.test.mocks.JaxRsUtils;
 import co.com.foundation.test.rules.EnvironmentRule;
-import co.com.foundation.sgd.utils.SystemParameters;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
@@ -12,10 +14,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -34,17 +34,17 @@ public class CargaMasivaClientTest {
 
     private CargaMasivaClient cargaMasivaClient;
 
-    private WebTarget wt;
+    private JerseyWebTarget wt;
 
-    private Client client;
+    private JerseyClient client;
 
 
     @Before
     public void setup() {
         cargaMasivaClient = new CargaMasivaClient();
 
-        client = mock(Client.class);
-        wt = mock(WebTarget.class);
+        client = mock(JerseyClient.class);
+        wt = mock(JerseyWebTarget.class);
 
         when(client.target(anyString())).thenReturn(wt);
 

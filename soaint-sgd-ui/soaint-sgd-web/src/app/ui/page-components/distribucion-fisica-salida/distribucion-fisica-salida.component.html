@@ -26,7 +26,7 @@
 
     <div>
         <p-panel header="Búsqueda de tareas" [style]="{border: 'none'}">
-          <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
+          <div class="ui-g ui-fluid">
             <div class="ui-g-12">
                 <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
                     <div class="ui-g form-group">
@@ -153,7 +153,7 @@
           </div>
         </p-panel>
         <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
-          <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
+          <div class="ui-g ui-fluid">
             <div class="ui-g-12">
               <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                            [(selection)]="selectedComunications"

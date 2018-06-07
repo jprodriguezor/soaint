@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as DistribucionArrayData} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-selectors';
@@ -24,6 +24,7 @@ import {PlanAgentesDTO} from '../../../domain/PlanAgentesDTO';
 import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
 import {Sandbox as ProcessSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
 import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
+import { VALIDATION_MESSAGES } from '../../../shared/validation-messages';
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -66,6 +67,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   tipologiasDocumentales: ConstanteDTO[];
 
   dependencias: DependenciaDTO[] = [];
+
+  validations: any = {};
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -142,16 +145,31 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.formBuilder.group({
       'funcionario': [null],
-      'dependencia': [null],
+      'dependencia': [null, [Validators.required]],
       'nroRadicado': [null],
       'tipologia': [null],
     });
   }
 
+  OnBlurEvents(control: string) {
+    this.SetValidationMessages(control);
+  }
+
+SetValidationMessages(control: string) {
+    const formControl = this.form.get(control);
+    if (formControl.touched && formControl.invalid) {
+      const error_keys = Object.keys(formControl.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+    } else {
+        this.validations[control] = '';
+    }
+}
+
   listarDependencias() {
     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
       this.dependencias = results.dependencias;
-      this.listarDistribuciones();
+      // this.listarDistribuciones();
     });
   }
 

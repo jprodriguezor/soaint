@@ -1283,9 +1283,12 @@ public class ContentControlAlfresco implements ContentControl {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         try {
             utilities.estamparEtiquetaRadicacion(documentoDTO, session);
+            final Map<String, Object> mapResponse = new HashMap<>();
+            mapResponse.put("documentoDto", documentoDTO);
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje("Imagen guardada satisfactoriamente")
+                    .response(mapResponse)
                     .build();
 
         } catch (Exception e) {

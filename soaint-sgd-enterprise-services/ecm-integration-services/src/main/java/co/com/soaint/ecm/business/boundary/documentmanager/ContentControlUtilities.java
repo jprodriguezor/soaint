@@ -535,6 +535,7 @@ final class ContentControlUtilities implements Serializable {
             documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
             documentoDTO.setTamano(document.getContentStreamLength() + "");
             documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
+            documentoDTO.setVersionLabel(document.getVersionLabel());
             documentoDTO.setDocumento(getDocumentBytes(document));
 
             final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
@@ -1170,7 +1171,7 @@ final class ContentControlUtilities implements Serializable {
             idDocument = document.getId();
             documentoDTO.setIdDocumento(idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument);
             if (null != documentImg) {
-                documentImg.delete();
+                //documentImg.delete();
             }
         } catch (Exception e) {
             log.error("Error al estampar la etiqueta de radicacion");
@@ -1467,7 +1468,7 @@ final class ContentControlUtilities implements Serializable {
         }
     }
 
-    private void crearInsertarCarpetaRadicacion(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String comunicacionOficial, String tipoComunicacionSelector, Optional<Carpeta> comunicacionOficialFolder) {
+    private void crearInsertarCarpetaRadicacion(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String comunicacionOficial, String tipoComunicacionSelector, Optional<Carpeta> comunicacionOficialFolder) throws SystemException {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         List<DocumentoDTO> documentoDTOList = new ArrayList<>();
@@ -1514,7 +1515,7 @@ final class ContentControlUtilities implements Serializable {
         }
     }
 
-    private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) {
+    private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) throws SystemException {
         String idDocumento;
         log.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
@@ -1534,15 +1535,18 @@ final class ContentControlUtilities implements Serializable {
         properties.put(PropertyIds.NAME, docName);
         documentoDTO.setNombreDocumento(docName);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
+        DocumentoDTO dto = transformarDocumento(newDocument);
 
-        idDocumento = newDocument.getId();
-        String[] parts = idDocumento.split(";");
-        idDocumento = parts[0];
-        documentoDTO.setVersionLabel(newDocument.getVersionLabel());
-        documentoDTO.setIdDocumento(idDocumento);
+        documentoDTO.setIdDocumentoPadre(dto.getIdDocumentoPadre());
+        documentoDTO.setIdDocumento(dto.getIdDocumento());
+        documentoDTO.setTipoDocumento(dto.getTipoDocumento());
+        documentoDTO.setNroRadicado(dto.getNroRadicado());
+        documentoDTO.setNombreDocumento(dto.getNombreDocumento());
+        documentoDTO.setTipoPadreAdjunto(dto.getTipoPadreAdjunto());
+        documentoDTO.setVersionLabel(dto.getVersionLabel());
         documentoDTOList.add(documentoDTO);
         response.setDocumentoDTOList(documentoDTOList);
-        return idDocumento;
+        return dto.getIdDocumento();
     }
 
     /**

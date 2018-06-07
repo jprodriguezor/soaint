@@ -249,7 +249,11 @@ public class RecordServices implements IRecordServices {
                     Document document = (Document) cmisObject;
                     ContentStream contentStream = document.getContentStream();
                     eliminarObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
-                    contentFolder.createDocument(contentControl.obtenerPropiedadesDocumento(document), contentStream, VersioningState.MAJOR);
+                    final Map<String, Object> map = contentControl.obtenerPropiedadesDocumento(document);
+                    String docName = document.getPropertyValue(PropertyIds.NAME);
+                    map.put(PropertyIds.NAME, docName);
+                    map.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
+                    contentFolder.createDocument(map, contentStream, VersioningState.MAJOR);
                 }
             }
             eliminarObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
@@ -379,6 +383,7 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setCerrada(false);
             unidadDocumental.setInactivo(false);
             closeOrOpenUnidadDocumentalRecord(unidadDocumental);
+
             unidadDocumental.setId(idUnidadDocumental);
         } else {
             unidadDocumental.setCerrada(true);

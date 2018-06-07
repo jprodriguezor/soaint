@@ -248,7 +248,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   listarDistribuciones() {
     this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalidaDistibucionFisica(this.GetPayload());
     this.comunicaciones$.subscribe(response => {
-      this.listadoComunicaciones = response;
+      this.listadoComunicaciones = [];
+      this.listadoComunicaciones = [...response];
       this.selectedComunications = [];
     });
 
@@ -345,14 +346,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
-        this._processSandbox.IniciarProcesso({
-          idProceso: "proceso.gestion-planillas-salida",
-          idDespliegue: "co.com.soaint.sgd.process:proceso-gestion-planillas-salida:1.0.0-SNAPSHOT",
-          paramtros: {
-            numPlanilla:this.planillaGenerada.nroPlanilla ,
-            codDependencia: '10401040'
-          }
-        });
+        this.listarDistribuciones();
+        this._detectChanges.detectChanges();
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
