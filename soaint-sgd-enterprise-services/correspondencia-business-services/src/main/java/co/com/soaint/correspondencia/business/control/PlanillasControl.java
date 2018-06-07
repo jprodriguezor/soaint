@@ -168,6 +168,38 @@ public class PlanillasControl {
 
     /**
      * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PlanillaSalidaDTO listarPlanillasSalidaByNroPlanilla(String nroPlanilla, String estado) throws BusinessException, SystemException {
+        try {
+            PlanillaDTO planilla = em.createNamedQuery("CorPlanillas.findByNroPlanilla", PlanillaDTO.class)
+                    .setParameter("NRO_PLANILLA", nroPlanilla)
+                    .getSingleResult();
+
+            PlanillaSalidaDTO planillaSalida= PlanillaDTOTransformToPlanillaSalidaDTO(planilla);
+            planillaSalida.setPAgentes(PlanAgentesSalidaDTO.newInstance()
+                    .pAgente(planAgenControl.listarAgentesSalidaByIdePlanilla(planilla.getIdePlanilla(), estado))
+                    .build());
+            return planillaSalida;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("planillas.planilla_not_exist_by_nroPlanilla")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroPlanilla
      * @param formato
      * @return
      * @throws SystemException
@@ -299,6 +331,27 @@ public class PlanillasControl {
      */
     public CorPlanillas corPlanillasTransform(PlanillaDTO planilla) {
         return CorPlanillas.newInstance()
+                .idePlanilla(planilla.getIdePlanilla())
+                .nroPlanilla(planilla.getNroPlanilla())
+                .fecGeneracion(planilla.getFecGeneracion())
+                .codTipoPlanilla(planilla.getCodTipoPlanilla())
+                .codFuncGenera(planilla.getCodFuncGenera())
+                .codSedeOrigen(planilla.getCodSedeOrigen())
+                .codDependenciaOrigen(planilla.getCodDependenciaOrigen())
+                .codSedeDestino(planilla.getCodSedeDestino())
+                .codDependenciaDestino(planilla.getCodDependenciaDestino())
+                .codClaseEnvio(planilla.getCodClaseEnvio())
+                .codModalidadEnvio(planilla.getCodModalidadEnvio())
+                .ideEcm(planilla.getIdeEcm())
+                .build();
+    }
+
+    /**
+     * @param planilla
+     * @return
+     */
+    public PlanillaSalidaDTO PlanillaDTOTransformToPlanillaSalidaDTO(PlanillaDTO planilla) {
+        return PlanillaSalidaDTO.newInstance()
                 .idePlanilla(planilla.getIdePlanilla())
                 .nroPlanilla(planilla.getNroPlanilla())
                 .fecGeneracion(planilla.getFecGeneracion())
