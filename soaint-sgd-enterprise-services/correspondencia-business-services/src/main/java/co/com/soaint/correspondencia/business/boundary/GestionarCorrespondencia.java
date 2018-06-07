@@ -95,6 +95,15 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public CorrespondenciaDTO getCorrespondenciaInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.consultarCorrespondenciaByNroRadicado(nroRadicado);
+    }
+
+    /**
      *
      * @param fechaIni
      * @param fechaFin

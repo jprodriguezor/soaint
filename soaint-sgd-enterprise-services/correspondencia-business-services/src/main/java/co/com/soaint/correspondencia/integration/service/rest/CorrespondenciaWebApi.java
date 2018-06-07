@@ -16,7 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +123,17 @@ public class CorrespondenciaWebApi {
                 .status(Response.Status.CREATED)
                 .entity(Json.createObjectBuilder().add("ideInstancia",ideInstancia).build())
                 .build();
+    }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-ide-instancia-dependencia-radicado/{nro_radicado}")
+    public CorrespondenciaDTO getCorrespondenciaInstanciaPorRadicado(@PathParam("nro_radicado") final String nroRadicado) throws SystemException, BusinessException {
+         return boundary.getCorrespondenciaInstanciaPorRadicado(nroRadicado);
     }
 
     /**
