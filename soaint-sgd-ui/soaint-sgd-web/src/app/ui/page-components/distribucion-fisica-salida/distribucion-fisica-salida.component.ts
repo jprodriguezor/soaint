@@ -38,6 +38,8 @@ import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tare
 import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 import { getModalidadCorreoArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/modalidad-correo-selectors';
 import { getClaseEnvioArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/clase-envio-selectors';
+import { ROUTES_PATH } from '../../../app.route-names';
+import { go } from '@ngrx/router-store';
 
 
 
@@ -47,7 +49,7 @@ import { getClaseEnvioArrayData } from '../../../infrastructure/state-management
   styleUrls: ['./distribucion-fisica-salida.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDestroy {
+export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
@@ -97,11 +99,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   validations: any = {};
 
-  // tarea
-  task: TareaDTO;
-  taskVariables: VariablesTareaDTO = {};
-  closedTask:  Observable<boolean> ;
-
 
   @ViewChild('popUpInformacionEnvio') popUpInformacionEnvio;
 
@@ -133,7 +130,7 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this._constSandbox.loadDatosGeneralesDispatch();
     this.InitDataForm();
-    this.InitPropiedadesTarea();
+    // this.InitPropiedadesTarea();
     this.InitSubscriptions();
     this.initForm();
   }
@@ -155,12 +152,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     });
   }
 
-  InitPropiedadesTarea() {
-    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
-    this._store.select(getActiveTask).subscribe((activeTask) => {
-      this.task = activeTask;
-  });
-  }
 
   getDatosRemitente(comunicacion): Observable<AgentDTO> {
     const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
@@ -169,7 +160,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
       const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-      return radicacionEntradaDTV.getDatosDestinatarios();
+      const destinatarioDTV = radicacionEntradaDTV.getDatosDestinatarios();
+      return destinatarioDTV;
   }
 
   getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
@@ -276,9 +268,9 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
       payload.cod_tipo_doc = this.form.get('tipologia').value.codigo;
     }
     if (this.form.value.nroRadicado) {
-      payload.nro_radicado = this.form.get('nroRadicado').value.codigo;
+      payload.nro_radicado = this.form.get('nroRadicado').value;
     }
-
+    return payload;
   }
 
   generarDatosExportar(): PlanillaDTO {
@@ -337,13 +329,13 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     return planilla;
   };
 
-  generarPlanilla() {
+  generarPlanilla(): void {
     if (this.InformacionEnvioCompletada()) {
       const dependenciaDestinoArray= [];
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
   
-      this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
           dependenciaDestinoArray.push(element.correspondencia.codDependencia);
@@ -353,13 +345,26 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
-        this.CompletedTask();
-        this._detectChanges.detectChanges();
+        this._processSandbox.IniciarProcesso({
+          idProceso: "proceso.gestion-planillas-salida",
+          idDespliegue: "co.com.soaint.sgd.process:proceso-gestion-planillas-salida:1.0.0-SNAPSHOT",
+          paramtros: {
+            numPlanilla:this.planillaGenerada.nroPlanilla ,
+            codDependencia: '10401040'
+          }
+        });
       });
     } else {
-      this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'La información de envío no está completa en las comunicaciones seleccionadas'}));
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warning', 
+        summary: 'Complete información de envío en las comunicacion(es) seleccionada(s)'
+      }));
     }
 
+  }
+
+  Finalizar(): void {
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
   InformacionEnvioCompletada(): boolean {
@@ -408,24 +413,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   hideDetallePlanillaDialog() {
     this.detalleDialogVisible = false;
-  }
-
-  abort() {
-    this._store.dispatch(new AbortTaskAction({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      instanciaProceso: this.task.idInstanciaProceso
-  }))
-  }
-
-  CompletedTask() {
-    this._taskSandBox.completeTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      idTarea: this.task.idTarea,
-      parametros: {
-      }
-    });
   }
 
   save(): Observable<any> {

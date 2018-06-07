@@ -84,6 +84,7 @@ import { TransferenciasDocumentalesComponent } from './ui/page-components/transf
 import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/popup-unidad-documental-notas/popup-unidad-documental-notas.component';
 import { TipologiaDocumentalPipePipe } from './shared/pipes/tipologia-documental-pipe.pipe';
 import { InformacionEnvioComponent } from './ui/bussiness-components/informacion-envio/informacion-envio.component';
+import { CargarPlanillaSalidaComponent } from './ui/page-components/cargar-planilla-salida/cargar-planilla-salida.component';
 
 @NgModule({
   imports: [
@@ -203,6 +204,7 @@ import { InformacionEnvioComponent } from './ui/bussiness-components/informacion
     PopupUnidadDocumentalNotasComponent,
     TipologiaDocumentalPipePipe,
     InformacionEnvioComponent,
+    CargarPlanillaSalidaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
