@@ -108,6 +108,24 @@ public class CorrespondenciaWebApi {
     }
 
     /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-ide-instancia-radicado/{nro_radicado}")
+    public Response getIdeInstanciaPorRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - consultarNroRadicadoCorrespondenciaReferida.");
+
+        String ideInstancia = boundary.getIdeInstanciaPorRadicado(nroRadicado);
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(Json.createObjectBuilder().add("ideInstancia",ideInstancia).build())
+                .build();
+    }
+
+    /**
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia

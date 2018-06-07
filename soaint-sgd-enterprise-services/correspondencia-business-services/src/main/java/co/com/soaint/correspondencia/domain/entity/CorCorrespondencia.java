@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
                 "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
                 "FROM CorCorrespondencia c WHERE c.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorCorrespondencia.getIdeInstanciaPorRadicado", query = "SELECT c.ideInstancia " +
+                "FROM CorCorrespondencia c WHERE c.nroRadicado = :NRO_RADICADO"),
         @NamedQuery(name = "CorCorrespondencia.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
                 "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +

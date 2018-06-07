@@ -90,6 +90,10 @@ public class GestionarCorrespondencia {
         control.actualizarIdeInstancia(correspondenciaDTO);
     }
 
+    public String getIdeInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.getIdeInstanciaPorRadicado(nroRadicado);
+    }
+
     /**
      *
      * @param fechaIni
