@@ -45,10 +45,6 @@ public class AsignacionControlTest  {
     final String COD_TIPO_PROCESO=null;
     final BigInteger IDE_ASIG_ULTIMO = BigInteger.valueOf(100);
 
-
-
-
-
     AsignacionControl asignacionControl;
 
     // Dependencias
@@ -255,7 +251,7 @@ public class AsignacionControlTest  {
     }
 
     @Test
-    public void actualizarTipoProceso_Fail() throws Exception {//estoy aki
+    public void actualizarTipoProceso_Fail() throws Exception {
         AsignacionDTO asignacionDTO = newAsignacionDTO();
 
         when(em.createNamedQuery("DctAsigUltimo.updateTipoProceso", DctAsigUltimo.class)).thenThrow(Exception.class);
@@ -295,23 +291,6 @@ public class AsignacionControlTest  {
         fails.expectMessage("system.generic.error");
 
         asignacionControl.consultarAsignacionReasignarByIdeAgente(ID_AGENTE);
-    }
-
-    @Test
-    public void conformarAsignaciones_Fail() throws Exception {
-       /* AsignacionesDTO asignacionesDTOresult= AsignacionesDTO.newInstance().build();
-        asignacionesDTOresult=asignacionControl.conformarAsignaciones(null,null,null,null);
-
-        fails.expect(NullPointerException.class);*/
-
-    }
-
-    @Test
-    public void asignarDocumentoByNroRadicado() throws Exception {
-    }
-
-    @Test
-    public void actualizarAsignacion() throws Exception {
     }
 
     @Test
