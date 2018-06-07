@@ -489,7 +489,6 @@ public class ProcessService implements IProcessServices {
                         .codigoProceso(valor.getString("id"))
                         .nombreProceso(valor.getString("name"))
                         .idDespliegue(valor.getString("deployment-id"))
-                        .estado(valor.getString("state"))
                         .build();
                 listaProcesada.add(respuesta);
             }
@@ -541,7 +540,7 @@ public class ProcessService implements IProcessServices {
             }else
 
             if ("proceso.correspondencia-salida".equals(resultado.getIdProceso())) {
-                
+
             resultado.setNombreSennal("correspondenciaSalida");
             }else
             if ("proceso.gestor-devoluciones".equals(resultado.getIdProceso())) {
