@@ -413,8 +413,8 @@ public class CorrespondenciaGatewayApi {
         this.procesoClient.iniciar(entradaProceso);
 */
         EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso.gestion-planillas");
-        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestion-planillas:1.0.0-SNAPSHOT");
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());

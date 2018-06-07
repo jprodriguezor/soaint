@@ -336,7 +336,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
   
-      this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
           dependenciaDestinoArray.push(element.correspondencia.codDependencia);
@@ -347,6 +347,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
         this.listarDistribuciones();
+        this._detectChanges.detectChanges();
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
