@@ -248,7 +248,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   listarDistribuciones() {
     this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalidaDistibucionFisica(this.GetPayload());
     this.comunicaciones$.subscribe(response => {
-      this.listadoComunicaciones = response;
+      this.listadoComunicaciones = [];
+      this.listadoComunicaciones = [...response];
       this.selectedComunications = [];
     });
 
@@ -345,6 +346,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
+        this.listarDistribuciones();
+        this._detectChanges.detectChanges();
       });
     } else {
       this._store.dispatch(new PushNotificationAction({
@@ -354,7 +357,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     }
 
   }
-  
+
   Finalizar(): void {
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }

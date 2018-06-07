@@ -950,13 +950,13 @@ public class ContentControlAlfresco implements ContentControl {
             return response;
         }
         try {
-            final ObjectId idDoc = new ObjectIdImpl(idDocumento);
-            final CmisObject object = session.getObject(idDoc);
+            final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
+            final CmisObject object = session.getObject(idDocObject);
             final Map<String, Object> updateProperties = new HashMap<>();
 
             if (!StringUtils.isEmpty(nroRadicado)) {
                 updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
-                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDoc);
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
                 final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
                 if ("Anexo".equals(docType)) {
                     response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
@@ -966,7 +966,8 @@ public class ContentControlAlfresco implements ContentControl {
                 principalAdjuntosQueryResults.forEach(queryResult -> {
                     String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                     CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                    tmpObject.updateProperties(updateProperties);
+                    Document document = (Document) tmpObject;
+                    document.updateProperties(updateProperties);
                 });
             }
             if (!StringUtils.isEmpty(nombreRemitente)) {
@@ -979,7 +980,7 @@ public class ContentControlAlfresco implements ContentControl {
             CmisObject cmisObject = object.updateProperties(updateProperties);
             log.info("### Modificados los metadatos de correctamente");
             updateProperties.clear();
-            updateProperties.put("idECM", cmisObject.getId());
+            updateProperties.put("idECM", cmisObject.getId().split(";")[0]);
             response.setMensaje("OK");
             response.setResponse(updateProperties);
             response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
@@ -1282,9 +1283,12 @@ public class ContentControlAlfresco implements ContentControl {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         try {
             utilities.estamparEtiquetaRadicacion(documentoDTO, session);
+            final Map<String, Object> mapResponse = new HashMap<>();
+            mapResponse.put("documentoDto", documentoDTO);
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje("Imagen guardada satisfactoriamente")
+                    .response(mapResponse)
                     .build();
 
         } catch (Exception e) {

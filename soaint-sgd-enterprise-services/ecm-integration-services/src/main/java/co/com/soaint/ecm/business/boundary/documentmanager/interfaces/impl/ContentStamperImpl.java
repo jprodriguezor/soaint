@@ -36,8 +36,8 @@ public final class ContentStamperImpl implements ContentStamper {
     @Override
     public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, String mimeType) throws SystemException {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
-        Document document = new Document(PageSize.A4);
-        try(final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+        Document document = new Document(PageSize.A4, 0, 0, 0, 0);
+        try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             if (MimeTypes.getMIMEType("html").equals(mimeType)) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 PdfWriter writer = PdfWriter.getInstance(document, outputStream);
@@ -56,6 +56,7 @@ public final class ContentStamperImpl implements ContentStamper {
                 is.close();
             }
             PdfReader reader = new PdfReader(contentBytes);
+            resizePdf(reader);
             PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
             Image image = getImage(stamperImg);
             PdfImage stream = new PdfImage(image, "", null);
@@ -67,6 +68,8 @@ public final class ContentStamperImpl implements ContentStamper {
             stamper.close();
             reader.close();
             document.close();
+            Rectangle pageSize = document.getPageSize();
+            System.out.println(pageSize);
             return byteArrayOutputStream.toByteArray();
 
         } catch (Exception e) {
@@ -79,11 +82,55 @@ public final class ContentStamperImpl implements ContentStamper {
     }
 
     private Image getImage(byte[] imageBytes) throws IOException, BadElementException {
-        Image image = Image.getInstance(imageBytes);
-        image.setBackgroundColor(BaseColor.ORANGE);
-        image.setAbsolutePosition(positionType.getAbsoluteX(), positionType.getAbsoluteY());
-        image.scalePercent(40);
+        final Image image = Image.getInstance(imageBytes);
+        image.setAbsolutePosition(370F, 659.301F); //695
+        image.setScaleToFitHeight(true);
+        image.setScaleToFitLineWhenOverflow(true);
+        image.scaleAbsolute(210F, 130F);
         return image;
+    }
+
+    private void resizePdf(PdfReader reader) {
+
+        Rectangle pageSize = reader.getPageSize(1);
+        System.out.println("Wao!!!" + pageSize);
+
+        float width = 8.5f * 72;
+        float height = 11f * 72;
+
+        Rectangle cropBox = reader.getCropBox(1);
+        float widthToAdd = width - cropBox.getWidth();
+        float heightToAdd = height - cropBox.getHeight();
+        float[] newBoxValues = new float[] {
+                cropBox.getLeft() - widthToAdd / 2,
+                cropBox.getBottom() - heightToAdd / 2,
+                cropBox.getRight() + widthToAdd / 2,
+                cropBox.getTop() + heightToAdd / 2
+        };
+        PdfArray newBox = new PdfArray(newBoxValues);
+
+        PdfDictionary pageDict = reader.getPageN(1);
+        pageDict.put(PdfName.CROPBOX, newBox);
+        pageDict.put(PdfName.MEDIABOX, newBox);
+
+        /*for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+            Rectangle cropBox = reader.getCropBox(i);
+            float widthToAdd = width - cropBox.getWidth();
+            float heightToAdd = height - cropBox.getHeight();
+            if (Math.abs(widthToAdd) > tolerance || Math.abs(heightToAdd) > tolerance) {
+                float[] newBoxValues = new float[] {
+                        cropBox.getLeft() - widthToAdd / 2,
+                        cropBox.getBottom() - heightToAdd / 2,
+                        cropBox.getRight() + widthToAdd / 2,
+                        cropBox.getTop() + heightToAdd / 2
+                };
+                PdfArray newBox = new PdfArray(newBoxValues);
+
+                PdfDictionary pageDict = reader.getPageN(i);
+                pageDict.put(PdfName.CROPBOX, newBox);
+                pageDict.put(PdfName.MEDIABOX, newBox);
+            }
+        }*/
     }
 
     private String top() {
