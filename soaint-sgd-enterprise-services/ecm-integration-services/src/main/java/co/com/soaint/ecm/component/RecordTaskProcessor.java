@@ -2,6 +2,7 @@ package co.com.soaint.ecm.component;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentDigitized;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.PhaseType;
@@ -43,6 +44,9 @@ public class RecordTaskProcessor implements Serializable {
     @Autowired
     private ContentControl contentControl;
 
+    @Autowired
+    private ContentDigitized contentDigitized;
+
     @Scheduled(cron = "#{'${scheduling.job.cron.custom}' ne '' ? '${scheduling.job.cron.custom}' : configuracion.cronTypeUD.cron}")
     public void tasksExecuter() {
         log.info("Running tasks executer for a day {}", GregorianCalendar.getInstance().getTime());
@@ -51,9 +55,15 @@ public class RecordTaskProcessor implements Serializable {
     }
 
     @Scheduled(cron = "#{configuracion.cronTypeDD.cron}")
-    public void findDigitizedDocumentsExecutor() {
+    public void processDigitalizedDocuments() {
+        log.info("Running task processDigitalizedDocuments in ECM");
         if (cronFindDigitalizedDocEnable) {
-            System.out.println("AAA: " + System.currentTimeMillis());
+            try {
+                contentDigitized.processDigitalizedDocuments();
+            } catch (SystemException e) {
+                log.error("Ocurrio un error procesar documentos {}");
+                log.error("### Mensaje de Error: " + e.getMessage());
+            }
         }
     }
 
