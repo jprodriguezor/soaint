@@ -985,8 +985,8 @@ public class CorrespondenciaControl {
             List<CorrespondenciaDTO> correspondencias =  em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
-            if(correspondencias.size()>1) throw ExceptionBuilder.newBuilder()
-                    .withMessage("correspondencia.correspondencia_by_nroRadicado_duplicated")
+            if(correspondencias.size()>1 || correspondencias.isEmpty()) throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_by_nroRadicado_duplicated_or_empty")
                     .buildBusinessException();
             return correspondencias.get(0);
 
