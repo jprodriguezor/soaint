@@ -136,7 +136,9 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
                 .idProceso(digitalizarDTO.getIdProceso())
-                .parametros(parameters).build();
+                .parametros(parameters)
+                .instanciaProceso(Long.parseLong(ideInstancia))
+                .build();
 
         final Response response = iniciarProceso(procesoDTO);
         if (response.getStatus() != 200){
