@@ -196,7 +196,6 @@ public class CorrespondenciaWebApi {
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia
-     * @param codTipoDoc
      * @param modEnvio
      * @param claseEnvio
      * @param nroRadicado
@@ -211,14 +210,13 @@ public class CorrespondenciaWebApi {
                                                                                       @QueryParam("mod_correo") final String modEnvio,
                                                                                       @QueryParam("clase_envio") final String claseEnvio,
                                                                                       @QueryParam("cod_dep") final String codDependencia,
-                                                                                      @QueryParam("cod_tipo_doc") final String codTipoDoc,
                                                                                       @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date fechaInicial = (fechaIni == null)? null : dateFormat.parse(fechaIni);
-            Date fechaFinal = (fechaFin == null)? null : dateFormat.parse(fechaFin);
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, codTipoDoc, nroRadicado);
+            Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
+            Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
+            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, nroRadicado);
         } catch (ParseException e) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("date.parse.error")
