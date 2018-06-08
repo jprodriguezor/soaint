@@ -214,8 +214,8 @@ public class CorrespondenciaWebApi {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date fechaInicial = (fechaIni == null)? null : dateFormat.parse(fechaIni);
-            Date fechaFinal = (fechaFin == null)? null : dateFormat.parse(fechaFin);
+            Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
+            Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
             return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, nroRadicado);
         } catch (ParseException e) {
             throw ExceptionBuilder.newBuilder()
