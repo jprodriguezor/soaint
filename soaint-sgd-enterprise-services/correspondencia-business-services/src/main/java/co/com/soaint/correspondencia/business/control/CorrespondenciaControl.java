@@ -576,7 +576,7 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
                                                                                       String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
@@ -625,21 +625,35 @@ public class CorrespondenciaControl {
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                    CorrespondenciaFullDTO correspondenciaFull = correspondenciaTransformToFull(correspondenciaDTO);
 
-                    List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
-                    for (AgenteDTO agenteDTO : agenteDTOList) {
-                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+                    List<AgenteFullDTO> agenteFullList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaDTO.getIdeDocumento());
+                    for (AgenteFullDTO agenteFull : agenteFullList) {
+
+                        agenteFull.setDatosContactoList();
                     }
-
-                    ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
-                            .correspondencia(correspondenciaDTO)
-                            .agenteList(agenteDTOList)
+                    ComunicacionOficialFullDTO comunicacionOficialFull = ComunicacionOficialFullDTO.newInstance()
+                            .correspondencia(correspondenciaFull)
+                            .agentes()
                             .build();
-                    comunicacionOficialDTOList.add(comunicacionOficialDTO);
                 }
+
+//                for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+//
+//                    List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
+//                    for (AgenteDTO agenteDTO : agenteDTOList) {
+//                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+//                    }
+//
+//                    ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+//                            .correspondencia(correspondenciaDTO)
+//                            .agenteList(agenteDTOList)
+//                            .build();
+//                    comunicacionOficialDTOList.add(comunicacionOficialDTO);
+//                }
             }
 
-            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -704,6 +718,7 @@ public class CorrespondenciaControl {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
+
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
                     List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
                     ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
@@ -714,7 +729,7 @@ public class CorrespondenciaControl {
                 }
             }
 
-            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);

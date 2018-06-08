@@ -496,8 +496,8 @@ public class AgenteControl {
     public List<AgenteFullDTO> consultarAgentesFullByCorrespondencia(BigInteger idDocumento) throws SystemException, BusinessException {
 
         List<AgenteDTO> agenteDTOList = new ArrayList<>();
-        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
-        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarRemitentesByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
 
         return agenteListTransformToFull(agenteDTOList);
     }

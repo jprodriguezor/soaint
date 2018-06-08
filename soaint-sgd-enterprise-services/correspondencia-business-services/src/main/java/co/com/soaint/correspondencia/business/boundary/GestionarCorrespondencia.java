@@ -12,6 +12,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -144,12 +145,12 @@ public class GestionarCorrespondencia {
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
                                                                                       String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String nroRadicado) throws BusinessException, SystemException {
+                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
         return control.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
     }
 
