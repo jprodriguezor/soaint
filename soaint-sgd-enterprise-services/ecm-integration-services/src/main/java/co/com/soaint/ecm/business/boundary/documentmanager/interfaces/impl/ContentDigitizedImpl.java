@@ -136,9 +136,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
                 .idProceso(digitalizarDTO.getIdProceso())
-                .parametros(parameters)
-                .usuario("krisv")
-                .pass("krisv").build();
+                .parametros(parameters).build();
 
         final Response response = iniciarProceso(procesoDTO);
         if (response.getStatus() != 200){
@@ -174,7 +172,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
 
     private Response iniciarProceso(EntradaProcesoDTO entradaProcesoDTO) {
         WebTarget wt = ClientBuilder.newClient().target(BPM_ENDPOINT);
-        return wt.path("/bpm/proceso/iniciar")
+        return wt.path("/bpm/proceso/sennal")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
