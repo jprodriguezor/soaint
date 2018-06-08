@@ -336,7 +336,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
   
-      this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
+      this._planillaService.generarPlanillas(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
           dependenciaDestinoArray.push(element.correspondencia.codDependencia);
