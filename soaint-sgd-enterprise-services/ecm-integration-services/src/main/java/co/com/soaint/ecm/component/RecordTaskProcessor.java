@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,17 +34,27 @@ public class RecordTaskProcessor implements Serializable {
 
     private static final String RMA_DISPOSITION_AS_OF = "rma:recordSearchDispositionActionAsOf";
 
+    @Value("${scheduling.job.cron.enable}")
+    private boolean cronFindDigitalizedDocEnable;
+
     @Autowired
     private RecordServices recordServices;
 
     @Autowired
     private ContentControl contentControl;
 
-    @Scheduled(cron = "#{'${scheduling.job.cron.custom}' ne '' ? '${scheduling.job.cron.custom}' : configuracion.cronType.cron}")
+    @Scheduled(cron = "#{'${scheduling.job.cron.custom}' ne '' ? '${scheduling.job.cron.custom}' : configuracion.cronTypeUD.cron}")
     public void tasksExecuter() {
         log.info("Running tasks executer for a day {}", GregorianCalendar.getInstance().getTime());
         finishedRetentionTimeExecutor();
         autoCloseExecutor();
+    }
+
+    @Scheduled(cron = "#{configuracion.cronTypeDD.cron}")
+    public void findDigitizedDocumentsExecutor() {
+        if (cronFindDigitalizedDocEnable) {
+            System.out.println("AAA: " + System.currentTimeMillis());
+        }
     }
 
     private void autoCloseExecutor() {

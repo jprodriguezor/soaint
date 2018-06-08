@@ -109,8 +109,8 @@ public class SolicitudUnidadDocumentalControlTest {
         Long cantidad = solicitudUnidadDocumentalControl.obtenerCantidadSolicitudes();
         List<SolicitudUnidadDocumentalDTO> solicitudes = solicitudUnidadDocumentalControl.listarSolicitudes();
         assertThat(6L, is(cantidad));
-        solicitud.setIdSolicitud(new BigInteger("1"));
-        solicitud2.setIdSolicitud(new BigInteger("2"));
+        solicitud.setIdSolicitud(new BigInteger("2"));
+        solicitud2.setIdSolicitud(new BigInteger("3"));
         assertThat(solicitud, isIn(solicitudes));
         assertThat(solicitud2, isIn(solicitudes));
     }

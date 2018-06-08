@@ -473,6 +473,34 @@ public class CorrespondenciaControl {
     }
 
     /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String getIdeInstanciaPorRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            if (!verificarByNroRadicado(nroRadicado)) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                        .buildBusinessException();
+            }
+            return em.createNamedQuery("CorCorrespondencia.getIdeInstanciaPorRadicado", String.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getSingleResult();
+
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia
