@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class TipoComunicacionSalidaGatewayApiTest {
 
     @Rule
-    public PropertiesLoaderRule properties = PropertiesLoaderRule.from("sgd-service.properties");
+    public PropertiesLoaderRule properties = PropertiesLoaderRule.from("sgd-service-test.properties");
 
 
     @Test
