@@ -29,6 +29,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -566,38 +567,44 @@ public class CorrespondenciaControl {
     /**
      * @param fechaIni
      * @param fechaFin
-     * @param codDependencia
-     * @param codTipoDoc
      * @param modEnvio
      * @param claseEnvio
+     * @param codDependencia
      * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(Date fechaIni,
-                                                                                      Date fechaFin,
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+                                                                                      String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String codTipoDoc,
-                                                                                      String nroRadicado) throws BusinessException, SystemException {
+                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
         log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
         log.info("FechaInicio: " + fechaIni);
         log.info("FechaFin: " + fechaFin);
         log.info("codDependencia: " + codDependencia);
         log.info("modEnvio: " + modEnvio);
         log.info("claseEnvio: " + claseEnvio);
-        log.info("codTipoDoc: " + codTipoDoc);
         log.info("nroRadicado: " + nroRadicado);
 
-        if (fechaIni != null && fechaFin != null) {
-            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
+        Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
+
+        if (fechaInicial != null && fechaFinal != null) {
+            if(fechaInicial.getTime() > fechaFinal.getTime() || fechaInicial.getTime() == fechaFinal.getTime())
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
                         .buildBusinessException();
         }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fechaFinal);
+        cal.add(Calendar.DATE, 1);
+
         try {
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
@@ -607,18 +614,23 @@ public class CorrespondenciaControl {
                     .setParameter("CLASE_ENVIO", claseEnvio)
                     .setParameter("MOD_ENVIO", modEnvio)
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
-                    .setParameter("TIPO_AGENTE", TipoAgenteEnum.DESTINATARIO.getCodigo())
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
-                    .setParameter("COD_TIPO_DOC", codTipoDoc)
-                    .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
+                    .setParameter("TIPO_AGENTE", TipoAgenteEnum.REMITENTE.getCodigo())
+                    .setParameter("FECHA_INI", fechaInicial, TemporalType.DATE)
+                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
 
+            log.info("Correspondencias: " + correspondenciaDTOList.size());
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+
                     List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
+                    for (AgenteDTO agenteDTO : agenteDTOList) {
+                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+                    }
+
                     ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
                             .correspondencia(correspondenciaDTO)
                             .agenteList(agenteDTOList)
@@ -982,8 +994,8 @@ public class CorrespondenciaControl {
             List<CorrespondenciaDTO> correspondencias =  em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
-            if(correspondencias.size()>1) throw ExceptionBuilder.newBuilder()
-                    .withMessage("correspondencia.correspondencia_by_nroRadicado_duplicated")
+            if(correspondencias.size()>1 || correspondencias.isEmpty()) throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_by_nroRadicado_duplicated_or_empty")
                     .buildBusinessException();
             return correspondencias.get(0);
 
