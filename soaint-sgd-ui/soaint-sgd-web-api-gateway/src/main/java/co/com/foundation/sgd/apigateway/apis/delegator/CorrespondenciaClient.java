@@ -197,6 +197,15 @@ public class CorrespondenciaClient {
         return target.request().get();
     }
 
+    public Response listarPlanillasSalida(String nroPlanilla) {
+        log.info("Correspondencia - [trafic] - listar planillas: " + nroPlanilla);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        WebTarget target = wt.path("/planillas-web-api/planillas-salida/" + nroPlanilla);
+
+        return target.request().get();
+    }
+
     public Response generarPlantilla(PlanillaDTO planilla) {
         log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

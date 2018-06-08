@@ -28,6 +28,7 @@ import {
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as FuncionarioSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {Sandbox as taskSandbox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
 import {Sandbox as CargarPlanillasSandbox} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox';
 import {PlanillaDTO} from '../../../domain/PlanillaDTO';
@@ -38,6 +39,7 @@ import {ApiBase} from '../../../infrastructure/api/api-base';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 
 
 @Component({
@@ -95,6 +97,8 @@ export class CargarPlanillaSalidaComponent implements OnInit {
 
   task:any;
 
+  closedTask:any;
+
   nroPlanilla:string;
 
   constructor(private _store:Store<RootState>,
@@ -104,6 +108,7 @@ export class CargarPlanillaSalidaComponent implements OnInit {
               private _dependenciaSandbox:DependenciaSandbox,
               private _planillaService:PlanillasApiService,
               private _changeDetectorRef:ChangeDetectorRef,
+              private _taskSandbox: taskSandbox,
               private _api:ApiBase,
               private formBuilder:FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
@@ -134,6 +139,7 @@ export class CargarPlanillaSalidaComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
     this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
     this.tipologiaDocumentalSuggestions$.subscribe((results) => {
@@ -188,10 +194,26 @@ export class CargarPlanillaSalidaComponent implements OnInit {
       nro_planilla: this.nroPlanilla,
     }).subscribe((result) => {
       this.data = result;
-      this.planAgentes = [...result.pagente];
+      this.planAgentes = [...result.pagentes.pagente];
       this.refreshView();
     });
   }
+
+  findNombrePais(agente: PlanAgenDTO): string {
+    return 'Colombia';
+  }
+
+  findNombreMunicipio(agente: PlanAgenDTO): string {
+    return 'Bogota';
+  }
+
+  findNombreDepartamento(agente: PlanAgenDTO): string {
+    return 'CO';
+  }
+  findDireccion(agente: PlanAgenDTO): string  {
+    return '1 y 2'
+  }
+
 
   showEditarPlanillaDialog() {
     this.popupEditar.resetData();
@@ -331,12 +353,20 @@ export class CargarPlanillaSalidaComponent implements OnInit {
   }
 
   canUpdatePlanilla():boolean {
-    return this.planAgentes.length > 0 && this.planAgentes.every((e) => e.estado && e.estado !== '');
+    const valid = this.planAgentes.length > 0 && this.planAgentes.every((e) => e.estado && e.estado !== '');
+    return valid
   }
 
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
 
+  abort() {
+    this._taskSandbox.abortTaskDispatch({
+      idProceso: this.task.idProceso,
+      idDespliegue: this.task.idDespliegue,
+      instanciaProceso: this.task.idInstanciaProceso
+    });
+  }
 
 }
