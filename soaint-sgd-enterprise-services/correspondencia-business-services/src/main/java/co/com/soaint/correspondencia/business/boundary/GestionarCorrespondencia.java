@@ -136,16 +136,16 @@ public class GestionarCorrespondencia {
     /**
      * @param fechaIni
      * @param fechaFin
-     * @param codDependencia
      * @param modEnvio
      * @param claseEnvio
+     * @param codDependencia
      * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(Date fechaIni,
-                                                                                      Date fechaFin,
+    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+                                                                                      String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
