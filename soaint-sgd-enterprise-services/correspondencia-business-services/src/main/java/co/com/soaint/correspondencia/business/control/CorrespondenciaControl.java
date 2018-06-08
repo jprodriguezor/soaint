@@ -594,6 +594,7 @@ public class CorrespondenciaControl {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
         Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
+        Date fechaValFin = null;
 
         if (fechaInicial != null && fechaFinal != null) {
             if(fechaInicial.getTime() > fechaFinal.getTime() || fechaInicial.getTime() == fechaFinal.getTime())
@@ -602,10 +603,12 @@ public class CorrespondenciaControl {
                         .buildBusinessException();
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(fechaFinal);
-        cal.add(Calendar.DATE, 1);
-
+            if (fechaFinal != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaFinal);
+                cal.add(Calendar.DATE, 1);
+                fechaValFin = cal.getTime();
+            }
 
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
@@ -617,7 +620,7 @@ public class CorrespondenciaControl {
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
                     .setParameter("TIPO_AGENTE", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("FECHA_INI", fechaInicial, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("FECHA_FIN", fechaValFin, TemporalType.DATE)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
 
