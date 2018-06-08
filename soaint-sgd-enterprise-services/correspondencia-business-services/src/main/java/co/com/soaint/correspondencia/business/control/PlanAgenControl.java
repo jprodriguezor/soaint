@@ -3,11 +3,11 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,11 @@ public class PlanAgenControl {
     @Autowired
     PpdDocumentoControl ppdDocumentoControl;
 
+    @Autowired
+    DatosContactoControl datosContactoControl;
+
+    @Autowired
+    CorrespondenciaControl correspondenciaControl;
     /**
      * @param idePlanilla
      * @return
@@ -70,6 +76,48 @@ public class PlanAgenControl {
             }
 
             return planAgenDTOList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param idePlanilla
+     * @return
+     * @throws SystemException
+     */
+    public List<PlanAgenSalidaDTO> listarAgentesSalidaByIdePlanilla(BigInteger idePlanilla, String estado) throws SystemException {
+        try {
+            List<PlanAgenSalidaDTO> planAgenSalidaDTOS = new ArrayList<PlanAgenSalidaDTO>();
+            List<PlanAgenDTO> planAgenDTOList = em.createNamedQuery("CorPlanAgen.findByIdePlanillaAndEstado", PlanAgenDTO.class)
+                    .setParameter("IDE_PLANILLA", idePlanilla)
+                    .setParameter("ESTADO", estado)
+                    .getResultList();
+            for (PlanAgenDTO planAgen : planAgenDTOList) {
+
+                PlanAgenSalidaDTO planAgenSalidaDTO = planAgenDTOTransformToPlanAgenSaidaDTO(planAgen);
+
+                List<AgenteDTO> remitentes = agenteControl.listarRemitentesByIdeDocumento(planAgen.getIdeDocumento());
+                if (remitentes.get(0).getCodTipoPers() != null)
+                    planAgenSalidaDTO.setTipoPersona(constantesControl.consultarConstanteByCodigo(remitentes.get(0).getCodTipoPers()));
+                planAgenSalidaDTO.setNit(remitentes.get(0).getNit());
+                planAgenSalidaDTO.setNroDocuIdentidad(remitentes.get(0).getNroDocuIdentidad());
+                planAgenSalidaDTO.setNombre(remitentes.get(0).getNombre());
+                planAgenSalidaDTO.setRazonSocial(remitentes.get(0).getRazonSocial());
+                List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(planAgen.getIdeDocumento());
+                if (!ppdDocumentoDTOList.isEmpty()){
+                    planAgenSalidaDTO.setTipologiaDocumental(constantesControl.consultarConstanteByCodigo(ppdDocumentoDTOList.get(0).getCodTipoDoc()));
+                    planAgenSalidaDTO.setFolios(ppdDocumentoDTOList.get(0).getNroFolios());
+                    planAgenSalidaDTO.setAnexos(ppdDocumentoDTOList.get(0).getNroAnexos());
+                }
+                planAgenSalidaDTOS.add(planAgenSalidaDTO);
+            }
+
+            return planAgenSalidaDTOS;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -125,6 +173,36 @@ public class PlanAgenControl {
                 .fecCarguePla(planAgenDTO.getFecCarguePla())
                 .corAgente(CorAgente.newInstance().ideAgente(planAgenDTO.getIdeAgente()).build())
                 .corCorrespondencia(CorCorrespondencia.newInstance().ideDocumento(planAgenDTO.getIdeDocumento()).build())
+                .build();
+    }
+
+    /**
+     * @param planAgenDTO
+     * @return
+     */
+    public PlanAgenSalidaDTO planAgenDTOTransformToPlanAgenSaidaDTO(PlanAgenDTO planAgenDTO) throws SystemException, BusinessException {
+
+        AgenteDTO agenteDTO = agenteControl.consultarAgenteByIdeAgente(planAgenDTO.getIdeAgente());
+        if (agenteDTO != null && agenteDTO.getCodTipAgent()== TipoAgenteEnum.DESTINATARIO.getCodigo()){
+            List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByIdAgente(planAgenDTO.getIdeAgente());
+            agenteDTO.setDatosContactoList(datosContacto);
+        }
+
+        CorrespondenciaDTO correspondenciaDTO = (planAgenDTO.getIdeAgente() == null)? null : correspondenciaControl.consultarCorrespondenciaByIdeDocumento(planAgenDTO.getIdeDocumento());
+
+        return PlanAgenSalidaDTO.newInstance()
+                .idePlanAgen(planAgenDTO.getIdePlanAgen())
+                .varPeso(planAgenDTO.getVarPeso())
+                .varValor(planAgenDTO.getVarValor())
+                .varNumeroGuia(planAgenDTO.getVarNumeroGuia())
+                .fecObservacion(planAgenDTO.getFecObservacion())
+                .codNuevaSede(planAgenDTO.getCodNuevaSede())
+                .codNuevaDepen(planAgenDTO.getCodNuevaDepen())
+                .observaciones(planAgenDTO.getObservaciones())
+                .codCauDevo(planAgenDTO.getCodCauDevo())
+                .fecCarguePla(planAgenDTO.getFecCarguePla())
+                .agente(agenteDTO)
+                .correspondencia(correspondenciaDTO)
                 .build();
     }
 }

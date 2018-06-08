@@ -1,90 +1,121 @@
 <div class="ui-fluid">
   <app-task-container>
-    <div customActions *ngIf="!(closedTask | async)">
-        <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-        (click)="abort()"></button>
-      <button pButton type="button" label="Registrar resultado"
-        [disabled]="selectedComunications.length == 0" (click)="generarPlanilla()"
-        style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+    <div customActions>
+        <button pButton type="button" [disabled]="!(closedTask | async)" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
+        (click)="abort()">
       </button>
-      <button pButton type="button" label="Actualizar planilla"
-      [disabled]="selectedComunications.length == 0" (click)="generarPlanilla()"
-      style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
-    </button>
+        <button pButton type="button" label="Actualizar planilla"
+          [disabled]="!canUpdatePlanilla()" (click)="actualizarPlanilla()"
+          style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+        </button>
+        <button pButton type="button" label="Registrar resultado"
+           [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
+           style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+        </button>
     </div>
 
     <div taskBody>
-        <p-panel header="Búsqueda de tareas" [style]="{border: 'none'}">
-          <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
-              <documento-ecm>Loading...</documento-ecm>
-          </div>
-        </p-panel>
-        <p-panel header="Actualizar planilla" [style]="{border: 'none'}">
+        <div class="ui-g-12">
+            <div class="card card-w-title">
+          <p-fileUpload id="doc-digitalize" #uploader [style]="{'padding-bottom': '16px'}"           
+            *ngIf="canUpdatePlanilla()" 
+            mode="advanced"
+            chooseLabel="Buscar"
+            uploadLabel="Subir documento"
+            cancelLabel="Cancelar"
+            multiple="false"
+            accept="application/*"
+            maxFileSize="1000000"
+            customUpload="true"
+            (uploadHandler)="customUploader($event)"
+            (onUpload)="onDocUploaded($event)"
+            (onClear)="onClear($event)">
+          </p-fileUpload>
+      <p-panel header="Actualizar planilla" [style]="{border: 'none'}">
           <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
             <div class="ui-g-12">
               <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                            [(selection)]="selectedComunications"
-                           [paginator]="true" [rows]="10" [responsive]="true" [value]="listadoComunicaciones">
+                           [paginator]="true" [rows]="10" [responsive]="true" [value]="planAgentes">
                 <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
                 <p-column field="correspondencia.nroRadicado" header="Número radicado" [sortable]="true"></p-column>
-                <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" let-i="rowIndex" pTemplate="body">
-                    {{correspondencia[col.field] | date: 'dd/MM/yyyy hh:mm a'}}
-                  </ng-template>
-                </p-column>
-                <p-column header="Tipología documental" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{findTipoDoc((getDatosDocumentos(correspondencia) | async)[0].codTipoDoc)}}
+                <p-column header="Fecha y hora de radicación" [sortable]="true">
+                    <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                      
                     </ng-template>
                 </p-column>
-                <p-column header="Nombre/Razón social" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{(getDatosRemitente(correspondencia) | async).razonSocial || (getDatosRemitente(correspondencia) |
-                      async).nombre}}
-                    </ng-template>
-                </p-column>
+                <p-column field="tipologiaDocumental.nombre" header="Tipología documental" [sortable]="true"></p-column>
+                <p-column field="razonSocial" header="Nombre/Razón social" [sortable]="true"></p-column>
                 <p-column header="Sede administrativa destino" [sortable]="true">
                     <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{findSede((getDatosDestinatario(correspondencia) | async)[0].codSede)}}
+                        {{findSede(data.codSedeDestino)}}
                     </ng-template>
                 </p-column>
                 <p-column header="Dependencia destino" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{findDependency((getDatosDestinatario(correspondencia) | async)[0].codDependencia)}}
-                    </ng-template>
+                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                    {{findDependency(data.codDependenciaDestino)}}
+                  </ng-template>
                 </p-column>
                 <p-column header="País" [sortable]="true">
+                  <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                    {{findNombrePais(planAgente[col.field])}}
+                  </ng-template>
                 </p-column>
                 <p-column header="Departamento" [sortable]="true">
+                  <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                      {{findNombreDepartamento(planAgente[col.field])}}
+                  </ng-template>
                 </p-column>
                 <p-column header="Ciudad/Municipio" [sortable]="true">
+                  <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                      {{findNombreMunicipio(planAgente[col.field])}}
+                    </ng-template>
                 </p-column>
                 <p-column header="Dirección" [sortable]="true">
+                    <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                      {{findDireccion(planAgente[col.field])}}
+                    </ng-template>
                 </p-column>
-                <p-column field="correspondencia.folio" header="Folios" [sortable]="true"
-                          [style]="{'width':'110px'}">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{(getDatosDocumentos(correspondencia) | async)[0].nroFolios}}
+                <p-column field="anexos" header="Folios" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+                <p-column field="correspondencia.anexos" header="Anexos" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+                <p-column field="estado" header="Estado de entrega" [sortable]="true">
+                  <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                    {{getEstadoLabel(planAgente[col.field])?.nombre}}
                   </ng-template>
                 </p-column>
-                <p-column field="correspondencia.anexos" header="Anexos" [sortable]="true"
-                          [style]="{'width':'110px'}">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{(getDatosDocumentos(correspondencia) | async)[0].nroAnexos}}
+                <p-column field="fecCarguePla" header="Fecha entrega" [sortable]="true">
+                  <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                    {{planAgente[col.field] | date:'dd/MM/yyyy hh:mm a'}}
                   </ng-template>
                 </p-column>
-                <p-column field="fecRadicado" header="Estado de entrega" [sortable]="true"> </p-column>
-                <p-column field="fecRadicado" header="Fecha de entrega" [sortable]="true"> </p-column>
-                <p-column field="fecRadicado" header="No. guía" [sortable]="true"> </p-column>
-                <p-column field="fecRadicado" header="Observaciones" [sortable]="true"> </p-column>
+                <p-column field="varNumeroGuia" header="No. guía" [sortable]="true"></p-column>
+                <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
               </p-dataTable>
             </div>
           </div>
         </p-panel>
     </div>
+  </div>
+</div>
   </app-task-container>
 </div>
+<p-dialog [visible]="editarPlanillaDialogVisible" modal="modal" [responsive]="true" positionTop="20"
+          [contentStyle]="{'overflow':'scroll'}"
+          (onHide)="hideEditarPlanillaDialog()" [width]="800">
+  <p-header>
+    Registrar resultado
+  </p-header>
+  <app-editar-planilla #popupEditar [planilla]="data"></app-editar-planilla>
 
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideEditarPlanillaDialog()"></button>
+      <button pButton type="button" class="ui-button-primary" [disabled]="!form.valid"
+              label="Aceptar" (click)="editarPlanilla()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
 
 
 

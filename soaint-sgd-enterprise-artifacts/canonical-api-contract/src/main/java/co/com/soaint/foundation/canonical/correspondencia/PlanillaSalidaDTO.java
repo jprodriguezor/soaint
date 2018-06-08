@@ -38,7 +38,7 @@ public class PlanillaSalidaDTO implements Serializable {
     private String codClaseEnvio;
     private String codModalidadEnvio;
     private String ideEcm;
-    private PlanAgentesDTO pAgentes;
+    private PlanAgentesSalidaDTO pAgentes;
 
     public PlanillaSalidaDTO(BigInteger idePlanilla, String nroPlanilla, Date fecGeneracion, String codTipoPlanilla,
                              String codFuncGenera, String codSedeOrigen, String codDependenciaOrigen, String codSedeDestino,
