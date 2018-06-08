@@ -131,7 +131,6 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         final Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("nombreSennal", digitalizarDTO.getNombreSennal());
-        parameters.put("idInstancia", ideInstancia);
 
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
