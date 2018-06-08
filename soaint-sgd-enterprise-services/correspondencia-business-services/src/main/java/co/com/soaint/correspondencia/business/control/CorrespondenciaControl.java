@@ -581,7 +581,7 @@ public class CorrespondenciaControl {
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
+                                                                                      String nroRadicado) throws BusinessException, SystemException {
         log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
         log.info("FechaInicio: " + fechaIni);
         log.info("FechaFin: " + fechaFin);
@@ -590,6 +590,7 @@ public class CorrespondenciaControl {
         log.info("claseEnvio: " + claseEnvio);
         log.info("nroRadicado: " + nroRadicado);
 
+        try {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
         Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
@@ -605,7 +606,7 @@ public class CorrespondenciaControl {
         cal.setTime(fechaFinal);
         cal.add(Calendar.DATE, 1);
 
-        try {
+
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
                     .setParameter("TIPO_COM1", "SE")
@@ -641,7 +642,13 @@ public class CorrespondenciaControl {
 
             return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
 
-        } catch (Exception ex) {
+        } catch (ParseException pe) {
+            log.error("Business Control - a system error has occurred", pe);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("parse.exception.error")
+                    .withRootException(pe)
+                    .buildBusinessException();
+        }catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
