@@ -581,7 +581,6 @@ public class CorrespondenciaControl {
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String codTipoDoc,
                                                                                       String nroRadicado) throws BusinessException, SystemException {
         log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
         log.info("FechaInicio: " + fechaIni);
@@ -589,7 +588,6 @@ public class CorrespondenciaControl {
         log.info("codDependencia: " + codDependencia);
         log.info("modEnvio: " + modEnvio);
         log.info("claseEnvio: " + claseEnvio);
-        log.info("codTipoDoc: " + codTipoDoc);
         log.info("nroRadicado: " + nroRadicado);
 
         if (fechaIni != null && fechaFin != null) {
@@ -607,18 +605,23 @@ public class CorrespondenciaControl {
                     .setParameter("CLASE_ENVIO", claseEnvio)
                     .setParameter("MOD_ENVIO", modEnvio)
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
-                    .setParameter("TIPO_AGENTE", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("TIPO_AGENTE", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
                     .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
-                    .setParameter("COD_TIPO_DOC", codTipoDoc)
-                    .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
+                    .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
 
+            log.info("Correspondencias: " + correspondenciaDTOList.size());
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+
                     List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
+                    for (AgenteDTO agenteDTO : agenteDTOList) {
+                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+                    }
+
                     ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
                             .correspondencia(correspondenciaDTO)
                             .agenteList(agenteDTOList)

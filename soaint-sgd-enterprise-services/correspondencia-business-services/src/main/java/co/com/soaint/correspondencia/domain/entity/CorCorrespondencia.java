@@ -92,8 +92,9 @@ import java.util.stream.Collectors;
                 "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) "+
                 "AND c.codClaseEnvio = :CLASE_ENVIO AND c.codModalidadEnvio = :MOD_ENVIO "+
                 "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) "+
-                "AND (ca.estadoDistribucion IS NULL OR  ca.estadoDistribucion = :ESTADO_DISTRIBUCION) AND ca.codTipAgent = :TIPO_AGENTE " +
-                "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO) " +
+                "AND (ca.estadoDistribucion IS NULL OR  ca.estadoDistribucion = :ESTADO_DISTRIBUCION)"+
+                " AND ca.codTipAgent = :TIPO_AGENTE " +
+                "AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO) " +
                 "ORDER BY c.codDependencia, c.codTipoCmc, c.nroRadicado"),
         @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
                 "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
