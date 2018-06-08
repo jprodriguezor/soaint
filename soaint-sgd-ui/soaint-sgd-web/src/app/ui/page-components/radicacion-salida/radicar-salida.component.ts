@@ -234,7 +234,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   protected mustSendImage(general:any):boolean{
 
-    return general.reqDistFisica == 2 && general.reqDigit == 2
+    return  general.reqDigit == 2
   }
 
   protected uploadTemplate(codDependencia,nroRadicado,ideEcm){

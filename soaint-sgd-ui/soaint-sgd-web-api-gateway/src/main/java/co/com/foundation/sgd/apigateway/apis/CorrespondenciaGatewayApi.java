@@ -378,26 +378,19 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - listando planillas");
         Response response = client.listarPlanillasSalida(nroPlanilla);
         String responseObject = response.readEntity(String.class);
-        if (response.getStatus() != HttpStatus.OK.value()) {
-            PlanillaDTO emptyPlanilla = new PlanillaDTO();
-            PlanAgentesDTO planAgentesDTO = new PlanAgentesDTO();
-            planAgentesDTO.setPAgente(new ArrayList<>());
-            emptyPlanilla.setPAgentes(planAgentesDTO);
-            return Response.status(HttpStatus.OK.value()).entity(emptyPlanilla).build();
-        }
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
     @POST
-    @Path("/generar-plantilla")
+    @Path("/generar-planilla")
     public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla distribucion");
         Response response = client.generarPlantilla(planilla);
         PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
 
         EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
-        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        entradaProceso.setIdProceso("proceso.gestion-planillas");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestion-planillas:1.0.0-SNAPSHOT");
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
@@ -417,15 +410,27 @@ public class CorrespondenciaGatewayApi {
     }
 
     @POST
-    @Path("/generar-plantilla-entrada")
-    public Response generarPlanillaEntrada(@RequestBody PlanillaDTO planilla) {
-        log.info("processing rest request - generar planilla distribucion");
+    @Path("/generar-planilla-salida")
+    @JWTTokenSecurity
+    public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla salida distribucion");
         Response response = client.generarPlantilla(planilla);
         PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
 
+        /*EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciar(entradaProceso);
+*/
         EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso.gestion-planillas");
-        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas:1.0.0-SNAPSHOT");
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        entradaProceso.setUsuario("arce");
+        entradaProceso.setPass("arce");
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
         parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
