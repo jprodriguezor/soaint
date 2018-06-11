@@ -71,7 +71,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumEstadoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(EstadoAgenteEnum.ASIGNADO.getCodigo()))
             return EstadoAgenteEnum.ASIGNADO.getNombre();
         else if (codigo.equals(EstadoAgenteEnum.DEVUELTO.getCodigo()))
@@ -90,7 +92,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
             return TipoAgenteEnum.DESTINATARIO.getNombre();
         else if (codigo.equals(TipoAgenteEnum.REMITENTE.getCodigo()))
@@ -105,7 +109,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoRemitente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoRemitenteEnum.EXTERNO.getCodigo()))
             return TipoRemitenteEnum.EXTERNO.getNombre();
         else if (codigo.equals(TipoRemitenteEnum.INTERNO.getCodigo()))
@@ -496,7 +502,7 @@ public class AgenteControl {
 
         List<AgenteDTO> agenteDTOList = new ArrayList<>();
         listarRemitentesByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
-        listarDestinatariosByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumentoMail(idDocumento).forEach(agenteDTOList::add);
 
         return agenteListTransformToFull(agenteDTOList);
     }
