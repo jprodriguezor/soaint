@@ -131,14 +131,13 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         final Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("nombreSennal", digitalizarDTO.getNombreSennal());
-        parameters.put("idInstancia", ideInstancia);
 
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
                 .idProceso(digitalizarDTO.getIdProceso())
                 .parametros(parameters)
-                .usuario("krisv")
-                .pass("krisv").build();
+                .instanciaProceso(Long.parseLong(ideInstancia))
+                .build();
 
         final Response response = iniciarProceso(procesoDTO);
         if (response.getStatus() != 200){
@@ -174,7 +173,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
 
     private Response iniciarProceso(EntradaProcesoDTO entradaProcesoDTO) {
         WebTarget wt = ClientBuilder.newClient().target(BPM_ENDPOINT);
-        return wt.path("/bpm/proceso/iniciar")
+        return wt.path("/bpm/proceso/sennal")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
