@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 
 public class ApiUtils {
 
-    public static <T> ApiAssertions<T> assertThat(Class<T> type, String methodName) {
-        return new ApiAssertions<T>(type, methodName);
+    public static <T> ApiAssertions<T> assertThat(Class<T> type, String method) {
+        return new ApiAssertions<T>(type, method);
     }
 
     public static class ApiAssertions<T> {
