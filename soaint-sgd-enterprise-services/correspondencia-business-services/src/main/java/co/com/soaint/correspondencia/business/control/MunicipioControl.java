@@ -126,14 +126,14 @@ public class MunicipioControl {
             return null;
         }
         try {
-            MunicipioDTO municipioDTO = em.createNamedQuery("TvsDepartamento.findByCodMun", MunicipioDTO.class)
+            MunicipioDTO municipioDTO = em.createNamedQuery("TvsMunicipio.findByCodMun", MunicipioDTO.class)
                     .setParameter("COD_MUN", codMunic)
                     .getSingleResult();
             return municipioDTO;
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("departamento.departamento_not_exist_by_codMunic")
+                    .withMessage("municipio.municipio_not_exist_by_codMunic")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {

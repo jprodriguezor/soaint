@@ -337,7 +337,7 @@ public class CorrespondenciaControl {
             String funcionario = null;
             if (funcionarioControl.existFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()))){
                 FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
-                funcionario = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1().concat(" ").concat(funcionarioDTO.getValApellido2()));
+                funcionario = funcionarioDTO.getNomFuncionario()+" "+funcionarioDTO.getValApellido1()+" "+funcionarioDTO.getValApellido2();
             }
 
             return CorrespondenciaFullDTO.newInstance()
