@@ -40,7 +40,7 @@ public enum SelectorType implements Serializable {
                 }
             }
         }
-        log.info("None selector was found!!, retrieving null result");
+        log.info("No selector was found!!, retrieving null result");
         return null;
     }
 }

@@ -5,19 +5,18 @@
  */
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
+import org.springframework.util.StringUtils;
 
-import javax.ws.rs.core.Response;
 import java.text.Normalizer;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * @author ADMIN
@@ -49,6 +48,22 @@ public class Utilities {
         String resultText = Normalizer.normalize(texto, Normalizer.Form.NFD);
         resultText = resultText.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return resultText;
+    }
+
+    public static String removeFileExtension(String filename) {
+        if (!StringUtils.isEmpty(filename)) {
+            int index = filename.lastIndexOf('.');
+            if (index == -1) {
+                return filename;
+            }
+            String extension = filename.substring(index + 1);
+            String mimeType = MimeTypes.getMIMEType(extension);
+            if (MimeTypes.getMIMEType("").equals(mimeType)) {
+                return filename;
+            }
+            return filename.substring(0, index);
+        }
+        return "";
     }
 
     /**
