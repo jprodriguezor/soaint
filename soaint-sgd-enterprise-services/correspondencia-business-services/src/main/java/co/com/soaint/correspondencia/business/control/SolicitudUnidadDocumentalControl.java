@@ -322,7 +322,13 @@ public class SolicitudUnidadDocumentalControl {
                 .executeUpdate();
 
                 return solicitudUnidadDocumentalDTO;
-        } catch (Exception ex) {
+        } catch (NullPointerException ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("solicitud.solicitud_is_null")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

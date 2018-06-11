@@ -6,13 +6,14 @@ import co.com.soaint.foundation.canonical.correspondencia.SolicitudesUnidadDocum
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Before;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -21,12 +22,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.*;
 
 /**
- * Created by gyanet on 04/04/2018.
+ * Created by gyanet on 04/06/2018.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
@@ -77,6 +79,24 @@ public class SolicitudUnidadDocumentalControlTest {
 
     SolicitudUnidadDocumentalDTO solicitud2 = SolicitudUnidadDocumentalDTO.newInstance()
 //            .idSolicitud(new BigInteger("2"))
+            .idConstante(ID_CONST1)
+            .id(ID1)
+            .idSolicitante(ID_SOL1)
+            .motivo(MOTIVO1)
+            .nombreUnidadDocumental(NOM_UD1)
+            .codigoSede(COD_SEDE1)
+            .codigoDependencia(COD_DEP1)
+            .codigoSerie(COD_SERIE1)
+            .codigoSubSerie(COD_SUBSERIE1)
+            .descriptor1(COD_DESC11)
+            .descriptor2(COD_DESC21)
+            .nro(NRO1)
+            .estado("Insertado en bd")
+            .observaciones(OBSERV1)
+            .build();
+
+    SolicitudUnidadDocumentalDTO solicitud_actualizar = SolicitudUnidadDocumentalDTO.newInstance()
+            .idSolicitud(new BigInteger(ID))
             .idConstante(ID_CONST1)
             .id(ID1)
             .idSolicitante(ID_SOL1)
@@ -242,17 +262,77 @@ public class SolicitudUnidadDocumentalControlTest {
 
     @Test
     public void obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar() {
+        // TODO test
     }
 
     @Test
-    public void verificarByIdeSolicitud() {
+    public void verificarByIdeSolicitud() throws SystemException {
+        //given
+        BigInteger ID_FAKE = BigInteger.valueOf(6);
+
+        //when
+        Boolean result = solicitudUnidadDocumentalControl.verificarByIdeSolicitud(new BigInteger(ID));
+        Boolean result2 = solicitudUnidadDocumentalControl.verificarByIdeSolicitud(ID_FAKE);
+
+        //then
+        assertTrue(result);
+        assertFalse(result2);
     }
 
     @Test
-    public void verificarByIdNombreUMSolicitud() {
+    public void verificarByIdNombreUMSolicitud() throws SystemException {
+        //given
+        BigInteger ID_FAKE = BigInteger.valueOf(6);
+        String NOM_UD_FAKE = "Nombre UD 6";
+
+        //when
+        Boolean result = solicitudUnidadDocumentalControl.verificarByIdNombreUMSolicitud(new BigInteger(ID), NOM_UD);
+        Boolean result2 = solicitudUnidadDocumentalControl.verificarByIdNombreUMSolicitud(ID_FAKE, NOM_UD_FAKE);
+
+        //then
+        assertTrue(result);
+        assertFalse(result2);
     }
 
     @Test
-    public void actualizarSolicitudUnidadDocumental() {
+    public void actualizarSolicitudUnidadDocumental() throws SystemException, BusinessException {
+        //when
+        SolicitudUnidadDocumentalDTO solicitudDTO= solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
+        assertEquals(solicitudDTO.getIdSolicitud(), solicitud.getIdSolicitud());
+        assertThat(solicitudDTO.getId(), Matchers.comparesEqualTo(solicitud.getId()));
+        assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
+        assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
+        assertTrue(solicitudDTO.getFechaHora()==solicitud.getFechaHora());
+        assertThat(solicitudDTO.getNro(), Matchers.comparesEqualTo(solicitud.getNro()));
+        assertThat(solicitudDTO.getNombreUnidadDocumental(), Matchers.comparesEqualTo(solicitud.getNombreUnidadDocumental()));
+        assertThat(solicitudDTO.getMotivo(), Matchers.comparesEqualTo(solicitud.getMotivo()));
+        assertThat(solicitudDTO.getEstado(), Matchers.comparesEqualTo(solicitud.getEstado()));
+        assertThat(solicitudDTO.getDescriptor1(), Matchers.comparesEqualTo(solicitud.getDescriptor1()));
+        assertThat(solicitudDTO.getDescriptor2(), Matchers.comparesEqualTo(solicitud.getDescriptor2()));
+        assertThat(solicitudDTO.getAccion(), Matchers.comparesEqualTo(solicitud.getAccion()));
+        assertThat(solicitudDTO.getCodigoSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSerie()));
+        assertThat(solicitudDTO.getCodigoSubSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSubSerie()));
+        assertThat(solicitudDTO.getCodigoSede(), Matchers.comparesEqualTo(solicitud.getCodigoSede()));
+        assertThat(solicitudDTO.getCodigoDependencia(), Matchers.comparesEqualTo(solicitud.getCodigoDependencia()));
+        assertThat(solicitudDTO.getObservaciones(), Matchers.comparesEqualTo(solicitud.getObservaciones()));
+    }
+
+    @Test
+    public void actualizarSolicitudUnidadDocumental_failure() throws SystemException, BusinessException {
+        //given
+        BigInteger ID_FAKE = BigInteger.valueOf(6);
+        solicitud.setIdSolicitud(ID_FAKE);
+        //when
+        try {
+            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
+        } catch (Exception e){
+            assertThat("solicitud.solicitud_not_exist_by_id", is(e.getMessage()));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void actualizarSolicitudUnidadDocumental_null_failure() throws SystemException, BusinessException {
+        //when
+            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(null);
     }
 }
