@@ -297,39 +297,44 @@ public class SolicitudUnidadDocumentalControlTest {
     @Test
     public void actualizarSolicitudUnidadDocumental() throws SystemException, BusinessException {
         //when
-        SolicitudUnidadDocumentalDTO solicitudDTO= solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
-        assertEquals(solicitudDTO.getIdSolicitud(), solicitud.getIdSolicitud());
-        assertThat(solicitudDTO.getId(), Matchers.comparesEqualTo(solicitud.getId()));
-        assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
-        assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
-        assertTrue(solicitudDTO.getFechaHora()==solicitud.getFechaHora());
-        assertThat(solicitudDTO.getNro(), Matchers.comparesEqualTo(solicitud.getNro()));
-        assertThat(solicitudDTO.getNombreUnidadDocumental(), Matchers.comparesEqualTo(solicitud.getNombreUnidadDocumental()));
-        assertThat(solicitudDTO.getMotivo(), Matchers.comparesEqualTo(solicitud.getMotivo()));
-        assertThat(solicitudDTO.getEstado(), Matchers.comparesEqualTo(solicitud.getEstado()));
-        assertThat(solicitudDTO.getDescriptor1(), Matchers.comparesEqualTo(solicitud.getDescriptor1()));
-        assertThat(solicitudDTO.getDescriptor2(), Matchers.comparesEqualTo(solicitud.getDescriptor2()));
-        assertThat(solicitudDTO.getAccion(), Matchers.comparesEqualTo(solicitud.getAccion()));
-        assertThat(solicitudDTO.getCodigoSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSerie()));
-        assertThat(solicitudDTO.getCodigoSubSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSubSerie()));
-        assertThat(solicitudDTO.getCodigoSede(), Matchers.comparesEqualTo(solicitud.getCodigoSede()));
-        assertThat(solicitudDTO.getCodigoDependencia(), Matchers.comparesEqualTo(solicitud.getCodigoDependencia()));
-        assertThat(solicitudDTO.getObservaciones(), Matchers.comparesEqualTo(solicitud.getObservaciones()));
+        try {
+
+            SolicitudUnidadDocumentalDTO solicitudDTO= solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud_actualizar);
+
+            assertEquals(solicitudDTO.getIdSolicitud(), solicitud.getIdSolicitud());
+            assertThat(solicitudDTO.getId(), Matchers.comparesEqualTo(solicitud.getId()));
+            assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
+            assertThat(solicitudDTO.getIdConstante(), Matchers.comparesEqualTo(solicitud.getIdConstante()));
+            assertTrue(solicitudDTO.getFechaHora()==solicitud.getFechaHora());
+            assertThat(solicitudDTO.getNro(), Matchers.comparesEqualTo(solicitud.getNro()));
+            assertThat(solicitudDTO.getNombreUnidadDocumental(), Matchers.comparesEqualTo(solicitud.getNombreUnidadDocumental()));
+            assertThat(solicitudDTO.getMotivo(), Matchers.comparesEqualTo(solicitud.getMotivo()));
+            assertThat(solicitudDTO.getEstado(), Matchers.comparesEqualTo(solicitud.getEstado()));
+            assertThat(solicitudDTO.getDescriptor1(), Matchers.comparesEqualTo(solicitud.getDescriptor1()));
+            assertThat(solicitudDTO.getDescriptor2(), Matchers.comparesEqualTo(solicitud.getDescriptor2()));
+            assertThat(solicitudDTO.getAccion(), Matchers.comparesEqualTo(solicitud.getAccion()));
+            assertThat(solicitudDTO.getCodigoSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSerie()));
+            assertThat(solicitudDTO.getCodigoSubSerie(), Matchers.comparesEqualTo(solicitud.getCodigoSubSerie()));
+            assertThat(solicitudDTO.getCodigoSede(), Matchers.comparesEqualTo(solicitud.getCodigoSede()));
+            assertThat(solicitudDTO.getCodigoDependencia(), Matchers.comparesEqualTo(solicitud.getCodigoDependencia()));
+            assertThat(solicitudDTO.getObservaciones(), Matchers.comparesEqualTo(solicitud.getObservaciones()));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-//    @Test
-//    public void actualizarSolicitudUnidadDocumental_failure() throws SystemException, BusinessException {
-//        //given
-//        BigInteger ID_FAKE = BigInteger.valueOf(6);
-//        solicitud.setIdSolicitud(ID_FAKE);
-//        //when
-//        try {
-//            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
-//        } catch (BusinessException e){
-////            e.printStackTrace();
-//            assertThat("solicitud.solicitud_not_exist_by_id", is(e.getMessage()));
-//        }
-//    }
+    @Test
+    public void actualizarSolicitudUnidadDocumental_failure() throws SystemException, BusinessException {
+        //given
+        BigInteger ID_FAKE = BigInteger.valueOf(6);
+        solicitud.setIdSolicitud(ID_FAKE);
+        //when
+        try {
+            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
+        } catch (BusinessException e){
+            assertThat("solicitud.solicitud_not_exist_by_id", is(e.getMessage()));
+        }
+    }
 
     @Test(expected = NullPointerException.class)
     public void actualizarSolicitudUnidadDocumental_null_failure() throws SystemException, BusinessException {
