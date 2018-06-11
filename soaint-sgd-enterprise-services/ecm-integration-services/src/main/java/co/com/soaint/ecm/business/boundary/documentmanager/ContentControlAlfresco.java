@@ -47,7 +47,7 @@ import java.util.*;
  */
 @Log4j2
 @BusinessControl
-public class ContentControlAlfresco implements ContentControl {
+public final class ContentControlAlfresco implements ContentControl {
 
     private static final long serialVersionUID = 1L;
 
@@ -79,7 +79,7 @@ public class ContentControlAlfresco implements ContentControl {
             parameter.put(SessionParameter.PASSWORD, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_PASS));
 
             // configuracion de conexion
-            parameter.put(SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
+            parameter.put(SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT_ECM));
             parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
             parameter.put(SessionParameter.REPOSITORY_ID, configuracion.getPropiedad("REPOSITORY_ID"));
 
@@ -684,12 +684,11 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) throws SystemException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector, boolean requiereEtiqueta) throws SystemException {
         log.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
         final String idDocPrincipal = documento.getIdDocumentoPadre();
         if (StringUtils.isEmpty(idDocPrincipal)) {
             DocumentoDTO dto;
-            SelectorType selectorType = null;
             final String nroRadicado = documento.getNroRadicado();
             if (!StringUtils.isEmpty(selector) && "PD".equals(selector.toUpperCase())) {
                 dto = utilities.subirDocumentoPrincipalPD(documento, session);
@@ -697,15 +696,11 @@ public class ContentControlAlfresco implements ContentControl {
                 if (StringUtils.isEmpty(nroRadicado)) {
                     throw new SystemException("No se ha especificado el numero de radicado");
                 }
-                selectorType = SelectorType.getSelectorBy(nroRadicado);
-               if (null == selectorType) {
+                SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                if (null == selectorType) {
                     throw new SystemException("El selector no valido '" + nroRadicado + "'");
                 }
-                dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, session);
-            }
-            if (null != selectorType && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)
-                    && "Principal".equals(dto.getTipoPadreAdjunto())) {
-                utilities.estamparEtiquetaRadicacion(dto, session);
+                dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, requiereEtiqueta, session);
             }
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             documentoDTOS.add(documentoDTOS.size(), dto);
@@ -941,7 +936,7 @@ public class ContentControlAlfresco implements ContentControl {
         final DocumentoDTO dto = new DocumentoDTO();
         dto.setIdDocumento(idDocumento);
         MensajeRespuesta response = new MensajeRespuesta();
-        final Map<String, Object> idResponse = new HashMap<>();        
+        final Map<String, Object> idResponse = new HashMap<>();
         idResponse.put("idECM", null);
         response.setCodMensaje("1223");
         response.setResponse(idResponse);
@@ -961,7 +956,7 @@ public class ContentControlAlfresco implements ContentControl {
                 if ("Anexo".equals(docType)) {
                     response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
                     return response;
-                }                
+                }
                 final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
                 principalAdjuntosQueryResults.forEach(queryResult -> {
                     String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
@@ -1328,9 +1323,10 @@ public class ContentControlAlfresco implements ContentControl {
             }
             final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
                     MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
-            ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+            final ContentStream contentStream = new ContentStreamImpl(nombreDoc,
                     BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
-            Map<String, Object> properties = new HashMap<>();
+            //final String nroRadicado
+            final Map<String, Object> properties = new HashMap<>();
             properties.put(PropertyIds.NAME, nombreDoc);
             properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Anexo");

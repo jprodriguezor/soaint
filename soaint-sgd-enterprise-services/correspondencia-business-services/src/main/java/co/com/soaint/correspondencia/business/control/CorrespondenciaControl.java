@@ -590,10 +590,11 @@ public class CorrespondenciaControl {
         log.info("claseEnvio: " + claseEnvio);
         log.info("nroRadicado: " + nroRadicado);
 
+        try {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
         Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
-        Date fechaValFinal = fechaFinal;
+        Date fechaValFin = null;
 
         if (fechaInicial != null && fechaFinal != null) {
             if(fechaInicial.getTime() > fechaFinal.getTime() || fechaInicial.getTime() == fechaFinal.getTime())
@@ -602,14 +603,13 @@ public class CorrespondenciaControl {
                         .buildBusinessException();
         }
 
-        if (fechaFinal == null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaFinal);
-            cal.add(Calendar.DATE, 1);
-            fechaValFinal= cal.getTime();
-        }
+            if (fechaFinal != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaFinal);
+                cal.add(Calendar.DATE, 1);
+                fechaValFin = cal.getTime();
+            }
 
-        try {
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
                     .setParameter("TIPO_COM1", "SE")
@@ -620,7 +620,7 @@ public class CorrespondenciaControl {
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
                     .setParameter("TIPO_AGENTE", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("FECHA_INI", fechaInicial, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", fechaValFinal, TemporalType.DATE)
+                    .setParameter("FECHA_FIN", fechaValFin, TemporalType.DATE)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
 
@@ -646,7 +646,13 @@ public class CorrespondenciaControl {
 
             return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialFullDTOList).build();
 
-        } catch (Exception ex) {
+        } catch (ParseException pe) {
+            log.error("Business Control - a system error has occurred", pe);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("parse.exception.error")
+                    .withRootException(pe)
+                    .buildBusinessException();
+        }catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -709,7 +715,6 @@ public class CorrespondenciaControl {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
-
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
                     List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
                     ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
@@ -1096,6 +1101,7 @@ public class CorrespondenciaControl {
     }
 
     private Boolean verificarAgenteEnListaDTO(CorAgente agente, List<AgenteDTO> corAgenteList){
+
         return corAgenteList.stream()
                 .map(AgenteDTO::getIdeAgente)
                 .filter(Objects::nonNull)
@@ -1103,6 +1109,7 @@ public class CorrespondenciaControl {
     }
 
     private Boolean verificarAgenteEnLista(CorAgente agente, List<CorAgente> corAgenteList){
+
         Boolean result = false;
         for (CorAgente corAgente : corAgenteList) {
             if(agente.getIdeAgente().equals(corAgente.getIdeAgente())) {
