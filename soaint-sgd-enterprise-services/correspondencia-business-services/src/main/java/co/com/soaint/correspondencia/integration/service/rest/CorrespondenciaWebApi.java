@@ -205,14 +205,21 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
                                                                                       @QueryParam("fecha_fin") final String fechaFin,
                                                                                       @QueryParam("mod_correo") final String modEnvio,
                                                                                       @QueryParam("clase_envio") final String claseEnvio,
                                                                                       @QueryParam("cod_dep") final String codDependencia,
                                                                                       @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           try {
+               return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           } catch (ParseException ex) {
+        throw ExceptionBuilder.newBuilder()
+                .withMessage("system.generic.error")
+                .withRootException(ex)
+                .buildSystemException();
+        }
     }
 
     /**

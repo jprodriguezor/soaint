@@ -334,10 +334,10 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
-            String funcionario = "No existe.";
+            String funcionario = null;
             if (funcionarioControl.existFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()))){
                 FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
-                funcionario = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1().concat(" ").concat(funcionarioDTO.getValApellido2()));
+                funcionario = funcionarioDTO.getNomFuncionario()+" "+funcionarioDTO.getValApellido1()+" "+funcionarioDTO.getValApellido2();
             }
 
             return CorrespondenciaFullDTO.newInstance()
@@ -576,12 +576,12 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
                                                                                       String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String nroRadicado) throws BusinessException, SystemException {
+                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
         log.info("CorrespondenciaControl: listarComunicacionDeSalidaConDistribucionFisica");
         log.info("FechaInicio: " + fechaIni);
         log.info("FechaFin: " + fechaFin);
@@ -625,25 +625,26 @@ public class CorrespondenciaControl {
                     .getResultList();
 
             log.info("Correspondencias: " + correspondenciaDTOList.size());
-            List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
+            List<ComunicacionOficialFullDTO> comunicacionOficialFullDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                    CorrespondenciaFullDTO correspondenciaFull = correspondenciaTransformToFull(correspondenciaDTO);
 
-                    List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
-                    for (AgenteDTO agenteDTO : agenteDTOList) {
-                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+                    List<AgenteFullDTO> agenteFullList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaDTO.getIdeDocumento());
+                    for (AgenteFullDTO agenteFull : agenteFullList) {
+                        List<DatosContactoDTO> datosContactoDTO = datosContactoControl.consultarDatosContactoByIdAgente(agenteFull.getIdeAgente());
+                        agenteFull.setDatosContactoList(datosContactoControl.datosContactoListTransformToFull(datosContactoDTO));
                     }
-
-                    ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
-                            .correspondencia(correspondenciaDTO)
-                            .agenteList(agenteDTOList)
+                    ComunicacionOficialFullDTO comunicacionOficialFull = ComunicacionOficialFullDTO.newInstance()
+                            .correspondencia(correspondenciaFull)
+                            .agentes(agenteFullList)
                             .build();
-                    comunicacionOficialDTOList.add(comunicacionOficialDTO);
+                    comunicacionOficialFullDTOList.add(comunicacionOficialFull);
                 }
             }
 
-            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialFullDTOList).build();
 
         } catch (ParseException pe) {
             log.error("Business Control - a system error has occurred", pe);
@@ -1302,18 +1303,19 @@ public class CorrespondenciaControl {
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
 
-            String tipoRadicacion = "";
-            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-            }
+            //TODO preguntar si la radicacion de salida se construye con tipoRadicacion o tipo de comunicación.
+//            String tipoRadicacion = "";
+//            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+//                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+//                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+//                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+//            }
 
             correspondencia.setNroRadicado(procesarNroRadicadoSalida(
                     correspondencia.getCodSede(),
                     correspondencia.getCodDependencia(),
                     correspondencia.getCodFuncRadica(),
-                    tipoRadicacion,
+                    correspondencia.getCodTipoCmc(),
                     String.valueOf(anno)));
 
             String endpoint = System.getProperty("ecm-api-endpoint");

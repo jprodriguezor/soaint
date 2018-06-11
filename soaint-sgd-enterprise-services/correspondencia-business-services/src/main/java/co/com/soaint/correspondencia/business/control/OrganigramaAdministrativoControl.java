@@ -225,6 +225,9 @@ public class OrganigramaAdministrativoControl {
      * @return
      */
     public String consultarNombreElementoByCodOrg(String codOrg){
+        if (codOrg == null) {
+            return null;
+        }
         try {
             return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarNombreElementoByCodOrg", String.class)
                     .setParameter("COD_ORG", codOrg)
