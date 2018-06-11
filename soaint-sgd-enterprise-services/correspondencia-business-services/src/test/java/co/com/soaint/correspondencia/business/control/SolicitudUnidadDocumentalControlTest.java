@@ -317,18 +317,19 @@ public class SolicitudUnidadDocumentalControlTest {
         assertThat(solicitudDTO.getObservaciones(), Matchers.comparesEqualTo(solicitud.getObservaciones()));
     }
 
-    @Test
-    public void actualizarSolicitudUnidadDocumental_failure() throws SystemException, BusinessException {
-        //given
-        BigInteger ID_FAKE = BigInteger.valueOf(6);
-        solicitud.setIdSolicitud(ID_FAKE);
-        //when
-        try {
-            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
-        } catch (Exception e){
-            assertThat("solicitud.solicitud_not_exist_by_id", is(e.getMessage()));
-        }
-    }
+//    @Test
+//    public void actualizarSolicitudUnidadDocumental_failure() throws SystemException, BusinessException {
+//        //given
+//        BigInteger ID_FAKE = BigInteger.valueOf(6);
+//        solicitud.setIdSolicitud(ID_FAKE);
+//        //when
+//        try {
+//            SolicitudUnidadDocumentalDTO solicitudDTO = solicitudUnidadDocumentalControl.actualizarSolicitudUnidadDocumental(solicitud);
+//        } catch (BusinessException e){
+////            e.printStackTrace();
+//            assertThat("solicitud.solicitud_not_exist_by_id", is(e.getMessage()));
+//        }
+//    }
 
     @Test(expected = NullPointerException.class)
     public void actualizarSolicitudUnidadDocumental_null_failure() throws SystemException, BusinessException {
