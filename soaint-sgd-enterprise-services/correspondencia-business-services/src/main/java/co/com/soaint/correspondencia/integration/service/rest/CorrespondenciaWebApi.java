@@ -212,7 +212,14 @@ public class CorrespondenciaWebApi {
                                                                                       @QueryParam("cod_dep") final String codDependencia,
                                                                                       @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           try {
+               return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           } catch (ParseException ex) {
+        throw ExceptionBuilder.newBuilder()
+                .withMessage("system.generic.error")
+                .withRootException(ex)
+                .buildSystemException();
+        }
     }
 
     /**
