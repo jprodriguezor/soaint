@@ -593,6 +593,7 @@ public class CorrespondenciaControl {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
         Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
+        Date fechaValFinal = fechaFinal;
 
         if (fechaInicial != null && fechaFinal != null) {
             if(fechaInicial.getTime() > fechaFinal.getTime() || fechaInicial.getTime() == fechaFinal.getTime())
@@ -601,9 +602,12 @@ public class CorrespondenciaControl {
                         .buildBusinessException();
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(fechaFinal);
-        cal.add(Calendar.DATE, 1);
+        if (fechaFinal == null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fechaFinal);
+            cal.add(Calendar.DATE, 1);
+            fechaValFinal= cal.getTime();
+        }
 
         try {
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", CorrespondenciaDTO.class)
@@ -616,12 +620,12 @@ public class CorrespondenciaControl {
                     .setParameter("ESTADO_DISTRIBUCION", EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo())
                     .setParameter("TIPO_AGENTE", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("FECHA_INI", fechaInicial, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("FECHA_FIN", fechaValFinal, TemporalType.DATE)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getResultList();
 
             log.info("Correspondencias: " + correspondenciaDTOList.size());
-            List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
+            List<ComunicacionOficialFullDTO> comunicacionOficialFullDTOList = new ArrayList<>();
 
             if (correspondenciaDTOList != null && !correspondenciaDTOList.isEmpty()) {
                 for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
@@ -629,31 +633,18 @@ public class CorrespondenciaControl {
 
                     List<AgenteFullDTO> agenteFullList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaDTO.getIdeDocumento());
                     for (AgenteFullDTO agenteFull : agenteFullList) {
-
-                        agenteFull.setDatosContactoList();
+                        List<DatosContactoDTO> datosContactoDTO = datosContactoControl.consultarDatosContactoByIdAgente(agenteFull.getIdeAgente());
+                        agenteFull.setDatosContactoList(datosContactoControl.datosContactoListTransformToFull(datosContactoDTO));
                     }
                     ComunicacionOficialFullDTO comunicacionOficialFull = ComunicacionOficialFullDTO.newInstance()
                             .correspondencia(correspondenciaFull)
-                            .agentes()
+                            .agentes(agenteFullList)
                             .build();
+                    comunicacionOficialFullDTOList.add(comunicacionOficialFull);
                 }
-
-//                for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-//
-//                    List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
-//                    for (AgenteDTO agenteDTO : agenteDTOList) {
-//                        agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
-//                    }
-//
-//                    ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
-//                            .correspondencia(correspondenciaDTO)
-//                            .agenteList(agenteDTOList)
-//                            .build();
-//                    comunicacionOficialDTOList.add(comunicacionOficialDTO);
-//                }
             }
 
-            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialFullDTOList).build();
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -729,7 +720,7 @@ public class CorrespondenciaControl {
                 }
             }
 
-            return ComunicacionesOficialesFullDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -1105,7 +1096,6 @@ public class CorrespondenciaControl {
     }
 
     private Boolean verificarAgenteEnListaDTO(CorAgente agente, List<AgenteDTO> corAgenteList){
-
         return corAgenteList.stream()
                 .map(AgenteDTO::getIdeAgente)
                 .filter(Objects::nonNull)
@@ -1113,7 +1103,6 @@ public class CorrespondenciaControl {
     }
 
     private Boolean verificarAgenteEnLista(CorAgente agente, List<CorAgente> corAgenteList){
-
         Boolean result = false;
         for (CorAgente corAgente : corAgenteList) {
             if(agente.getIdeAgente().equals(corAgente.getIdeAgente())) {

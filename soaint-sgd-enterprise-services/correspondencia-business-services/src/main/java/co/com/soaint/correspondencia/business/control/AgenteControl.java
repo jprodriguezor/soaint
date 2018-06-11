@@ -455,7 +455,6 @@ public class AgenteControl {
                     .razonSocial(agenteDTO.getRazonSocial())
                     .datosContactoList(datosContactoControl.datosContactoListTransformToFull(agenteDTO.getDatosContactoList()))
                     .build();
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()

@@ -114,6 +114,9 @@ public class PaisControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PaisDTO consultarPaisByCod(String codPais) throws SystemException, BusinessException {
         try {
+            if (codPais == null) {
+                return null;
+            }
             return em.createNamedQuery("TvsPais.findByCod", PaisDTO.class)
                     .setParameter("COD_PAIS", codPais)
                     .getSingleResult();

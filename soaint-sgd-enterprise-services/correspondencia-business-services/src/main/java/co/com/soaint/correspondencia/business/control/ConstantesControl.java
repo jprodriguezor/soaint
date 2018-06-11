@@ -152,6 +152,9 @@ public class ConstantesControl {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String consultarNombreConstanteByCodigo(String codigo) {
+        if (codigo == null) {
+            return null;
+        }
         try {
             return  em.createNamedQuery("TvsConstantes.getNombreByCodigo", String.class)
                     .setParameter("CODIGO", codigo)

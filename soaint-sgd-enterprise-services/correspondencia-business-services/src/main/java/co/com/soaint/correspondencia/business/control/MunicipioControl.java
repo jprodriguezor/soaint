@@ -122,6 +122,9 @@ public class MunicipioControl {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public MunicipioDTO consultarMunicipioByCodMunic(String codMunic) throws SystemException, BusinessException {
+        if (codMunic == null) {
+            return null;
+        }
         try {
             MunicipioDTO municipioDTO = em.createNamedQuery("TvsDepartamento.findByCodMun", MunicipioDTO.class)
                     .setParameter("COD_MUN", codMunic)
