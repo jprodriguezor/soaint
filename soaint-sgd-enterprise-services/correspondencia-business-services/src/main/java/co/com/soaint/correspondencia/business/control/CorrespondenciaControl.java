@@ -334,7 +334,7 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
-            String funcionario = "No existe.";
+            String funcionario = null;
             if (funcionarioControl.existFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()))){
                 FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
                 funcionario = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1().concat(" ").concat(funcionarioDTO.getValApellido2()));
