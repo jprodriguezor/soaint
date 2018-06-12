@@ -1238,7 +1238,7 @@ public final class ContentControlUtilities implements Serializable {
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
         final Document document = createDocument(carpetaTarget, documentoDTO);
         documentoDTO = transformarDocumento(document);
-        if (requiereEtiqueta && (selectorType == SelectorType.EE || selectorType == SelectorType.EI)) {
+        if (requiereEtiqueta && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)) {
             estamparEtiquetaRadicacion(documentoDTO, session);
         }
         return documentoDTO;
