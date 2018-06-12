@@ -123,14 +123,15 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         if (StringUtils.isEmpty(idInstancia)) {
             throw new SystemException("El ID instancia de la correspondencia es nulo");
         }
-        notifyBpmProcess(idInstancia);
+        notifyBpmProcess(idInstancia, idDocPrincipal);
     }
 
-    private void notifyBpmProcess(String ideInstancia) throws SystemException {
+    private void notifyBpmProcess(String ideInstancia, String ideEcm) throws SystemException {
         final RespuestaDigitalizarDTO digitalizarDTO = getRespuestaDigitalizarDTO(ideInstancia);
         final Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("nombreSennal", digitalizarDTO.getNombreSennal());
+        parameters.put("ideEcm", ideEcm);
 
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
