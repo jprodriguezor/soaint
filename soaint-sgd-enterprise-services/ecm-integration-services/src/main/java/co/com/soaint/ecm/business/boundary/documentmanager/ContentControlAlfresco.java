@@ -807,7 +807,7 @@ public final class ContentControlAlfresco implements ContentControl {
                             utilities.crearLink(targetFolder, document, session);
                         } else {
                             document.move(sourceFolder, targetFolder);
-                            /*final List<Folder> parents = document.getParents();
+                            final List<Folder> parents = document.getParents();
                             final Optional<Folder> sourceTarget = parents.parallelStream()
                                     .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
                                             StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
@@ -820,7 +820,7 @@ public final class ContentControlAlfresco implements ContentControl {
                                 }
                                 properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
                                 targetFolder.updateProperties(properties);
-                            });*/
+                            });
                         }
                         final Map<String, Object> properties = new HashMap<>();
                         Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
