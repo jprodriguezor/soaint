@@ -92,9 +92,9 @@ export const environment = {
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
-  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
-  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla-salida`,
+  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-planilla-salida`,
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
 
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,

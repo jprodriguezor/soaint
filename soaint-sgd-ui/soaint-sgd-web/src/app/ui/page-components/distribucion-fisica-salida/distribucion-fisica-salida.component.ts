@@ -383,8 +383,13 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     return planilla;
   };
 
-  generarPlanilla(): void {
-    if (this.InformacionEnvioCompletada()) {
+  generarPlanilla() {
+    if (!this.InformacionEnvioCompletada()) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn', 
+        summary: 'Complete información de envío en las comunicacion(es) seleccionada(s)'
+      }));
+    } else {
       const dependenciaDestinoArray= [];
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
@@ -402,11 +407,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         this.listarDistribuciones();
         this._detectChanges.detectChanges();
       });
-    } else {
-      this._store.dispatch(new PushNotificationAction({
-        severity: 'warning', 
-        summary: 'Complete información de envío en las comunicacion(es) seleccionada(s)'
-      }));
+
     }
 
   }
@@ -416,7 +417,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   }
 
   InformacionEnvioCompletada(): boolean {
-    const anyInvalid = this.selectedComunications.find(com => isNullOrUndefined(com.correspondencia.envio_peso) || isNullOrUndefined(com.correspondencia.envio_valor));
+    const anyInvalid = this.selectedComunications.find(com => com.correspondencia.envio_peso === null || com.correspondencia.envio_peso === undefined);
     return anyInvalid ? false : true;
   }
 
