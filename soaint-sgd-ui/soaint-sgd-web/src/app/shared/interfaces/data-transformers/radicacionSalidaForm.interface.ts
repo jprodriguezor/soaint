@@ -12,10 +12,14 @@
    destinatarioExt:Array<{
      tipoDestinatario: any,
      tipoPersona: any,
-     Nombre: any,
-     TipoDocumento:any,
+     nombre: any,
+     tipoDocumento:any,
      destinatarioPrincipal: any,
      datosContactoList:any[],
+     razonSocial?:any,
+     actuaCalidad?:any,
+     nit?:any,
+     nroDocumentoIdentidad?:any,
    }>,
    datosEnvio?:{
      clase_envio:any,

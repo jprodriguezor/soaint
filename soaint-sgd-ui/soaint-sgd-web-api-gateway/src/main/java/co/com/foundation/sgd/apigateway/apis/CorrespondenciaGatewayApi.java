@@ -411,7 +411,6 @@ public class CorrespondenciaGatewayApi {
 
     @POST
     @Path("/generar-planilla-salida")
-    @JWTTokenSecurity
     public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla salida distribucion");
         Response response = client.generarPlantilla(planilla);
