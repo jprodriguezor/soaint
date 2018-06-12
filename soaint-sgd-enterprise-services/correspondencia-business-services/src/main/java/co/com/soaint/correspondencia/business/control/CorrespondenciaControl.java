@@ -1303,14 +1303,6 @@ public class CorrespondenciaControl {
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
 
-            //TODO preguntar si la radicacion de salida se construye con tipoRadicacion o tipo de comunicación.
-//            String tipoRadicacion = "";
-//            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-//                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-//                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-//                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-//            }
-
             correspondencia.setNroRadicado(procesarNroRadicadoSalida(
                     correspondencia.getCodSede(),
                     correspondencia.getCodDependencia(),
@@ -1423,18 +1415,18 @@ public class CorrespondenciaControl {
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
 
-            String tipoRadicacion = "";
-            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-            }
+//            String tipoRadicacion = "";
+//            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+//                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+//                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+//                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+//            }
 
             correspondencia.setNroRadicado(procesarNroRadicadoSalida(
                     correspondencia.getCodSede(),
                     correspondencia.getCodDependencia(),
                     correspondencia.getCodFuncRadica(),
-                    tipoRadicacion,
+                    correspondencia.getCodTipoCmc(),
                     String.valueOf(anno)));
 
             String endpoint = System.getProperty("ecm-api-endpoint");
