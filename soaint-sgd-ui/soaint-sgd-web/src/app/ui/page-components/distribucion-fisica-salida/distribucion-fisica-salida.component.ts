@@ -199,8 +199,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   }
 
   getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-      const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-      const destinatarioDTV = radicacionEntradaDTV.getDatosDestinatarios();
+      const destinatarioDTV = comunicacion.agentes.filter(value => value.codTipAgent === 'TP-AGEI')
       return destinatarioDTV;
   }
 

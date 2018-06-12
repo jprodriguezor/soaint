@@ -192,7 +192,7 @@ export const process_info = {
   },
   'proceso.gestion-planillas-salida': {
     displayValue : 'Gestión de planillas de salida',
-    show: true,
+    show: false,
   }
 
 };
