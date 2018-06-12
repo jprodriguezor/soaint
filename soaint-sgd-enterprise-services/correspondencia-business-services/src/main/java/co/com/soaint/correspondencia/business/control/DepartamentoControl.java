@@ -121,6 +121,9 @@ public class DepartamentoControl {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public DepartamentoDTO consultarDepartamentoByCod(String cod) throws SystemException, BusinessException {
+        if (cod == null) {
+            return null;
+        }
         try {
             return em.createNamedQuery("TvsDepartamento.findByCodDep", DepartamentoDTO.class)
                     .setParameter("COD_DEP", cod)

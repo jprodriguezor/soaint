@@ -50,7 +50,6 @@ public final class ContentStamperImpl implements ContentStamper {
                 worker.parseXHtml(writer, document, is, Charset.forName("UTF-8"));
                 document.close();
                 contentBytes = outputStream.toByteArray();
-                System.out.println(Arrays.toString(contentBytes));
                 outputStream.flush();
                 outputStream.close();
                 is.close();
@@ -68,8 +67,6 @@ public final class ContentStamperImpl implements ContentStamper {
             stamper.close();
             reader.close();
             document.close();
-            Rectangle pageSize = document.getPageSize();
-            System.out.println(pageSize);
             return byteArrayOutputStream.toByteArray();
 
         } catch (Exception e) {
@@ -91,9 +88,6 @@ public final class ContentStamperImpl implements ContentStamper {
     }
 
     private void resizePdf(PdfReader reader) {
-
-        Rectangle pageSize = reader.getPageSize(1);
-        System.out.println("Wao!!!" + pageSize);
 
         float width = 8.5f * 72;
         float height = 11f * 72;

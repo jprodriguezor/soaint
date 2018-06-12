@@ -68,7 +68,7 @@ public class ContentManager implements Serializable {
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento principal/adjunto al content..");
         log.info("### Se invoca el metodo de subir el documento principal/adjunto..");
-        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
+        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector, true);
     }
 
     /**

@@ -215,8 +215,13 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       }));
 
       console.log(this.valueGeneral);
-      let requiereDigitalizacion = !isNullOrUndefined(this.valueGeneral.reqDigit)? this.valueGeneral.reqDigit : 0 ;
+      let requiereDigitalizacion = 0;
 
+      if (this.valueGeneral.reqDigit == 1) {
+        requiereDigitalizacion = 1;
+      } else if (this.valueGeneral.reqDigit == 2) {
+        requiereDigitalizacion = 2;
+      }
 
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,

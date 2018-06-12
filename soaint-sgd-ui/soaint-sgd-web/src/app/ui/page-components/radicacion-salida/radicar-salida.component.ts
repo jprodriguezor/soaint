@@ -209,7 +209,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         comunicacionOficialDTV.getDocumento().ideEcm
       )},1000);
 
-
+      else{
+       this.removeBorders();
+      }
       this.disableEditionOnForms();
 
       this._store.dispatch(new RadicarSuccessAction({
@@ -237,6 +239,14 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     return  general.reqDigit == 2
   }
 
+  private removeBorders(){
+
+    const element:any =  document.querySelector('#ticket-rad > .ticket-content');
+    element.style.border = '0';
+    this.printButtonEnabled = true;
+    this._changeDetectorRef.detectChanges();
+  }
+
   protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
 
     const node = document.getElementById("ticket-rad");
@@ -257,10 +267,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
           });
 
-          const element:any =  document.querySelector('#ticket-rad > .ticket-content');
-          element.style.border = '0';
-          this.printButtonEnabled = true;
-          this._changeDetectorRef.detectChanges();
+          this.removeBorders();
         });
     }
 

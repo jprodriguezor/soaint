@@ -221,8 +221,6 @@ public class SolicitudUnidadDocumentalControl {
         try {
             log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante");
 
-
-            Date fechaIni = null;
             Date fechaFin = null;
 
             if(fechaSolicitud != null) {
@@ -230,12 +228,11 @@ public class SolicitudUnidadDocumentalControl {
                 calendar.setTime(fechaSolicitud);
                 calendar.add(Calendar.DATE, 1);
 
-                fechaIni = new Date(fechaSolicitud.getTime());
                 fechaFin = calendar.getTime();
             }
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", SolicitudUnidadDocumentalDTO.class)
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.TIMESTAMP)
+                    .setParameter("FECHA_INI", fechaSolicitud, TemporalType.TIMESTAMP)
                     .setParameter("FECHA_FIN", fechaFin, TemporalType.TIMESTAMP)
                     .setParameter("ID_SOL", ideSolicitante)
                     .setParameter("COD_SEDE", codSede)
@@ -322,7 +319,13 @@ public class SolicitudUnidadDocumentalControl {
                 .executeUpdate();
 
                 return solicitudUnidadDocumentalDTO;
-        } catch (Exception ex) {
+        } catch (NullPointerException ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("solicitud.solicitud_is_null")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

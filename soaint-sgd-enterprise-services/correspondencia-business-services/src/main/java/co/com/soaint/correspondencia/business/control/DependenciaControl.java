@@ -61,6 +61,7 @@ public class DependenciaControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DependenciaDTO> obtenerDependenciasByFuncionario(BigInteger ideFunci) {
         List<DependenciaDTO> dependenciaDTOList = new ArrayList<>();
+        // TODO comprobar que llega al menos un codOrganigrama
         List<String> codOrgaAdmiList = em.createNamedQuery("TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci")
                 .setParameter("IDE_FUNCI", ideFunci)
                 .getResultList();
