@@ -938,7 +938,7 @@ public final class ContentControlAlfresco implements ContentControl {
         MensajeRespuesta response = new MensajeRespuesta();
         final Map<String, Object> idResponse = new HashMap<>();
         idResponse.put("idECM", null);
-        response.setCodMensaje("1223");
+        response.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
         response.setResponse(idResponse);
         if (StringUtils.isEmpty(idDocumento)) {
             response.setMensaje("Especifique el id del documento a modificar");
@@ -947,23 +947,43 @@ public final class ContentControlAlfresco implements ContentControl {
         try {
             final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
             final CmisObject object = session.getObject(idDocObject);
+            if (!(object instanceof Document)) {
+                response.setMensaje("El id especificado no coincide con el de un documento");
+                return response;
+            }
             final Map<String, Object> updateProperties = new HashMap<>();
-
-            if (!StringUtils.isEmpty(nroRadicado)) {
+            final String nroRadicadoObj = object.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO);
+            if (!StringUtils.isEmpty(nroRadicado) && StringUtils.isEmpty(nroRadicadoObj)) {
+                SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                if (null == selectorType) {
+                    response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
+                    return response;
+                }
                 updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
                 updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
                 final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+
                 if ("Anexo".equals(docType)) {
                     response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
                     return response;
                 }
-                final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
-                principalAdjuntosQueryResults.forEach(queryResult -> {
-                    String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                    CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                    Document document = (Document) tmpObject;
-                    document.updateProperties(updateProperties);
-                });
+                final Folder sourceFolder = utilities.getFolderFrom((Document) object);
+                if (null != sourceFolder) {
+                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, session);
+                    final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
+                    final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
+                    final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+                    for (QueryResult queryResult :
+                            principalAdjuntosQueryResults) {
+                        String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                        CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
+                        tmpObject = tmpObject.updateProperties(updateProperties);
+                        Document document = (Document) tmpObject;
+                        document.move(sourceFolder, targetFolder.getFolder());
+                        document.refresh();
+                        utilities.crearLink(linkTargetFolder.getFolder(), document, session);
+                    }
+                }
             }
             if (!StringUtils.isEmpty(nombreRemitente)) {
                 updateProperties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, nombreRemitente);
