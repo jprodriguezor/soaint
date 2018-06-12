@@ -11,6 +11,7 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.alfresco.cmis.client.AlfrescoDocument;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -18,6 +19,7 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ import java.util.*;
 
 @Log4j2
 @Service
-final class ContentControlUtilities implements Serializable {
+public final class ContentControlUtilities implements Serializable {
 
     private static final long serialVersionUID = 155L;
 
@@ -45,6 +47,58 @@ final class ContentControlUtilities implements Serializable {
 
     @Autowired
     private ContentStamper contentStamper;
+
+    public Folder getFolderFromRootByName(String folderName) {
+        Session session = contentControl.obtenerConexion().getSession();
+        Folder rootFolder = session.getRootFolder();
+        final ItemIterable<CmisObject> children = rootFolder.getChildren();
+        for (CmisObject cmisObject :
+                children) {
+            if (cmisObject.getName().equals(folderName)) {
+                return (Folder) cmisObject;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
+     *
+     * @param document Objeto a transformar
+     * @return DocumentoDTO
+     */
+    public DocumentoDTO transformarDocumento(Document document) throws SystemException {
+        final DocumentoDTO documentoDTO = new DocumentoDTO();
+        String idDoc = document.getId();
+        try {
+            documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(';')) : idDoc);
+            documentoDTO.setNroRadicado(document.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO));
+            documentoDTO.setTipologiaDocumental(document.getPropertyValue(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
+            documentoDTO.setNombreRemitente(document.getPropertyValue(ConstantesECM.CMCOR_NOMBRE_REMITENTE));
+            documentoDTO.setNombreDocumento(document.getName());
+            documentoDTO.setIdDocumentoPadre(document.getPropertyValue(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL));
+            GregorianCalendar calendar = document.getPropertyValue(PropertyIds.CREATION_DATE);
+            documentoDTO.setFechaCreacion(calendar.getTime());
+            documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
+            documentoDTO.setTamano(document.getContentStreamLength() + "");
+            documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
+            documentoDTO.setVersionLabel(document.getVersionLabel());
+            documentoDTO.setDocumento(getDocumentBytes(document));
+
+            final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
+
+            if (!StringUtils.isEmpty(nroReferido)) {
+                String[] splitRadicado = nroReferido.split(ConstantesECM.SEPARADOR);
+                documentoDTO.setNroRadicadoReferido(splitRadicado);
+            }
+            return documentoDTO;
+        } catch (Exception e) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
 
     UnidadDocumentalDTO modificarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException {
         final String id = unidadDocumentalDTO.getId();
@@ -513,68 +567,30 @@ final class ContentControlUtilities implements Serializable {
     }
 
     /**
-     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
-     *
-     * @param document Objeto a transformar
-     * @return DocumentoDTO
-     */
-    DocumentoDTO transformarDocumento(Document document) throws SystemException {
-        final DocumentoDTO documentoDTO = new DocumentoDTO();
-        String idDoc = document.getId();
-        try {
-            documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(';')) : idDoc);
-            documentoDTO.setNroRadicado(document.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO));
-            documentoDTO.setTipologiaDocumental(document.getPropertyValue(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
-            documentoDTO.setNombreRemitente(document.getPropertyValue(ConstantesECM.CMCOR_NOMBRE_REMITENTE));
-            documentoDTO.setNombreDocumento(document.getName());
-            documentoDTO.setIdDocumentoPadre(document.getPropertyValue(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL));
-            GregorianCalendar calendar = document.getPropertyValue(PropertyIds.CREATION_DATE);
-            documentoDTO.setFechaCreacion(calendar.getTime());
-            documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
-            documentoDTO.setTamano(document.getContentStreamLength() + "");
-            documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
-            documentoDTO.setVersionLabel(document.getVersionLabel());
-            documentoDTO.setDocumento(getDocumentBytes(document));
-
-            final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
-
-            if (!StringUtils.isEmpty(nroReferido)) {
-                String[] splitRadicado = nroReferido.split(ConstantesECM.SEPARADOR);
-                documentoDTO.setNroRadicadoReferido(splitRadicado);
-            }
-            return documentoDTO;
-        } catch (Exception e) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage(e.getMessage())
-                    .withRootException(e)
-                    .buildSystemException();
-        }
-    }
-
-    /**
      * Metodo para crear el link
      *
-     * @param session      Objeto session
-     * @param documentoDTO Identificador del dcumento
-     * @param carpetaLink  Carpeta donde se va a crear el link
+     * @param session  Objeto session
+     * @param document Obj Document Ecm
+     * @param target   Obj Folder Ecm
      */
-    void crearLink(Session session, DocumentoDTO documentoDTO, Carpeta carpetaLink) {
-
+    void crearLink(Folder target, Document document, Session session) {
         log.info("Se entra al metodo crearLink");
 
         Map<String, Object> properties = new HashMap<>();
         properties.put(PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_ITEM.value());
-
+        String id = document.getId().split(";")[0];
         // define a name and a description for the link
-        properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento() + ".link");
-        properties.put("cmis:description", "Documento Vinculado");
+        properties.put(PropertyIds.NAME, document.getName());
+        properties.put(PropertyIds.DESCRIPTION, id);
         properties.put(PropertyIds.OBJECT_TYPE_ID, "I:app:filelink");
 
         //define the destination node reference
-        properties.put("cm:destination", "workspace://SpacesStore/" + documentoDTO);
+        properties.put("cm:destination", "workspace://SpacesStore/" + id);
         //Se crea el link
-        session.createItem(properties, carpetaLink.getFolder());
+        session.createItem(properties, target);
 
+        AlfrescoDocument alfrescoDocument = (AlfrescoDocument) document;
+        alfrescoDocument.addAspect(ConstantesECM.P_APP_LINKED);
         log.info("Se crea el link y se sale del método crearLink");
     }
 
@@ -745,15 +761,12 @@ final class ContentControlUtilities implements Serializable {
         //Obtener el documentosAdjuntos
         String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado";
         boolean where = false;
-
         if (!ObjectUtils.isEmpty(documento.getIdDocumento())) {
             where = true;
-
             query += " WHERE " + PropertyIds.OBJECT_ID + " = '" + documento.getIdDocumento() + "'" +
                     " OR " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + documento.getIdDocumento() + "'";
         }
         if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
-
             query += (where ? " AND " : " WHERE ") + ConstantesECM.CMCOR_NRO_RADICADO + " = '" + documento.getNroRadicado() + "'";
             where = true;
         }
@@ -1034,7 +1047,7 @@ final class ContentControlUtilities implements Serializable {
      *
      * @param contentStream contentStream
      * @return Un objeto File
-     * @throws IOException En caso de error
+     * @throws SystemException En caso de error
      */
     File convertInputStreamToFile(ContentStream contentStream) throws SystemException {
         try {
@@ -1103,7 +1116,7 @@ final class ContentControlUtilities implements Serializable {
             }
             String idDocument = documentoDTO.getIdDocumento();
             if (StringUtils.isEmpty(idDocument)) {
-                saveStamperImageFile(documentBytes, nroRadicado);
+                saveStamperImageFile(documentoDTO, nroRadicado);
                 return;
             }
 
@@ -1117,56 +1130,51 @@ final class ContentControlUtilities implements Serializable {
                 throw new SystemException("Ocurrio un error al estampar la etiqueta de radicacion");
             }
 
-            byte[] imageBytes = null;
-            DocumentMimeType mimeType = DocumentMimeType.APPLICATION_PDF;
+            byte[] imageBytes;
+            String mimeType = MimeTypes.getMIMEType("pdf");
             Document documentImg = null;
-            if (DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType)) {
+            boolean isHtmlDoc = false;
+            if (MimeTypes.getMIMEType("html").equals(docMimeType)) {
+                imageBytes = documentBytes;
                 documentBytes = getDocumentBytes(documentECM);
-                mimeType = DocumentMimeType.APPLICATION_HTML;
+                mimeType = MimeTypes.getMIMEType("html");
+                isHtmlDoc = true;
             } else {
                 documentImg = getStamperImage(nroRadicado);
                 if (null == documentImg) {
                     throw new SystemException("No existe imagen con numero de radicado " + nroRadicado);
                 }
                 final File file = convertInputStreamToFile(documentImg.getContentStream());
-                imageBytes = getStamperImageBytes(file);
+                imageBytes = imageBytes(file);
             }
 
             final byte[] stampedDocument = contentStamper
                     .getStampedDocument(imageBytes, documentBytes, mimeType);
 
-            String docName = documentECM.getName();
-            final String pdfSufix = ".pdf";
-            String sufix = "";
-            if (docName.endsWith(".htm")) {
-                sufix = ".htm";
-            }
-            if (docName.endsWith(".html")) {
-                sufix = ".html";
-            }
-            if (docName.endsWith(".xhtml")) {
-                sufix = ".xhtml";
-            }
-            docName = "".equals(sufix) ? docName + pdfSufix : docName.replace(sufix, pdfSufix);
+            String docName = documentECM.getName()
+                    .replace(".pdf", "") + ".pdf";
 
             documentoDTO.setNombreDocumento(docName);
 
-            Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
+            final Map<String, Object> properties = obtenerPropiedadesDocumento(documentECM);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
-            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_PDF.getType());
+            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, MimeTypes.getMIMEType("pdf"));
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
+            if (isHtmlDoc) {
+                properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocument);
+            }
 
             documentECM.delete(false);
 
-            final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
-                    BigInteger.valueOf(stampedDocument.length), DocumentMimeType.APPLICATION_PDF.getType(), new ByteArrayInputStream(stampedDocument));
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-
+            final ContentStream contentStream = new ContentStreamImpl(docName,
+                    BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
+            final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            idDocument = document.getId();
+            documentoDTO.setIdDocumento(idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument);
             if (null != documentImg) {
                 //documentImg.delete();
             }
-
         } catch (Exception e) {
             log.error("Error al estampar la etiqueta de radicacion");
             throw ExceptionBuilder.newBuilder()
@@ -1226,6 +1234,152 @@ final class ContentControlUtilities implements Serializable {
         return Optional.empty();
     }
 
+    DocumentoDTO subirDocumentoPrincipalPD(DocumentoDTO documentoDTO, Session session) throws SystemException {
+        if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
+            throw new SystemException("No se ha identificado el codigo de la Dependencia");
+        }
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA, ConstantesECM.CMCOR_DEP_CODIGO,
+                documentoDTO.getCodigoDependencia(), session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final String nameFolder = SelectorType.PD.getSelectorName();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), nameFolder);
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, nameFolder, "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        Document document = createDocument(carpeta, documentoDTO);
+        return transformarDocumento(document);
+    }
+
+    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, boolean requiereEtiqueta, Session session) throws SystemException {
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final String dependencyCode = documentoDTO.getCodigoDependencia();
+        if (StringUtils.isEmpty(dependencyCode)) {
+            throw new SystemException("El documento '" + nombreDoc + "' no contiene el codigo de la dependencia");
+        }
+        final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
+        if (!ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)
+                && selectorType == SelectorType.SE || selectorType == SelectorType.SI) {
+            final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
+                    ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
+            if (!optionalCarpeta.isPresent()) {
+                throw new SystemException("No existe la dependencia '" + dependencyCode + "' en el ECM");
+            }
+            Carpeta carpetaSource = optionalCarpeta.get();
+            final Folder folder = carpetaSource.getFolder();
+
+            Optional<Folder> optionalFolder = sonFolderExistsFrom(folder, selectorType.getSelectorName());
+            if (!optionalFolder.isPresent()) {
+                carpetaSource = crearCarpeta(carpetaSource, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpetaSource, null);
+            } else {
+                carpetaSource.setFolder(optionalFolder.get());
+            }
+            documentoDTO = crearVincularDocumentoRadicado(carpetaSource, carpetaTarget, documentoDTO, session);
+            if (requiereEtiqueta) {
+                estamparEtiquetaRadicacion(documentoDTO, session);
+            }
+            return documentoDTO;
+        }
+        Document document = createDocument(carpetaTarget, documentoDTO);
+        return transformarDocumento(document);
+    }
+
+    private Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
+        final String query = "SELECT * FROM cmcor:CM_Subserie" +
+                " WHERE " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
+                " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
+
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Iterator<QueryResult> iterator = queryResults.iterator();
+        if (iterator.hasNext()) {
+            final QueryResult next = iterator.next();
+            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            Folder communicationFolder = (Folder) session.getObject(session.createObjectId(objectId));
+            Carpeta carpeta = new Carpeta();
+            carpeta.setFolder(communicationFolder);
+            Optional<Folder> optionalFolder = sonFolderExistsFrom(communicationFolder, selectorType.getSelectorName());
+            if (!optionalFolder.isPresent()) {
+                carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+            } else {
+                carpeta.setFolder(optionalFolder.get());
+            }
+            return carpeta;
+        }
+        throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
+    }
+
+    private Document createDocument(Carpeta carpetaTarget, DocumentoDTO documento) throws SystemException {
+        final Map<String, Object> properties = new HashMap<>();
+        final byte[] bytes = documento.getDocumento();
+        final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
+                MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
+        final String sufix = MimeTypes.getExtension(documentMimeType);
+        final String nombreDoc = (documento.getNombreDocumento().replace(sufix, "")) + sufix;
+        final ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
+
+        properties.put(PropertyIds.NAME, nombreDoc);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+        properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, !StringUtils.isEmpty(documento.getTipoPadreAdjunto())
+                ? documento.getTipoPadreAdjunto() : "Principal");
+        properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, documento.getIdDocumentoPadre());
+        properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentMimeType);
+        properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documento.getNroRadicado());
+        properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
+        try {
+            final Folder folder = carpetaTarget.getFolder();
+            return folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+        } catch (CmisContentAlreadyExistsException ccaee) {
+            log.error(ConstantesECM.ECM_ERROR_DUPLICADO, ccaee);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("El documento ya existe en el ECM")
+                    .withRootException(ccaee)
+                    .buildSystemException();
+        } catch (Exception e) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    private DocumentoDTO crearVincularDocumentoRadicado(Carpeta carpetaSource, Carpeta carpetaTarget, DocumentoDTO documento, Session session) throws SystemException {
+        Document document = createDocument(carpetaSource, documento);
+        crearLink(carpetaTarget.getFolder(), document, session);
+        return transformarDocumento(document);
+    }
+
+    private Optional<Folder> sonFolderExistsFrom(Folder folder, String selectorName) {
+        final ItemIterable<CmisObject> children = folder.getChildren();
+        for (CmisObject cmisObject :
+                children) {
+            if (cmisObject instanceof Folder && cmisObject.getName().equals(selectorName)) {
+                return Optional.of((Folder) cmisObject);
+            }
+        }
+        return Optional.empty();
+    }
+
+
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
      *
@@ -1245,10 +1399,8 @@ final class ContentControlUtilities implements Serializable {
             final String idUnidadDocumental = queryResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_UD_ID);
             if (!StringUtils.isEmpty(idUnidadDocumental) && !idUnidadDocumental.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                final Folder folder = (Folder) session.getObject(session.getObject(objectId));
-                if (ObjectUtils.isEmpty(dto) || hasDatesInRange(folder, dto)) {
-                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
-                }
+                final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), transformarUnidadDocumental(folder));
             }
         }
         return unidadDocumentalDTOS;
@@ -1306,61 +1458,6 @@ final class ContentControlUtilities implements Serializable {
             folderAux = aux;
         }
         return folderAux;
-    }
-
-    /**
-     * Metodo que verifica la existencia de fechas en el dto y el rango de seleccion
-     *
-     * @param folder {@link Folder}
-     * @param dto    {@link UnidadDocumentalDTO}
-     * @return boolean {@link Boolean}
-     */
-    private boolean hasDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
-
-        Calendar dtoFechaCierre = dto.getFechaCierre();
-        Calendar folderFechaCierre = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_CIERRE);
-
-        Calendar dtoFechaInicial = dto.getFechaExtremaInicial();
-        Calendar folderFechaInicial = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
-
-        Calendar dtoFechaFinal = dto.getFechaExtremaFinal();
-        Calendar folderFechaFinal = folder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_FINAL);
-
-        if (dtoFechaCierre == null && dtoFechaInicial == null && dtoFechaFinal == null) {
-            return true;
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaInicial != null && folderFechaInicial != null) && dtoFechaFinal == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null) && dtoFechaInicial == null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0);
-        }
-        if (dtoFechaCierre != null && folderFechaCierre != null) {
-            return (Utilities.comparaFecha(dtoFechaCierre, folderFechaCierre) == 0);
-        }
-        if ((dtoFechaInicial != null && folderFechaInicial != null) &&
-                (dtoFechaFinal != null && folderFechaFinal != null)) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
-                    (Utilities.comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
-        }
-        if (dtoFechaInicial != null && folderFechaInicial != null) {
-            return (Utilities.comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
-        }
-        return ((dtoFechaFinal != null && folderFechaFinal != null) &&
-                (Utilities.comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0));
     }
 
     /**
@@ -1548,10 +1645,10 @@ final class ContentControlUtilities implements Serializable {
         return carpetaTarget;
     }
 
-    private void saveStamperImageFile(byte[] bytes, String filename) {
+    private void saveStamperImageFile(DocumentoDTO documentoDTO, String filename) {
         Session session = contentControl.obtenerConexion().getSession();
         Folder rootFolder = session.getRootFolder();
-        Folder folderImage = getStamperImageFolder();
+        Folder folderImage = getFolderFromRootByName("Images");
         if (null == folderImage) {
             final Map<String, Object> map = new HashMap<>();
             map.put(PropertyIds.NAME, "Images");
@@ -1559,29 +1656,19 @@ final class ContentControlUtilities implements Serializable {
             folderImage = rootFolder.createFolder(map);
         }
         final Map<String, Object> map = new HashMap<>();
+        final String mimeType = MimeTypes.getMIMEType("png");
         map.put(PropertyIds.NAME, "tag_" + filename + "_temp.png");
         map.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-        map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_ICON.getType());
+        map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, mimeType);
+        byte[] bytes = documentoDTO.getDocumento();
         ContentStream stream = new ContentStreamImpl(filename, BigInteger.valueOf(bytes.length),
-                DocumentMimeType.APPLICATION_ICON.getType(), new ByteArrayInputStream(bytes));
-        folderImage.createDocument(map, stream, VersioningState.MAJOR);
-    }
-
-    private Folder getStamperImageFolder() {
-        Session session = contentControl.obtenerConexion().getSession();
-        Folder rootFolder = session.getRootFolder();
-        final ItemIterable<CmisObject> children = rootFolder.getChildren();
-        for (CmisObject cmisObject :
-                children) {
-            if ("Images".equals(cmisObject.getName())) {
-                return (Folder) cmisObject;
-            }
-        }
-        return null;
+                mimeType, new ByteArrayInputStream(bytes));
+        Document document = folderImage.createDocument(map, stream, VersioningState.MAJOR);
+        documentoDTO.setIdDocumento(document.getId().split(";")[0]);
     }
 
     private Document getStamperImage(String filename) {
-        Folder folder = getStamperImageFolder();
+        Folder folder = getFolderFromRootByName("Images");
         if (null != folder) {
             final ItemIterable<CmisObject> children = folder.getChildren();
             for (CmisObject cmisObject :
@@ -1594,10 +1681,13 @@ final class ContentControlUtilities implements Serializable {
         return null;
     }
 
-    private byte[] getStamperImageBytes(File imgFile) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(imgFile);
+    private byte[] imageBytes(File imgFile) throws IOException {
+        BufferedImage originalImage = ImageIO.read(imgFile);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", baos);
-        return baos.toByteArray();
+        ImageIO.write(originalImage, "png", baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+        return imageInByte;
     }
 }

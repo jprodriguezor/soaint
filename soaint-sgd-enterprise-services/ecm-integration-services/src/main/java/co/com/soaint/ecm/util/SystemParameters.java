@@ -5,13 +5,15 @@ package co.com.soaint.ecm.util;
  */
 public final class SystemParameters {
 
-    public static final String BUSINESS_PLATFORM_ENDPOINT = "ecm-endpoint";
+    public static final String BUSINESS_PLATFORM_ENDPOINT_ECM = "ecm-endpoint";
     public static final String BUSINESS_PLATFORM_USER = "ecm-user";
     public static final String BUSINESS_PLATFORM_PASS = "ecm-pass";
     public static final String BUSINESS_PLATFORM_RECORD = "record-endpoint";
     public static final String API_SEARCH_ALFRESCO = "search-endpoint";
     public static final String API_CORE_ALFRESCO = "core-endpoint";
     public static final String API_SERVICE_ALFRESCO = "service-endpoint";
+    public static final String BUSINESS_PLATFORM_ENDPOINT_BPM = "bpm-api-endpoint";
+    public static final String BUSINESS_PLATFORM_ENDPOINT_CORRESPONDENCIA = "correspondencia-api-service";
 
     private SystemParameters() {
     }

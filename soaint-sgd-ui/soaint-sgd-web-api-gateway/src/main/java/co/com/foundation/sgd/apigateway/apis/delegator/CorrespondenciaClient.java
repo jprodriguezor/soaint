@@ -4,8 +4,6 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,7 +22,7 @@ public class CorrespondenciaClient {
 
     private String droolsAuthToken = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN);
 
-    private JerseyClient client = JerseyClientBuilder.createClient();
+    //private Client client = ClientBuilder.newClient();
 
     public CorrespondenciaClient() {
         super();
@@ -54,6 +52,21 @@ public class CorrespondenciaClient {
                 .queryParam("fecha_fin", fechaFin)
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("cod_estado", codEstado)
+                .queryParam("nro_radicado", nroRadicado)
+                .request()
+                .get();
+    }
+
+    public Response listarComunicacionesSalidaDistibucionFisica(String fechaIni, String fechaFin, String codDependencia, String modEnvio, String claseEnvio, String codTipoDoc, String nroRadicado) {
+        log.info("Correspondencia - [trafic] - listar comunicacion salida para distribucion fisica with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/listar-comunicacion-salida-distribucion-fisica")
+                .queryParam("fecha_ini", fechaIni)
+                .queryParam("fecha_fin", fechaFin)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("mod_correo", modEnvio)
+                .queryParam("clase_envio", claseEnvio)
+                .queryParam("cod_tipo_doc", codTipoDoc)
                 .queryParam("nro_radicado", nroRadicado)
                 .request()
                 .get();
@@ -180,6 +193,15 @@ public class CorrespondenciaClient {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         WebTarget target = wt.path("/planillas-web-api/planillas/" + nroPlanilla);
+
+        return target.request().get();
+    }
+
+    public Response listarPlanillasSalida(String nroPlanilla) {
+        log.info("Correspondencia - [trafic] - listar planillas: " + nroPlanilla);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        WebTarget target = wt.path("/planillas-web-api/planillas-salida/" + nroPlanilla);
 
         return target.request().get();
     }

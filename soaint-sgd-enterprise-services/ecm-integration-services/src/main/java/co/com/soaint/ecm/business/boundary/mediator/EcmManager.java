@@ -106,7 +106,7 @@ public class EcmManager implements Serializable {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO metadatosDocumentos) {
+    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO metadatosDocumentos) throws SystemException {
         log.info("### Subiendo documento al content..");
         return contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
     }

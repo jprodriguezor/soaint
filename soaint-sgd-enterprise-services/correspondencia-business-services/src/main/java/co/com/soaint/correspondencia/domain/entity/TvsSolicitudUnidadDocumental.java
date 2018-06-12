@@ -27,7 +27,12 @@ import java.util.List;
 @Entity
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
-    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
+    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO" +
+            " (t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede," +
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
+            " FROM TvsSolicitudUnidadDocumental t"),
+        @NamedQuery(name = "TvsSolicitudUM.countAll", query = "SELECT COUNT(*)" +
+            " FROM TvsSolicitudUnidadDocumental"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
             " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
@@ -43,7 +48,7 @@ import java.util.List;
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
             "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
             "AND (t.accion IS NOT NULL) " +
-            "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
+            "AND (:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI)"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
             " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
@@ -52,7 +57,7 @@ import java.util.List;
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
             "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
             "AND (t.accion IS NULL) " +
-            "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
+            "AND (:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI)"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+

@@ -4,9 +4,8 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import lombok.extern.log4j.Log4j2;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -18,7 +17,7 @@ public class SecurityClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL);
 
-    private JerseyClient client = JerseyClientBuilder.createClient();
+    //private Client client = ClientBuilder.newClient();
 
     public SecurityClient() {
         super();

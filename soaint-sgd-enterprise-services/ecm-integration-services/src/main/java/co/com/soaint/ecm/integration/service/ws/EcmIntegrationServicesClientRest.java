@@ -19,12 +19,11 @@ import java.util.List;
  * Created by Dasiel
  */
 
-
+@Log4j2
+@Service
 @Path("/ecm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Log4j2
-@Service
 public class EcmIntegrationServicesClientRest {
     @Autowired
     private

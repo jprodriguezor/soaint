@@ -68,7 +68,7 @@ public class ContentManager implements Serializable {
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento principal/adjunto al content..");
         log.info("### Se invoca el metodo de subir el documento principal/adjunto..");
-        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
+        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector, true);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ContentManager implements Serializable {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) {
+    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws SystemException {
         log.info("### Modificando metadatos del documento..");log.info("### Se invoca el metodo de modificar el documento..");
         return contentControl.modificarMetadatosDocumento(conexion.getSession(),
                 metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(),

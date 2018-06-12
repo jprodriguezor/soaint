@@ -5,10 +5,7 @@ import co.com.soaint.bpm.services.integration.services.ITaskServices;
 import co.com.soaint.bpm.services.util.EngineConexion;
 import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.bpm.services.util.SystemParameters;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -526,6 +523,43 @@ public class ProcessService implements IProcessServices {
             }
         }
         return listaProcesada;
+    }
+
+    @Override
+    public RespuestaDigitalizarDTO obtenerRespuestaProcesoInstancia(Long instanciaProceso) throws SystemException {
+
+        try {
+            log.info("iniciar - listar obtener respuesta proceso por instancia: {}", instanciaProceso);
+
+            RespuestaDigitalizarDTO resultado= em.createNamedQuery("AuditTaskImplEntity.findProcessById", RespuestaDigitalizarDTO.class)
+                    .setParameter("INSTANCIA", instanciaProceso)
+                    .getSingleResult();
+
+            if ("proceso.correspondencia-entrada".equals(resultado.getIdProceso())) {
+                resultado.setNombreSennal("estadoDigitalizacion");
+            }else
+
+            if ("proceso.correspondencia-salida".equals(resultado.getIdProceso())) {
+
+            resultado.setNombreSennal("correspondenciaSalida");
+            }else
+            if ("proceso.gestor-devoluciones".equals(resultado.getIdProceso())) {
+                resultado.setNombreSennal("digitalizacion");
+            } else {
+                resultado.setNombreSennal(null);
+            }
+
+            return resultado;
+
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - listar obtener respuesta proceso por instancia ");
+        }
     }
 }
 

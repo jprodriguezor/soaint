@@ -16,7 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,35 @@ public class CorrespondenciaWebApi {
     }
 
     /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-ide-instancia-radicado/{nro_radicado}")
+    public Response getIdeInstanciaPorRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - consultarNroRadicadoCorrespondenciaReferida.");
+
+        String ideInstancia = boundary.getIdeInstanciaPorRadicado(nroRadicado);
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(Json.createObjectBuilder().add("ideInstancia",ideInstancia).build())
+                .build();
+    }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-ide-instancia-dependencia-radicado/{nro_radicado}")
+    public CorrespondenciaDTO getCorrespondenciaInstanciaPorRadicado(@PathParam("nro_radicado") final String nroRadicado) throws SystemException, BusinessException {
+         return boundary.getCorrespondenciaInstanciaPorRadicado(nroRadicado);
+    }
+
+    /**
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia
@@ -125,10 +154,15 @@ public class CorrespondenciaWebApi {
                                                                                                                 @QueryParam("cod_estado") final String codEstado,
                                                                                                                 @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_estado");
+        log.info("fecha_ini - "+fechaIni);
+        log.info("fecha_fin - "+fechaFin);
+        log.info("cod_dependencia - "+codDependencia);
+        log.info("cod_estado - "+codEstado);
+        log.info("nro_radicado - "+nroRadicado);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date fechaInicial = dateFormat.parse(fechaIni);
-            Date fechaFinal = dateFormat.parse(fechaFin);
+            Date fechaInicial = (fechaIni!=null)?dateFormat.parse(fechaIni):null;
+            Date fechaFinal = (fechaIni!=null)?dateFormat.parse(fechaFin):null;
             return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codEstado, nroRadicado);
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
@@ -162,7 +196,6 @@ public class CorrespondenciaWebApi {
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia
-     * @param codTipoDoc
      * @param modEnvio
      * @param claseEnvio
      * @param nroRadicado
@@ -172,29 +205,20 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
                                                                                       @QueryParam("fecha_fin") final String fechaFin,
                                                                                       @QueryParam("mod_correo") final String modEnvio,
                                                                                       @QueryParam("clase_envio") final String claseEnvio,
                                                                                       @QueryParam("cod_dep") final String codDependencia,
-                                                                                      @QueryParam("cod_tipo_doc") final String codTipoDoc,
                                                                                       @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date fechaInicial = (fechaIni == null)? null : dateFormat.parse(fechaIni);
-            Date fechaFinal = (fechaFin == null)? null : dateFormat.parse(fechaFin);
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, codTipoDoc, nroRadicado);
-        } catch (ParseException e) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("date.parse.error")
-                    .withRootException(e)
-                    .buildSystemException();
-        } catch (BusinessException ex) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
+           try {
+               return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           } catch (ParseException ex) {
+        throw ExceptionBuilder.newBuilder()
+                .withMessage("system.generic.error")
+                .withRootException(ex)
+                .buildSystemException();
         }
     }
 

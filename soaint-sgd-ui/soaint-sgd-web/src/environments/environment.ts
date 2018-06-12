@@ -60,7 +60,7 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
-  listarCorrespondencia_salida_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida`,
+  listarCorrespondencia_salida_distribucion_fisica_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida-distribucion-fisica`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -100,7 +100,8 @@ export const environment = {
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
-  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
+  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-planilla-salida`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,

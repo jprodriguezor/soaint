@@ -30,10 +30,9 @@ import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-sa
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
-import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 import {isNullOrUndefined} from "util";
-import * as domtoimage from 'dom-to-image';
+import {DomToImageService} from "../../../infrastructure/api/dom-to-image";
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -66,6 +65,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   dependencySubscription:Subscription;
   reqDigitInmediataUnsubscriber:Subscription;
   dependencySelected?:DependenciaDTO;
+  printButtonEnabled:boolean = false;
 
   formContactDataShown:Subscription;
 
@@ -75,7 +75,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     protected _store: Store<RootState>
     ,protected _changeDetectorRef: ChangeDetectorRef
     ,protected _sandbox:RadicacionSalidaService
-    ,protected _taskSandbox:TaskSandBox) {
+    ,protected _taskSandbox:TaskSandBox
+   ,protected  _domToImage:DomToImageService
+  ) {
 
   }
 
@@ -205,12 +207,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         self.radicacion.correspondencia.codDependencia,
         self.radicacion.correspondencia.nroRadicado,
         comunicacionOficialDTV.getDocumento().ideEcm
-      )},1000)
+      )},1000);
 
-      this.uploadTemplate(this.radicacion.correspondencia.codDependencia,
-                          this.radicacion.correspondencia.nroRadicado,
-                          comunicacionOficialDTV.getDocumento().ideEcm
-       );
 
       this.disableEditionOnForms();
 
@@ -236,29 +234,34 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   protected mustSendImage(general:any):boolean{
 
-    return general.reqDistFisica == 2 && general.reqDigit == 2
+    return  general.reqDigit == 2
   }
 
   protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
 
     const node = document.getElementById("ticket-rad");
 
-    if(!isNullOrUndefined(node)) {
+      if(!isNullOrUndefined(node)) {
 
-      domtoimage.toBlob(node).then((blob) => {
+        this._domToImage.convertToBlob(node).then(blob => {
 
-        let formData = new FormData();
+          let formData = new FormData();
 
-        formData.append("documento", blob, "etiqueta.png");
-        if(!isNullOrUndefined(ideEcm))
-         formData.append("idDocumento", ideEcm);
-        formData.append("nroRadicado", nroRadicado);
-        formData.append("codigoDependencia", codDependencia);
+          formData.append("documento", blob, "etiqueta.png");
+          if(!isNullOrUndefined(ideEcm))
+            formData.append("idDocumento", ideEcm);
+          formData.append("nroRadicado", nroRadicado);
+          formData.append("codigoDependencia", codDependencia);
 
-        this._sandbox.uploadTemplate(formData).subscribe(null,() => {
-          this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
+          this._sandbox.uploadTemplate(formData).subscribe(null,() => {
+            this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Etiqueta no subida!'}));
+          });
+
+          const element:any =  document.querySelector('#ticket-rad > .ticket-content');
+          element.style.border = '0';
+          this.printButtonEnabled = true;
+          this._changeDetectorRef.detectChanges();
         });
-      });
     }
 
   }
@@ -319,10 +322,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
      valueGeneral.numeroFolio.toString(),
      this.radicacion.correspondencia.nroRadicado.toString(),
      this.radicacion.correspondencia.fecRadicado.toString(),
-     destinatario.nombre,
-     valueRemitente.sedeAdministrativa.nombre,
-     valueRemitente.dependenciaGrupo.nombre,
-     valueRemitente.funcionarioGrupo.nombre
+      valueRemitente.funcionarioGrupo.nombre,
+      valueRemitente.sedeAdministrativa.nombre,
+      valueRemitente.dependenciaGrupo.nombre,
+      destinatario.nombre
   );
   }
 

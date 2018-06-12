@@ -12,6 +12,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -90,6 +91,19 @@ public class GestionarCorrespondencia {
         control.actualizarIdeInstancia(correspondenciaDTO);
     }
 
+    public String getIdeInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.getIdeInstanciaPorRadicado(nroRadicado);
+    }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public CorrespondenciaDTO getCorrespondenciaInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.consultarCorrespondenciaByNroRadicado(nroRadicado);
+    }
+
     /**
      *
      * @param fechaIni
@@ -123,23 +137,21 @@ public class GestionarCorrespondencia {
     /**
      * @param fechaIni
      * @param fechaFin
-     * @param codDependencia
-     * @param codTipoDoc
      * @param modEnvio
      * @param claseEnvio
+     * @param codDependencia
      * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(Date fechaIni,
-                                                                                      Date fechaFin,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+                                                                                      String fechaFin,
                                                                                       String modEnvio,
                                                                                       String claseEnvio,
                                                                                       String codDependencia,
-                                                                                      String codTipoDoc,
-                                                                                      String nroRadicado) throws BusinessException, SystemException {
-        return control.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, codTipoDoc, nroRadicado);
+                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
+        return control.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
     }
 
     /**

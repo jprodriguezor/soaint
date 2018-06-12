@@ -53,12 +53,12 @@
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
                 (onHide)="hideTicketRadicado()" [width]="520">
-        <rs-ticket-radicado  #ticketRadicado idTicket="ticket-rad" ></rs-ticket-radicado>
+        <rs-ticket-radicado  #ticketRadicado idTicket="ticket-rad" id="ticket"></rs-ticket-radicado>
 
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                    [inlineStyles]="printStyle" label="Imprimir"></button>
+                    [inlineStyles]="printStyle" label="Imprimir" [disabled]="!printButtonEnabled"></button>
           </div>
         </p-footer>
 

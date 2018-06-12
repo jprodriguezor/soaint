@@ -2,6 +2,7 @@ package co.com.soaint.bpm.services.integration.services;
 
 
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaDigitalizarDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 
@@ -29,4 +30,6 @@ public interface IProcessServices {
     RespuestaProcesoDTO enviarSenalProceso(EntradaProcesoDTO entrada) throws SystemException;
 
     RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws SystemException;
+
+    RespuestaDigitalizarDTO obtenerRespuestaProcesoInstancia(Long instanciaProceso) throws  SystemException;
 }

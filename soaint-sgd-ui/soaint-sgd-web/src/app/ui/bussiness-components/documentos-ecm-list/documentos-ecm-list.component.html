@@ -27,14 +27,14 @@
               </ng-template>
             </p-column>
             <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
-            <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true">
+            <p-column field="fechaCreacion" header="Fecha de ultima modificación" [sortable]="true">
               <ng-template let-col let-row="rowData" pTemplate="body">
                 {{row.fechaCreacion|date:'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column  header="Ver Documento">
               <ng-template pTemplate="item" let-row="rowData"  >
-                <button type="button" pButton label="Ver Documento" (click)="showDocument(row)"></button>
+                <button type="button" pButton label="Ver Documento" (click)="showDocument(row)" [disabled]="viewerManager != null"></button>
               </ng-template>
             </p-column>
             <p-column header="Acciones" [style]="{'width':'265px','text-align':'center'}" *ngIf="versionar" >

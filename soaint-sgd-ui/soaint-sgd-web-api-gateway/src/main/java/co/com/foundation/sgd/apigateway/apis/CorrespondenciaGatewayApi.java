@@ -62,6 +62,27 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/listar-comunicaciones-salida-distribucion-fisica")
+    @JWTTokenSecurity
+    public Response listarComunicacionesDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+                                                           @QueryParam("fecha_fin") final String fechaFin,
+                                                           @QueryParam("mod_correo") final String modEnvio,
+                                                           @QueryParam("clase_envio") final String claseEnvio,
+                                                           @QueryParam("cod_dep") final String codDependencia,
+                                                           @QueryParam("cod_tipo_doc") final String codTipoDoc,
+                                                           @QueryParam("nro_radicado") final String nroRadicado) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribuci�n f�sica");
+        Response response = client.listarComunicacionesSalidaDistibucionFisica(fechaIni, fechaFin, codDependencia, modEnvio, claseEnvio, codTipoDoc, nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
     @POST
     @Path("/radicar")
     @JWTTokenSecurity
@@ -346,8 +367,22 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-planillas-salida")
+    @JWTTokenSecurity
+    public Response listarPlanillasSalida(@QueryParam("fecha_ini") final String fechaIni,
+                                    @QueryParam("fecha_fin") final String fechaFin,
+                                    @QueryParam("cod_dependencia") final String codDependencia,
+                                    @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                    @QueryParam("nro_planilla") final String nroPlanilla) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando planillas");
+        Response response = client.listarPlanillasSalida(nroPlanilla);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @POST
-    @Path("/generar-plantilla")
+    @Path("/generar-planilla")
     public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla distribucion");
         Response response = client.generarPlantilla(planilla);
@@ -371,6 +406,37 @@ public class CorrespondenciaGatewayApi {
         log.info("processing rest request - cargar planilla distribucion");
         Response response = client.cargarPlantilla(planilla);
         String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/generar-planilla-salida")
+    @JWTTokenSecurity
+    public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla salida distribucion");
+        Response response = client.generarPlantilla(planilla);
+        PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
+
+        /*EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciar(entradaProceso);
+*/
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        entradaProceso.setUsuario("arce");
+        entradaProceso.setPass("arce");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciarTercero(entradaProceso);
+
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
