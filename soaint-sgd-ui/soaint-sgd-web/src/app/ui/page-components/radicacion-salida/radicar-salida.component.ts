@@ -108,7 +108,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     ViewFilterHook.addFilter('datos-remitente-'+COMUNICACION_EXTERNA, valid => {
 
-      if(this.datosGenerales.form.get('reqDistFisica').value )
+      if(this.datosGenerales.form.get('reqDistFisica').value == 1 )
         return valid;
 
         return valid && this.datosContacto.datosRemitentesExterno.destinatariosContactos.length > 0;
