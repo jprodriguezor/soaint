@@ -140,7 +140,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
                 .build();
 
         final Response response = iniciarProceso(procesoDTO);
-        if (response.getStatus() != 200){
+        if (response.getStatus() != 200) {
             throw new SystemException("Ocurrio un error al inicial el proceso con id instancia: " + ideInstancia
                     + " Response Status: " + response.getStatus());
         }
@@ -152,7 +152,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
                 .path("/correspondencia-web-api/correspondencia/obtener-ide-instancia-dependencia-radicado/" + nroRadicado)
                 .request()
                 .get();
-        if (response.getStatus() != 200){
+        if (response.getStatus() != 200) {
             throw new SystemException("Ocurrio un error al consumir" +
                     " servicio correspondencia, codigo status: " + response.getStatus());
         }

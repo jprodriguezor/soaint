@@ -1235,10 +1235,6 @@ public final class ContentControlUtilities implements Serializable {
         if (ObjectUtils.isEmpty(bytes)) {
             throw new SystemException("No se ha especificado el contenido del documento");
         }
-        final String dependencyCode = documentoDTO.getCodigoDependencia();
-        if (StringUtils.isEmpty(dependencyCode)) {
-            throw new SystemException("El documento '" + nombreDoc + "' no contiene el codigo de la dependencia");
-        }
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
         final Document document = createDocument(carpetaTarget, documentoDTO);
         documentoDTO = transformarDocumento(document);
