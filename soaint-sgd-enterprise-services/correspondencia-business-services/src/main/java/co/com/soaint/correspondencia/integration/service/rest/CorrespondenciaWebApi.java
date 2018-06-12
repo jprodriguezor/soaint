@@ -391,7 +391,7 @@ public class CorrespondenciaWebApi {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaInicial = fechaI == null ? null : dateFormat.parse(fechaI);
+            Date fechaInicial = (fechaI == null || fechaI.isEmpty()) ? null : dateFormat.parse(fechaI);
 
             return boundary.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(fechaInicial,ideSolicitante,codigoSede,codigoDependencia);
 
