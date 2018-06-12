@@ -35,7 +35,7 @@ import java.util.*;
 
 @Log4j2
 @Service
-final class ContentControlUtilities implements Serializable {
+public final class ContentControlUtilities implements Serializable {
 
     private static final long serialVersionUID = 155L;
 
@@ -47,6 +47,58 @@ final class ContentControlUtilities implements Serializable {
 
     @Autowired
     private ContentStamper contentStamper;
+
+    public Folder getFolderFromRootByName(String folderName) {
+        Session session = contentControl.obtenerConexion().getSession();
+        Folder rootFolder = session.getRootFolder();
+        final ItemIterable<CmisObject> children = rootFolder.getChildren();
+        for (CmisObject cmisObject :
+                children) {
+            if (cmisObject.getName().equals(folderName)) {
+                return (Folder) cmisObject;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
+     *
+     * @param document Objeto a transformar
+     * @return DocumentoDTO
+     */
+    public DocumentoDTO transformarDocumento(Document document) throws SystemException {
+        final DocumentoDTO documentoDTO = new DocumentoDTO();
+        String idDoc = document.getId();
+        try {
+            documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(';')) : idDoc);
+            documentoDTO.setNroRadicado(document.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO));
+            documentoDTO.setTipologiaDocumental(document.getPropertyValue(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
+            documentoDTO.setNombreRemitente(document.getPropertyValue(ConstantesECM.CMCOR_NOMBRE_REMITENTE));
+            documentoDTO.setNombreDocumento(document.getName());
+            documentoDTO.setIdDocumentoPadre(document.getPropertyValue(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL));
+            GregorianCalendar calendar = document.getPropertyValue(PropertyIds.CREATION_DATE);
+            documentoDTO.setFechaCreacion(calendar.getTime());
+            documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
+            documentoDTO.setTamano(document.getContentStreamLength() + "");
+            documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
+            documentoDTO.setVersionLabel(document.getVersionLabel());
+            documentoDTO.setDocumento(getDocumentBytes(document));
+
+            final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
+
+            if (!StringUtils.isEmpty(nroReferido)) {
+                String[] splitRadicado = nroReferido.split(ConstantesECM.SEPARADOR);
+                documentoDTO.setNroRadicadoReferido(splitRadicado);
+            }
+            return documentoDTO;
+        } catch (Exception e) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
 
     UnidadDocumentalDTO modificarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException {
         final String id = unidadDocumentalDTO.getId();
@@ -512,45 +564,6 @@ final class ContentControlUtilities implements Serializable {
         unidadDocumentalDTO.setEstado(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ESTADO));
         unidadDocumentalDTO.setDisposicion(folder.getPropertyValue(ConstantesECM.CMCOR_UD_DISPOSICION));
         return unidadDocumentalDTO;
-    }
-
-    /**
-     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
-     *
-     * @param document Objeto a transformar
-     * @return DocumentoDTO
-     */
-    DocumentoDTO transformarDocumento(Document document) throws SystemException {
-        final DocumentoDTO documentoDTO = new DocumentoDTO();
-        String idDoc = document.getId();
-        try {
-            documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(';')) : idDoc);
-            documentoDTO.setNroRadicado(document.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO));
-            documentoDTO.setTipologiaDocumental(document.getPropertyValue(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL));
-            documentoDTO.setNombreRemitente(document.getPropertyValue(ConstantesECM.CMCOR_NOMBRE_REMITENTE));
-            documentoDTO.setNombreDocumento(document.getName());
-            documentoDTO.setIdDocumentoPadre(document.getPropertyValue(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL));
-            GregorianCalendar calendar = document.getPropertyValue(PropertyIds.CREATION_DATE);
-            documentoDTO.setFechaCreacion(calendar.getTime());
-            documentoDTO.setTipoDocumento(document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE));
-            documentoDTO.setTamano(document.getContentStreamLength() + "");
-            documentoDTO.setTipoPadreAdjunto(document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO));
-            documentoDTO.setVersionLabel(document.getVersionLabel());
-            documentoDTO.setDocumento(getDocumentBytes(document));
-
-            final String nroReferido = document.getPropertyValue(ConstantesECM.CMCOR_NUMERO_REFERIDO);
-
-            if (!StringUtils.isEmpty(nroReferido)) {
-                String[] splitRadicado = nroReferido.split(ConstantesECM.SEPARADOR);
-                documentoDTO.setNroRadicadoReferido(splitRadicado);
-            }
-            return documentoDTO;
-        } catch (Exception e) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage(e.getMessage())
-                    .withRootException(e)
-                    .buildSystemException();
-        }
     }
 
     /**
@@ -1103,7 +1116,7 @@ final class ContentControlUtilities implements Serializable {
             }
             String idDocument = documentoDTO.getIdDocumento();
             if (StringUtils.isEmpty(idDocument)) {
-                saveStamperImageFile(documentBytes, nroRadicado);
+                saveStamperImageFile(documentoDTO, nroRadicado);
                 return;
             }
 
@@ -1138,19 +1151,8 @@ final class ContentControlUtilities implements Serializable {
             final byte[] stampedDocument = contentStamper
                     .getStampedDocument(imageBytes, documentBytes, mimeType);
 
-            String docName = documentECM.getName();
-            final String pdfSufix = ".pdf";
-            String sufix = "";
-            if (docName.endsWith(".htm")) {
-                sufix = ".htm";
-            }
-            if (docName.endsWith(".html")) {
-                sufix = ".html";
-            }
-            if (docName.endsWith(".xhtml")) {
-                sufix = ".xhtml";
-            }
-            docName = "".equals(sufix) ? docName + pdfSufix : docName.replace(sufix, pdfSufix);
+            String docName = documentECM.getName()
+                    .replace(".pdf", "") + ".pdf";
 
             documentoDTO.setNombreDocumento(docName);
 
@@ -1165,7 +1167,7 @@ final class ContentControlUtilities implements Serializable {
 
             documentECM.delete(false);
 
-            final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(),
+            final ContentStream contentStream = new ContentStreamImpl(docName,
                     BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
             final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
             idDocument = document.getId();
@@ -1193,6 +1195,102 @@ final class ContentControlUtilities implements Serializable {
             }
         }
         return null;
+    }
+
+    DocumentoDTO subirDocumentoPrincipalPD(DocumentoDTO documentoDTO, Session session) throws SystemException {
+        if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
+            throw new SystemException("No se ha identificado el codigo de la Dependencia");
+        }
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA, ConstantesECM.CMCOR_DEP_CODIGO,
+                documentoDTO.getCodigoDependencia(), session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final String nameFolder = SelectorType.PD.getSelectorName();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), nameFolder);
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, nameFolder, "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        Document document = createDocument(carpeta, documentoDTO);
+        return transformarDocumento(document);
+    }
+
+    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, boolean requiereEtiqueta, Session session) throws SystemException {
+        final String nombreDoc = documentoDTO.getNombreDocumento();
+        if (StringUtils.isEmpty(nombreDoc)) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
+        final byte[] bytes = documentoDTO.getDocumento();
+        if (ObjectUtils.isEmpty(bytes)) {
+            throw new SystemException("No se ha especificado el contenido del documento");
+        }
+        final String dependencyCode = documentoDTO.getCodigoDependencia();
+        if (StringUtils.isEmpty(dependencyCode)) {
+            throw new SystemException("El documento '" + nombreDoc + "' no contiene el codigo de la dependencia");
+        }
+        final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
+        final Document document = createDocument(carpetaTarget, documentoDTO);
+        documentoDTO = transformarDocumento(document);
+        if (requiereEtiqueta && (selectorType == SelectorType.EE || selectorType == SelectorType.EI)) {
+            estamparEtiquetaRadicacion(documentoDTO, session);
+        }
+        return documentoDTO;
+    }
+
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
+        final String query = "SELECT * FROM cmcor:CM_Subserie" +
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + ConstantesECM.DEPENDENCIA_RADICACION + "'" +
+                " AND " + ConstantesECM.CMCOR_SER_CODIGO + " = '0231'" +
+                " AND " + ConstantesECM.CMCOR_SS_CODIGO + " IN ('02311', '02312')" +
+                " AND " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
+                " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Iterator<QueryResult> iterator = queryResults.iterator();
+        if (iterator.hasNext()) {
+            final QueryResult next = iterator.next();
+            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            Folder communicationFolder = (Folder) session.getObject(session.createObjectId(objectId));
+            Carpeta carpeta = new Carpeta();
+            carpeta.setFolder(communicationFolder);
+            Optional<Folder> optionalFolder = sonFolderExistsFrom(communicationFolder, selectorType.getSelectorName());
+            if (!optionalFolder.isPresent()) {
+                carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+            } else {
+                carpeta.setFolder(optionalFolder.get());
+            }
+            return carpeta;
+        }
+        throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
+    }
+
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
+        if (ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
+            throw new SystemException("En la dependencia " + dependencyCode + " no se admiten radicaciones");
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
+                ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException("No existe la dependencia " + dependencyCode + " en el Gestor de documentos");
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), selectorType.getSelectorName());
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        return carpeta;
     }
 
     private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
@@ -1232,75 +1330,13 @@ final class ContentControlUtilities implements Serializable {
         return Optional.empty();
     }
 
-    DocumentoDTO subirDocumentoPrincipalPD(DocumentoDTO documentoDTO, Session session) throws SystemException {
-        if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
-            throw new SystemException("No se ha identificado el codigo de la Dependencia");
-        }
-        final String nombreDoc = documentoDTO.getNombreDocumento();
-        if (StringUtils.isEmpty(nombreDoc)) {
-            throw new SystemException("No se ha especificado el nombre del documento");
-        }
-        final byte[] bytes = documentoDTO.getDocumento();
-        if (ObjectUtils.isEmpty(bytes)) {
-            throw new SystemException("No se ha especificado el contenido del documento");
-        }
-        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA, ConstantesECM.CMCOR_DEP_CODIGO,
-                documentoDTO.getCodigoDependencia(), session);
-        if (!optionalCarpeta.isPresent()) {
-            throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
-        }
-        Carpeta carpeta = optionalCarpeta.get();
-        final String nameFolder = SelectorType.PD.getSelectorName();
-        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), nameFolder);
-        if (!optionalFolder.isPresent()) {
-            carpeta = crearCarpeta(carpeta, nameFolder, "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
-        } else {
-            carpeta.setFolder(optionalFolder.get());
-        }
-        return crearDocumento(carpeta, documentoDTO);
-    }
-
-    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, Session session) throws SystemException {
-        final String nombreDoc = documentoDTO.getNombreDocumento();
-        if (StringUtils.isEmpty(nombreDoc)) {
-            throw new SystemException("No se ha especificado el nombre del documento");
-        }
-        final byte[] bytes = documentoDTO.getDocumento();
-        if (ObjectUtils.isEmpty(bytes)) {
-            throw new SystemException("No se ha especificado el contenido del documento");
-        }
-
-        final String query = "SELECT * FROM cmcor:CM_Subserie" +
-                " WHERE " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
-                " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
-
-        final ItemIterable<QueryResult> queryResults = session.query(query, false);
-        final Iterator<QueryResult> iterator = queryResults.iterator();
-        if (iterator.hasNext()) {
-            final QueryResult next = iterator.next();
-            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-            Folder communicationFolder = (Folder) session.getObject(session.createObjectId(objectId));
-            Carpeta carpeta = new Carpeta();
-            carpeta.setFolder(communicationFolder);
-            Optional<Folder> optionalFolder = sonFolderExistsFrom(communicationFolder, selectorType.getSelectorName());
-            if (!optionalFolder.isPresent()) {
-                carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
-            } else {
-                carpeta.setFolder(optionalFolder.get());
-            }
-            return crearDocumento(carpeta, documentoDTO);
-        }
-        throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
-    }
-
-    private DocumentoDTO crearDocumento(Carpeta carpeta, DocumentoDTO documento) throws SystemException {
+    private Document createDocument(Carpeta carpetaTarget, DocumentoDTO documento) throws SystemException {
         final Map<String, Object> properties = new HashMap<>();
         final byte[] bytes = documento.getDocumento();
         final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
                 MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
         final String sufix = MimeTypes.getExtension(documentMimeType);
-        String nombreDoc = documento.getNombreDocumento();
-        nombreDoc += !nombreDoc.endsWith(sufix) ? sufix : "";
+        final String nombreDoc = (documento.getNombreDocumento().replace(sufix, "")) + sufix;
         final ContentStream contentStream = new ContentStreamImpl(nombreDoc,
                 BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
 
@@ -1313,9 +1349,8 @@ final class ContentControlUtilities implements Serializable {
         properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documento.getNroRadicado());
         properties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, documento.getNombreRemitente());
         try {
-            final Folder folder = carpeta.getFolder();
-            final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-            return transformarDocumento(document);
+            final Folder folder = carpetaTarget.getFolder();
+            return folder.createDocument(properties, contentStream, VersioningState.MAJOR);
         } catch (CmisContentAlreadyExistsException ccaee) {
             log.error(ConstantesECM.ECM_ERROR_DUPLICADO, ccaee);
             throw ExceptionBuilder.newBuilder()
@@ -1607,10 +1642,10 @@ final class ContentControlUtilities implements Serializable {
         return carpetaTarget;
     }
 
-    private void saveStamperImageFile(byte[] bytes, String filename) {
+    private void saveStamperImageFile(DocumentoDTO documentoDTO, String filename) {
         Session session = contentControl.obtenerConexion().getSession();
         Folder rootFolder = session.getRootFolder();
-        Folder folderImage = getStamperImageFolder();
+        Folder folderImage = getFolderFromRootByName("Images");
         if (null == folderImage) {
             final Map<String, Object> map = new HashMap<>();
             map.put(PropertyIds.NAME, "Images");
@@ -1622,26 +1657,15 @@ final class ContentControlUtilities implements Serializable {
         map.put(PropertyIds.NAME, "tag_" + filename + "_temp.png");
         map.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
         map.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, mimeType);
+        byte[] bytes = documentoDTO.getDocumento();
         ContentStream stream = new ContentStreamImpl(filename, BigInteger.valueOf(bytes.length),
                 mimeType, new ByteArrayInputStream(bytes));
-        folderImage.createDocument(map, stream, VersioningState.MAJOR);
-    }
-
-    private Folder getStamperImageFolder() {
-        Session session = contentControl.obtenerConexion().getSession();
-        Folder rootFolder = session.getRootFolder();
-        final ItemIterable<CmisObject> children = rootFolder.getChildren();
-        for (CmisObject cmisObject :
-                children) {
-            if ("Images".equals(cmisObject.getName())) {
-                return (Folder) cmisObject;
-            }
-        }
-        return null;
+        Document document = folderImage.createDocument(map, stream, VersioningState.MAJOR);
+        documentoDTO.setIdDocumento(document.getId().split(";")[0]);
     }
 
     private Document getStamperImage(String filename) {
-        Folder folder = getStamperImageFolder();
+        Folder folder = getFolderFromRootByName("Images");
         if (null != folder) {
             final ItemIterable<CmisObject> children = folder.getChildren();
             for (CmisObject cmisObject :

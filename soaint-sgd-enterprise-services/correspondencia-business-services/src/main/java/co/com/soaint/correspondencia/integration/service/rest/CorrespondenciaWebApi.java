@@ -205,28 +205,20 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/listar-comunicacion-salida-distribucion-fisica")
-    public ComunicacionesOficialesDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(@QueryParam("fecha_ini") final String fechaIni,
                                                                                       @QueryParam("fecha_fin") final String fechaFin,
                                                                                       @QueryParam("mod_correo") final String modEnvio,
                                                                                       @QueryParam("clase_envio") final String claseEnvio,
                                                                                       @QueryParam("cod_dep") final String codDependencia,
                                                                                       @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar comunicaciones distribucion fisica");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date fechaInicial = (fechaIni == null || fechaIni.isEmpty())? null : dateFormat.parse(fechaIni);
-            Date fechaFinal = (fechaFin == null  || fechaFin.isEmpty())? null : dateFormat.parse(fechaFin);
-            return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaInicial, fechaFinal, modEnvio, claseEnvio, codDependencia, nroRadicado);
-        } catch (ParseException e) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("date.parse.error")
-                    .withRootException(e)
-                    .buildSystemException();
-        } catch (BusinessException ex) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
+           try {
+               return boundary.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+           } catch (ParseException ex) {
+        throw ExceptionBuilder.newBuilder()
+                .withMessage("system.generic.error")
+                .withRootException(ex)
+                .buildSystemException();
         }
     }
 

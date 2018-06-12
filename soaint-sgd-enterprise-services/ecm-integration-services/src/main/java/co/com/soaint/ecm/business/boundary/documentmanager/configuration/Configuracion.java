@@ -57,11 +57,11 @@ public class Configuracion {
     private final CronType cronTypeDD;
 
     private Configuracion(@Value("${scheduling.job.cron.ud}") String cronUDName,
-                          @Value("${scheduling.job.cron.dd}") String cronDDName){
-        System.out.println(cronUDName);
-       this.cronTypeUD = CronType.valueOf(cronUDName.toUpperCase());
+                          @Value("${scheduling.job.cron.dd}") String cronDDName) {
+        this.cronTypeUD = CronType.valueOf(cronUDName.toUpperCase());
         this.cronTypeDD = CronType.valueOf(cronDDName.toUpperCase());
     }
+
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *

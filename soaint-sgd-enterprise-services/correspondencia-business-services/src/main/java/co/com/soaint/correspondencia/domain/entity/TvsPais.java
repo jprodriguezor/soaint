@@ -44,7 +44,7 @@ import java.util.List;
         @NamedQuery(name = "TvsPais.findByCod", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
                 "(t.idePais, t.nombrePais, t.codPais) " +
                 "FROM TvsPais t " +
-                "WHERE TRIM(t.idePais) = TRIM(:COD_PAIS) ")})
+                "WHERE TRIM(t.codPais) = TRIM(:COD_PAIS) ")})
 
 public class TvsPais implements Serializable {
 
