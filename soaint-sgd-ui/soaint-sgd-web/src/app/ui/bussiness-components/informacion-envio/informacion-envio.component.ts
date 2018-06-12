@@ -28,7 +28,7 @@ export class InformacionEnvioComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       nro_guia: null,
-      peso: [null, [Validators.required]],
+      peso: [null, [Validators.required, Validators.pattern('^(([0-9]*)|(([0-9]*)\.([0-9]*)))$')]],
       valor: [null, [Validators.required]],
     });
   }

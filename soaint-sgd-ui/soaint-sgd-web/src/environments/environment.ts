@@ -97,7 +97,7 @@ export const environment = {
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
   obtenerDocumentosAdjuntos: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
-  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
+  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`, 
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
   generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
@@ -192,7 +192,7 @@ export const process_info = {
   },
   'proceso.gestion-planillas-salida': {
     displayValue : 'Gestión de planillas de salida',
-    show: true,
+    show: false,
   }
 
 };

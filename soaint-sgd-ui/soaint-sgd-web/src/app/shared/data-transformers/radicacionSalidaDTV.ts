@@ -22,6 +22,8 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
     let correspondencia = super.getCorrespondencia();
 
+    correspondencia.reqDistFisica = this.source.generales.reqDistFisica == 1 ? '1' : '0';
+
     if(datosEnvio !== undefined){
 
       correspondencia.codClaseEnvio = datosEnvio.clase_envio.codigo;
@@ -64,7 +66,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
       const datosContactos = this.transformContactData(agenteExt.datosContactoList);
 
-      if(!this.hasError && !this.source.generales.reqDistFisica){
+      if(!this.hasError && this.source.generales.reqDistFisica == 2){
 
         this.hasError = datosContactos.every( contact => isNullOrUndefined(contact.corrElectronico));
       }
