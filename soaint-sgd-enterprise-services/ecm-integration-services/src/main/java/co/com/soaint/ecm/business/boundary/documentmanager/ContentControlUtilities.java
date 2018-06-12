@@ -1197,43 +1197,6 @@ public final class ContentControlUtilities implements Serializable {
         return null;
     }
 
-    private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
-                                          final String value, final Session session) {
-        String query = "SELECT * FROM";
-        switch (classType) {
-            case ConstantesECM.CLASE_BASE:
-                query += " cmcor:CM_Unidad_Base WHERE " + propertyName + " = '" + value + "'" +
-                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base'";
-                break;
-            case ConstantesECM.CLASE_SEDE:
-            case ConstantesECM.CLASE_DEPENDENCIA:
-                query += " cmcor:CM_Unidad_Administrativa WHERE " + propertyName + " = '" + value + "'" +
-                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa'";
-                break;
-            case ConstantesECM.CLASE_SERIE:
-                query += " cmcor:CM_Serie WHERE " + propertyName + " = '" + value + "'" +
-                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Serie'";
-                break;
-            case ConstantesECM.CLASE_SUBSERIE:
-                query += " cmcor:CM_Subserie WHERE " + propertyName + " = '" + value + "'" +
-                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Subserie'";
-                break;
-            default:
-                return Optional.empty();
-        }
-        final ItemIterable<QueryResult> queryResults = session.query(query, false);
-        final Iterator<QueryResult> iterator = queryResults.iterator();
-        if (iterator.hasNext()) {
-            final QueryResult next = iterator.next();
-            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-            final CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
-            final Carpeta carpeta = new Carpeta();
-            carpeta.setFolder((Folder) cmisObject);
-            return Optional.of(carpeta);
-        }
-        return Optional.empty();
-    }
-
     DocumentoDTO subirDocumentoPrincipalPD(DocumentoDTO documentoDTO, Session session) throws SystemException {
         if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
             throw new SystemException("No se ha identificado el codigo de la Dependencia");
@@ -1277,37 +1240,21 @@ public final class ContentControlUtilities implements Serializable {
             throw new SystemException("El documento '" + nombreDoc + "' no contiene el codigo de la dependencia");
         }
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
-        if (!ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)
-                && selectorType == SelectorType.SE || selectorType == SelectorType.SI) {
-            final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
-                    ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
-            if (!optionalCarpeta.isPresent()) {
-                throw new SystemException("No existe la dependencia '" + dependencyCode + "' en el ECM");
-            }
-            Carpeta carpetaSource = optionalCarpeta.get();
-            final Folder folder = carpetaSource.getFolder();
-
-            Optional<Folder> optionalFolder = sonFolderExistsFrom(folder, selectorType.getSelectorName());
-            if (!optionalFolder.isPresent()) {
-                carpetaSource = crearCarpeta(carpetaSource, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpetaSource, null);
-            } else {
-                carpetaSource.setFolder(optionalFolder.get());
-            }
-            documentoDTO = crearVincularDocumentoRadicado(carpetaSource, carpetaTarget, documentoDTO, session);
-            if (requiereEtiqueta) {
-                estamparEtiquetaRadicacion(documentoDTO, session);
-            }
-            return documentoDTO;
+        final Document document = createDocument(carpetaTarget, documentoDTO);
+        documentoDTO = transformarDocumento(document);
+        if (requiereEtiqueta && (selectorType == SelectorType.EE || selectorType == SelectorType.EI)) {
+            estamparEtiquetaRadicacion(documentoDTO, session);
         }
-        Document document = createDocument(carpetaTarget, documentoDTO);
-        return transformarDocumento(document);
+        return documentoDTO;
     }
 
-    private Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
         final String query = "SELECT * FROM cmcor:CM_Subserie" +
-                " WHERE " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + ConstantesECM.DEPENDENCIA_RADICACION + "'" +
+                " AND " + ConstantesECM.CMCOR_SER_CODIGO + " = '0231'" +
+                " AND " + ConstantesECM.CMCOR_SS_CODIGO + " IN ('02311', '02312')" +
+                " AND " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
                 " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
-
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final Iterator<QueryResult> iterator = queryResults.iterator();
         if (iterator.hasNext()) {
@@ -1325,6 +1272,62 @@ public final class ContentControlUtilities implements Serializable {
             return carpeta;
         }
         throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
+    }
+
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
+        if (ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
+            throw new SystemException("En la dependencia " + dependencyCode + " no se admiten radicaciones");
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
+                ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException("No existe la dependencia " + dependencyCode + " en el Gestor de documentos");
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), selectorType.getSelectorName());
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        return carpeta;
+    }
+
+    private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
+                                          final String value, final Session session) {
+        String query = "SELECT * FROM";
+        switch (classType) {
+            case ConstantesECM.CLASE_BASE:
+                query += " cmcor:CM_Unidad_Base WHERE " + propertyName + " = '" + value + "'" +
+                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base'";
+                break;
+            case ConstantesECM.CLASE_SEDE:
+            case ConstantesECM.CLASE_DEPENDENCIA:
+                query += " cmcor:CM_Unidad_Administrativa WHERE " + propertyName + " = '" + value + "'" +
+                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa'";
+                break;
+            case ConstantesECM.CLASE_SERIE:
+                query += " cmcor:CM_Serie WHERE " + propertyName + " = '" + value + "'" +
+                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Serie'";
+                break;
+            case ConstantesECM.CLASE_SUBSERIE:
+                query += " cmcor:CM_Subserie WHERE " + propertyName + " = '" + value + "'" +
+                        "  AND cmis:objectTypeId = 'F:cmcor:CM_Subserie'";
+                break;
+            default:
+                return Optional.empty();
+        }
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Iterator<QueryResult> iterator = queryResults.iterator();
+        if (iterator.hasNext()) {
+            final QueryResult next = iterator.next();
+            final String objectId = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            final CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+            final Carpeta carpeta = new Carpeta();
+            carpeta.setFolder((Folder) cmisObject);
+            return Optional.of(carpeta);
+        }
+        return Optional.empty();
     }
 
     private Document createDocument(Carpeta carpetaTarget, DocumentoDTO documento) throws SystemException {
@@ -1360,12 +1363,6 @@ public final class ContentControlUtilities implements Serializable {
                     .withRootException(e)
                     .buildSystemException();
         }
-    }
-
-    private DocumentoDTO crearVincularDocumentoRadicado(Carpeta carpetaSource, Carpeta carpetaTarget, DocumentoDTO documento, Session session) throws SystemException {
-        Document document = createDocument(carpetaSource, documento);
-        crearLink(carpetaTarget.getFolder(), document, session);
-        return transformarDocumento(document);
     }
 
     private Optional<Folder> sonFolderExistsFrom(Folder folder, String selectorName) {
