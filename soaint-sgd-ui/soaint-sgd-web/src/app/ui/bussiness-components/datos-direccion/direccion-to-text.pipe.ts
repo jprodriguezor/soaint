@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { isNullOrUndefined } from 'util';
 
 @Pipe({
   name: 'direccionToText'
@@ -6,21 +7,24 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DireccionToTextPipe implements PipeTransform {
 
   transform(value: any): any {
-
-    let direccion = JSON.parse(value);
-
     let direccionText = "";
 
-    Object.keys(direccion).forEach( key => {
+    try {
+      let direccion = JSON.parse(value);
 
-      if(direccion[key].nombre){
-        direccionText+= direccion[key].nombre+" ";
-        return;
-      }
-
-      direccionText += direccion[key];
-
-    });
+      Object.keys(direccion).forEach( key => {
+  
+        if(direccion[key].nombre){
+          direccionText+= direccion[key].nombre+" ";
+          return;
+        }
+  
+        direccionText += direccion[key];
+  
+      });
+    } catch (error) {
+        direccionText = "";
+    }
 
     return direccionText;
   }

@@ -123,14 +123,15 @@ public final class ContentDigitizedImpl implements ContentDigitized {
         if (StringUtils.isEmpty(idInstancia)) {
             throw new SystemException("El ID instancia de la correspondencia es nulo");
         }
-        notifyBpmProcess(idInstancia);
+        notifyBpmProcess(idInstancia, idDocPrincipal);
     }
 
-    private void notifyBpmProcess(String ideInstancia) throws SystemException {
+    private void notifyBpmProcess(String ideInstancia, String ideEcm) throws SystemException {
         final RespuestaDigitalizarDTO digitalizarDTO = getRespuestaDigitalizarDTO(ideInstancia);
         final Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("nombreSennal", digitalizarDTO.getNombreSennal());
+        parameters.put("ideEcm", ideEcm);
 
         EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
@@ -140,7 +141,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
                 .build();
 
         final Response response = iniciarProceso(procesoDTO);
-        if (response.getStatus() != 200){
+        if (response.getStatus() != 200) {
             throw new SystemException("Ocurrio un error al inicial el proceso con id instancia: " + ideInstancia
                     + " Response Status: " + response.getStatus());
         }
@@ -152,7 +153,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
                 .path("/correspondencia-web-api/correspondencia/obtener-ide-instancia-dependencia-radicado/" + nroRadicado)
                 .request()
                 .get();
-        if (response.getStatus() != 200){
+        if (response.getStatus() != 200) {
             throw new SystemException("Ocurrio un error al consumir" +
                     " servicio correspondencia, codigo status: " + response.getStatus());
         }
