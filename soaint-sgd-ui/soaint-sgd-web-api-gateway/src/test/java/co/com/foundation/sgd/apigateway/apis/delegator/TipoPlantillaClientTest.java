@@ -1,23 +1,20 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
-import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.foundation.test.mocks.JaxRsUtils;
 import co.com.foundation.test.rules.EnvironmentRule;
-import org.glassfish.jersey.client.JerseyClient;
-import org.glassfish.jersey.client.JerseyWebTarget;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.not;
 
 public class TipoPlantillaClientTest {
 
@@ -27,13 +24,7 @@ public class TipoPlantillaClientTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private final String API_ENDPOINT = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
-
     private TipoPlantillaClient tipoPlantillaClient;
-
-    private JerseyWebTarget wt;
-
-    private JerseyClient client;
 
     @Before
     public void setup() {
@@ -42,12 +33,6 @@ public class TipoPlantillaClientTest {
 
         tipoPlantillaClient = new TipoPlantillaClient();
 
-        client = mock(JerseyClient.class);
-        wt = mock(JerseyWebTarget.class);
-
-        when(client.target(anyString())).thenReturn(wt);
-
-        ReflectionTestUtils.setField(tipoPlantillaClient, "client", client);
         ReflectionTestUtils.setField(tipoPlantillaClient, "location_root", PLANTILLA_LOCATION);
     }
 
@@ -56,15 +41,12 @@ public class TipoPlantillaClientTest {
         // given
         String COD_CLASIFICACION = "CC01";
         String ESTADO = "ES01";
-        String path = "/plantilla-web-api/plantilla/" + COD_CLASIFICACION + "/" + ESTADO;
-        JaxRsUtils.mockGetPath(wt, path);
 
         // when
-        tipoPlantillaClient.get(COD_CLASIFICACION, ESTADO);
+        Response response = tipoPlantillaClient.get(COD_CLASIFICACION, ESTADO);
 
         // then
-        verify(client).target(API_ENDPOINT);
-        verify(wt).path(path);
+        MatcherAssert.assertThat(response.getStatus(), not(404));
     }
 
     @Test

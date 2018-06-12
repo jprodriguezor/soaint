@@ -2,10 +2,11 @@ package co.com.foundation.sgd.apigateway.webservice.client;
 
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SystemExceptionException;
+import co.com.foundation.test.rules.PropertiesLoaderRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,11 +20,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 )
 public class SecurityCardbridgeClientTest {
 
+    @Rule
+    public PropertiesLoaderRule properties = PropertiesLoaderRule.from("sgd-service-test.properties");
+
     @Autowired
     private SecurityCardbridgeClient securityCardbridgeClient;
 
-    @Value("${proxy.securitycardbridge.endpoint}")
-    private String WSDL_URL;
+    private String WSDL_URL = properties.get("proxy.securitycardbridge.endpoint");
 
 
     @Test

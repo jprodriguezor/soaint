@@ -5,6 +5,7 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -113,6 +114,21 @@ public final class JaxRsUtils {
         response = mock(Response.class);
 
         when(response.readEntity(responseClass)).thenReturn(returnValue);
+        when(response.getStatus()).thenReturn(status.getStatusCode());
+
+        return response;
+    }
+
+    public static <T> Response mockGenericResponse(Class<T> responseClass, T returnValue) {
+
+        return mockGenericResponse(responseClass, returnValue, Response.Status.OK);
+    }
+
+    public static <T> Response mockGenericResponse(Class<T> responseClass, T returnValue, Response.Status status) {
+
+        response = mock(Response.class);
+
+        when(response.readEntity(any(GenericType.class))).thenReturn(returnValue);
         when(response.getStatus()).thenReturn(status.getStatusCode());
 
         return response;

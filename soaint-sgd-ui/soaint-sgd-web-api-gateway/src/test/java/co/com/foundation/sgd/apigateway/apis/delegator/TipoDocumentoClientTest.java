@@ -20,7 +20,7 @@ public class TipoDocumentoClientTest {
     public EnvironmentRule environmentRule = new EnvironmentRule();
 
     @Rule
-    public PropertiesLoaderRule propertiesRule = PropertiesLoaderRule.from("sgd-service.properties");
+    public PropertiesLoaderRule propertiesRule = PropertiesLoaderRule.from("sgd-service-test.properties");
 
     private String CODIGO_PADRE = propertiesRule.get("contants.tipodocumento.value");
 

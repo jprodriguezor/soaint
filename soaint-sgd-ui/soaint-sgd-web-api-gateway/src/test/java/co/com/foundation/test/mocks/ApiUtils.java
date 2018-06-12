@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 
 public class ApiUtils {
 
-    public static <T> ApiAssertions<T> assertThat(Class<T> type, String methodName) {
-        return new ApiAssertions<T>(type, methodName);
+    public static <T> ApiAssertions<T> assertThat(Class<T> type, String method) {
+        return new ApiAssertions<T>(type, method);
     }
 
     public static class ApiAssertions<T> {
@@ -113,6 +113,8 @@ public class ApiUtils {
                     .map(Path::value)
                     .filter(p -> !p.equals("/"))
                     .collect(Collectors.joining());
+
+            thePath = thePath.endsWith("/") ? thePath.substring(0, thePath.length()-1) : thePath;
 
             Assertions.assertThat(thePath)
                     .as("Path mismatch for %s controller", method.getName())
