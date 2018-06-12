@@ -69,17 +69,19 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         this.hasError = datosContactos.every( contact => isNullOrUndefined(contact.corrElectronico));
       }
 
+      console.log("agente Externo",agenteExt);
+
       const tipoAgente: AgentDTO = {
         ideAgente: null,
         codTipoRemite: TIPO_REMITENTE_EXTERNO,
         codTipoPers: agenteExt.tipoPersona.codTipoPers,
-        nombre: agenteExt.Nombre,
-        razonSocial: null,
-        nit: null,
+        nombre: agenteExt.nombre,
+        razonSocial: agenteExt.razonSocial || null,
+        nit: agenteExt.nit || null,
         codCortesia: null,
-        codEnCalidad: null,
-        codTipDocIdent: null,
-        nroDocuIdentidad: null,
+        codEnCalidad: isNullOrUndefined(agenteExt.actuaCalidad )? null : agenteExt.actuaCalidad.codigo,
+        codTipDocIdent: isNullOrUndefined(agenteExt.tipoDocumento) ? null : agenteExt.tipoDocumento.codigo,
+        nroDocuIdentidad: agenteExt.nroDocumentoIdentidad || null,
         codSede:  null,
         codDependencia: null,
         fecAsignacion: null,
