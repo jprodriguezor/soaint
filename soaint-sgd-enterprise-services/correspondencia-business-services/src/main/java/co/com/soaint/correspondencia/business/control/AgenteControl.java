@@ -435,7 +435,7 @@ public class AgenteControl {
                     .codCortesia(agenteDTO.getCodCortesia())
                     .descCortesia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodCortesia()))
                     .codDependencia(agenteDTO.getCodDependencia())
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodDependencia()))
+                    .descDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
                     .codEnCalidad(agenteDTO.getCodEnCalidad())
                     .descEnCalidad(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodEnCalidad()))
                     .codEstado(agenteDTO.getCodEstado())
