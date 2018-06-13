@@ -33,12 +33,14 @@ public class PlanAgenSalidaDTO implements Serializable {
     private String varNumeroGuia;
     private Date fecObservacion;
     private String codNuevaSede;
+    private String desNuevaSede;
     private String codNuevaDepen;
+    private String desNuevaDepen;
     private String observaciones;
     private String codCauDevo;
     private Date fecCarguePla;
-    private AgenteDTO agente;
-    private CorrespondenciaDTO correspondencia;
+    private AgenteFullDTO agente;
+    private CorrespondenciaFullDTO correspondencia;
     private ConstanteDTO tipoPersona;
     private String nit;
     private String nroDocuIdentidad;
@@ -50,7 +52,7 @@ public class PlanAgenSalidaDTO implements Serializable {
 
     public PlanAgenSalidaDTO(BigInteger idePlanAgen, String estado, String varPeso, String varValor, String varNumeroGuia, Date fecObservacion,
                              String codNuevaSede, String codNuevaDepen, String observaciones, String codCauDevo, Date fecCarguePla,
-                             AgenteDTO agente, CorrespondenciaDTO correspondencia){
+                             AgenteFullDTO agente, CorrespondenciaFullDTO correspondencia){
         this.idePlanAgen = idePlanAgen;
         this.estado = estado;
         this.varPeso = varPeso;

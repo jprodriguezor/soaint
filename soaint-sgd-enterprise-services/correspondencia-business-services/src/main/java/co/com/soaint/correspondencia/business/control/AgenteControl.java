@@ -434,7 +434,7 @@ public class AgenteControl {
             return AgenteFullDTO.newInstance()
                     .codCortesia(agenteDTO.getCodCortesia())
                     .descCortesia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodCortesia()))
-                    .codDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
+                    .codDependencia(agenteDTO.getCodDependencia())
                     .descDependencia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodDependencia()))
                     .codEnCalidad(agenteDTO.getCodEnCalidad())
                     .descEnCalidad(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodEnCalidad()))
@@ -483,7 +483,6 @@ public class AgenteControl {
 
             return agenteFullDTOList;
 
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()

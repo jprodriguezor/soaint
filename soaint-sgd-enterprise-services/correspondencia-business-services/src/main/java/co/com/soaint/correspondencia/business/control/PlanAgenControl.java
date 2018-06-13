@@ -201,8 +201,8 @@ public class PlanAgenControl {
                 .observaciones(planAgenDTO.getObservaciones())
                 .codCauDevo(planAgenDTO.getCodCauDevo())
                 .fecCarguePla(planAgenDTO.getFecCarguePla())
-                .agente(agenteDTO)
-                .correspondencia(correspondenciaDTO)
+                .agente(agenteControl.agenteTransformToFull(agenteDTO))
+                .correspondencia(correspondenciaControl.correspondenciaTransformToFull(correspondenciaDTO))
                 .build();
     }
 }
