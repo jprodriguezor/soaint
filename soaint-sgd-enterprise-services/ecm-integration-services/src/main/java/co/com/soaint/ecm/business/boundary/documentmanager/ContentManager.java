@@ -133,9 +133,7 @@ public class ContentManager implements Serializable {
      */
     public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws SystemException {
         log.info("### Modificando metadatos del documento..");log.info("### Se invoca el metodo de modificar el documento..");
-        return contentControl.modificarMetadatosDocumento(conexion.getSession(),
-                metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(),
-                metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
+        return contentControl.modificarMetadatosDocumento(metadatosDocumentos, conexion.getSession());
     }
 
     /**

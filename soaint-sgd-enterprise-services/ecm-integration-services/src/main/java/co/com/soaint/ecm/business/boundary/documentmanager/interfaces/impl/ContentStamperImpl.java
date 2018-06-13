@@ -38,6 +38,7 @@ public final class ContentStamperImpl implements ContentStamper {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
         Document document = new Document(PageSize.A4, 0, 0, 0, 0);
         try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            boolean isHtml = false;
             if (MimeTypes.getMIMEType("html").equals(mimeType)) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 PdfWriter writer = PdfWriter.getInstance(document, outputStream);
@@ -53,11 +54,17 @@ public final class ContentStamperImpl implements ContentStamper {
                 outputStream.flush();
                 outputStream.close();
                 is.close();
+                isHtml = true;
             }
             PdfReader reader = new PdfReader(contentBytes);
-            resizePdf(reader);
+            float absoluteY = 695F;
+            if (!isHtml) {
+                resizePdf(reader);
+                absoluteY = 659.301F;
+            }
             PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
             Image image = getImage(stamperImg);
+            image.setAbsolutePosition(370F, absoluteY); //695
             PdfImage stream = new PdfImage(image, "", null);
             PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
             image.setDirectReference(ref.getIndirectReference());
@@ -80,7 +87,6 @@ public final class ContentStamperImpl implements ContentStamper {
 
     private Image getImage(byte[] imageBytes) throws IOException, BadElementException {
         final Image image = Image.getInstance(imageBytes);
-        image.setAbsolutePosition(370F, 659.301F); //695
         image.setScaleToFitHeight(true);
         image.setScaleToFitLineWhenOverflow(true);
         image.scaleAbsolute(210F, 130F);

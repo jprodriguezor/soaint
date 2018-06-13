@@ -761,12 +761,12 @@ public final class ContentControlUtilities implements Serializable {
         //Obtener el documentosAdjuntos
         String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado";
         boolean where = false;
-        if (!ObjectUtils.isEmpty(documento.getIdDocumento())) {
+        if (!StringUtils.isEmpty(documento.getIdDocumento())) {
             where = true;
             query += " WHERE " + PropertyIds.OBJECT_ID + " = '" + documento.getIdDocumento() + "'" +
                     " OR " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + documento.getIdDocumento() + "'";
         }
-        if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
+        if (!StringUtils.isEmpty(documento.getNroRadicado())) {
             query += (where ? " AND " : " WHERE ") + ConstantesECM.CMCOR_NRO_RADICADO + " = '" + documento.getNroRadicado() + "'";
             where = true;
         }
@@ -1132,7 +1132,7 @@ public final class ContentControlUtilities implements Serializable {
 
             byte[] imageBytes;
             String mimeType = MimeTypes.getMIMEType("pdf");
-            Document documentImg = null;
+            Document documentImg;
             boolean isHtmlDoc = false;
             if (MimeTypes.getMIMEType("html").equals(docMimeType)) {
                 imageBytes = documentBytes;
@@ -1161,20 +1161,29 @@ public final class ContentControlUtilities implements Serializable {
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, MimeTypes.getMIMEType("pdf"));
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
-            if (isHtmlDoc) {
+            /*if (isHtmlDoc) {
                 properties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocument);
-            }
+            }*/
 
             documentECM.delete(false);
 
             final ContentStream contentStream = new ContentStreamImpl(docName,
                     BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
             final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-            idDocument = document.getId();
-            documentoDTO.setIdDocumento(idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument);
-            if (null != documentImg) {
-                //documentImg.delete();
+            final String newIdDocument = document.getId().split(";")[0];
+            documentoDTO.setIdDocumento(newIdDocument);
+
+            /*if (null != documentImg) {
+                documentImg.delete();
+            }*/
+
+            if (isHtmlDoc) {
+                updateAnexos(idDocument, newIdDocument, session);
+                documentoDTO.setNroRadicado(nroRadicado);
+                documentoDTO.setNombreDocumento(document.getName());
+                contentControl.modificarMetadatosDocumento(documentoDTO, session);
             }
+
         } catch (Exception e) {
             log.error("Error al estampar la etiqueta de radicacion");
             throw ExceptionBuilder.newBuilder()
@@ -1287,6 +1296,19 @@ public final class ContentControlUtilities implements Serializable {
             carpeta.setFolder(optionalFolder.get());
         }
         return carpeta;
+    }
+
+    private void updateAnexos(String idDocument, String newIdDocument, Session session) {
+        final String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
+                " WHERE " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + idDocument + "'";
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Map<String, Object> updateProperties = new HashMap<>();
+        updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, newIdDocument);
+        queryResults.forEach(queryResult -> {
+            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            final CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+            cmisObject.updateProperties(updateProperties);
+        });
     }
 
     private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
