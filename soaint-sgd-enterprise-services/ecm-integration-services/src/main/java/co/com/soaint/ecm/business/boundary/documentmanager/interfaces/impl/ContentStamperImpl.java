@@ -57,11 +57,14 @@ public final class ContentStamperImpl implements ContentStamper {
                 isHtml = true;
             }
             PdfReader reader = new PdfReader(contentBytes);
+            float absoluteY = 695F;
             if (!isHtml) {
                 resizePdf(reader);
+                absoluteY = 659.301F;
             }
             PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
             Image image = getImage(stamperImg);
+            image.setAbsolutePosition(370F, absoluteY); //695
             PdfImage stream = new PdfImage(image, "", null);
             PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
             image.setDirectReference(ref.getIndirectReference());
@@ -84,7 +87,6 @@ public final class ContentStamperImpl implements ContentStamper {
 
     private Image getImage(byte[] imageBytes) throws IOException, BadElementException {
         final Image image = Image.getInstance(imageBytes);
-        image.setAbsolutePosition(370F, 659.301F); //695
         image.setScaleToFitHeight(true);
         image.setScaleToFitLineWhenOverflow(true);
         image.scaleAbsolute(210F, 130F);

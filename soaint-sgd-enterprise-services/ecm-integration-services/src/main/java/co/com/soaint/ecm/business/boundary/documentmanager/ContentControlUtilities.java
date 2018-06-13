@@ -1170,14 +1170,15 @@ public final class ContentControlUtilities implements Serializable {
             final ContentStream contentStream = new ContentStreamImpl(docName,
                     BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
             final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-            idDocument = document.getId();
-            documentoDTO.setIdDocumento(idDocument.indexOf(';') != -1 ? idDocument.split(";")[0] : idDocument);
+            final String newIdDocument = document.getId().split(";")[0];
+            documentoDTO.setIdDocumento(newIdDocument);
 
             /*if (null != documentImg) {
                 documentImg.delete();
             }*/
 
             if (isHtmlDoc) {
+                updateAnexos(idDocument, newIdDocument, session);
                 documentoDTO.setNroRadicado(nroRadicado);
                 documentoDTO.setNombreDocumento(document.getName());
                 contentControl.modificarMetadatosDocumento(documentoDTO, session);
@@ -1295,6 +1296,19 @@ public final class ContentControlUtilities implements Serializable {
             carpeta.setFolder(optionalFolder.get());
         }
         return carpeta;
+    }
+
+    private void updateAnexos(String idDocument, String newIdDocument, Session session) {
+        final String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
+                " WHERE " + ConstantesECM.CMCOR_ID_DOC_PRINCIPAL + " = '" + idDocument + "'";
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final Map<String, Object> updateProperties = new HashMap<>();
+        updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, newIdDocument);
+        queryResults.forEach(queryResult -> {
+            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            final CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+            cmisObject.updateProperties(updateProperties);
+        });
     }
 
     private Optional<Carpeta> getFolderBy(final String classType, final String propertyName,
