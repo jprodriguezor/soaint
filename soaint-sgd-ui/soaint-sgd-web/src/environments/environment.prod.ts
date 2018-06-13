@@ -91,6 +91,7 @@ export const environment = {
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
+  listarPlanillasSalida_endpoint: `${host}/correspondencia-gateway-api/listar-planillas-salida`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
   generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,

@@ -50,6 +50,7 @@ import { MunicipioDTO } from '../../../domain/municipioDTO';
 import { LoadAction as PaisLoadAction } from '../../../infrastructure/state-management/paisDTO-state/paisDTO-actions';
 import { LoadAction as DepartamentoLoadAction} from '../../../infrastructure/state-management/departamentoDTO-state/departamentoDTO-actions';
 import { LoadAction as MunicipioLoadAction} from '../../../infrastructure/state-management/municipioDTO-state/municipioDTO-actions';
+import { ComunicacionDataModel } from './models/comunicacion-data.model';
 
 
 
@@ -65,9 +66,9 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
 
   comunicaciones$: Observable<ComunicacionOficialDTO[]>;
 
-  listadoComunicaciones: ComunicacionOficialDTO[] = [];
+  listadoComunicaciones: ComunicacionDataModel[] = [];
 
-  selectedComunications: ComunicacionOficialDTO[] = [];
+  selectedComunications: ComunicacionDataModel[] = [];
 
   start_date: Date = new Date();
 
@@ -109,7 +110,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
 
   dependencias: DependenciaDTO[] = [];
 
-  comunicacionSeleccionada: ComunicacionOficialDTO;
+  comunicacionSeleccionada: ComunicacionDataModel;
 
   informacionEnvioDialogVisible = false;
 
@@ -193,35 +194,6 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   }
 
 
-  getDatosRemitente(comunicacion): Observable<AgentDTO> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosRemitente();
-  }
-
-  getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-      const destinatarioDTV = comunicacion.agentes.filter(value => value.codTipAgent === 'TP-AGEI')
-      return destinatarioDTV;
-  }
-
-  getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDestinatarioInmediate();
-  }
-
-  getDatosDocumentosnroFolios(comunicacion:ComunicacionOficialDTO): string {
-    if(!isNullOrUndefined(comunicacion.ppdDocumentoList) && comunicacion.ppdDocumentoList.length) {
-      return comunicacion.ppdDocumentoList[0].nroFolios.toString();
-    }
-    return '';
-  }
-
-  getDatosDocumentosnroAnexos(comunicacion: ComunicacionOficialDTO): string {
-    if(!isNullOrUndefined(comunicacion.ppdDocumentoList) && comunicacion.ppdDocumentoList.length) {
-      return comunicacion.ppdDocumentoList[0].nroAnexos.toString();
-    }
-    return '';
-  }
-
   ngOnDestroy() {
     
   }
@@ -268,14 +240,6 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
   }
 
-  findTipoDoc(correspondencia: ComunicacionOficialDTO): string {
-    if(!isNullOrUndefined(correspondencia.ppdDocumentoList)) {
-      const codigo = correspondencia.ppdDocumentoList[0].codTipoDoc;
-      return this.tipologiasDocumentales.find((element) => element.codigo == codigo).nombre;
-    } 
-    return '';
-  }
-
   findDependency(code): string {
     const result = this.dependencias.find((element) => element.codigo == code);
     return result ? result.nombre : '';
@@ -286,26 +250,25 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     return result ? result.nomSede : '';
   }
 
-  findPais(correspondencia: ComunicacionOficialDTO | any): string {
-    if(!isNullOrUndefined(correspondencia.agentes[0].datosContactoList)) {
-      const contacto = correspondencia.agentes[0].datosContactoList[0];   
-      const pais = contacto ? this.listadoPais.find(_pais => _pais.codigo === contacto.codPais) : null;   
-      return pais ? pais.nombre : '';      
-    }
-    return ''
-  }
-
 
   listarDistribuciones() {
     this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalidaDistibucionFisica(this.GetPayload());
     this.comunicaciones$.subscribe(response => {
+      let comunicaciones = response;
+      const comunicaciones_transformadas = comunicaciones.reduce((_listado, _current) => {
+          const item = new ComunicacionDataModel(_current);
+          _listado.push(item);
+          return _listado;
+      }, []);
+
       this.listadoComunicaciones = [];
-      this.listadoComunicaciones = [...response];
+      this.listadoComunicaciones = [...comunicaciones_transformadas];
       this.selectedComunications = [];
       this._detectChanges.detectChanges();
     });
 
   }
+
 
   GetPayload(): any {
     const payload: any = {
@@ -343,8 +306,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
         usuario: null,
         codCauDevo: null,
         fecCarguePla: null,
-        ideAgente: element.agentes[0].ideAgente,
-        ideDocumento: element.correspondencia.ideDocumento,
+        ideAgente: element.ideAgente,
+        ideDocumento: element.ideDocumento,
         nroRadicado: null,
         tipoPersona: null,
         tipologiaDocumental: null,
@@ -396,8 +359,8 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
       this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
-          dependenciaDestinoArray.push(element.correspondencia.codDependencia);
-          sedeDestinoArray.push(element.correspondencia.codSede);
+          dependenciaDestinoArray.push(element.codDependencia);
+          sedeDestinoArray.push(element.codSede);
         });  
         this.popUpPlanillaGenerada.setDependenciaDestino(this.findDependency(dependenciaDestinoArray[0] ));
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
@@ -416,7 +379,7 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
   }
 
   InformacionEnvioCompletada(): boolean {
-    const anyInvalid = this.selectedComunications.find(com => com.correspondencia.envio_peso === null || com.correspondencia.envio_peso === undefined);
+    const anyInvalid = this.selectedComunications.find(com => com.envio_peso === null || com.envio_peso === undefined);
     return anyInvalid ? false : true;
   }
 
@@ -425,9 +388,9 @@ export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
     this.informacionEnvioDialogVisible = true;
   }
 
-  ActualizarInformacionEnvio(comunicacion?: ComunicacionOficialDTO) {
+  ActualizarInformacionEnvio(comunicacion?: ComunicacionDataModel) {
     if(!isNullOrUndefined(comunicacion)) {
-      const index = this.listadoComunicaciones.findIndex(com => com.correspondencia.nroRadicado === comunicacion.correspondencia.nroRadicado);
+      const index = this.listadoComunicaciones.findIndex(com => com.nroRadicado === comunicacion.nroRadicado);
       this.listadoComunicaciones[index] = comunicacion;
     } 
     this.informacionEnvioDialogVisible = false; 

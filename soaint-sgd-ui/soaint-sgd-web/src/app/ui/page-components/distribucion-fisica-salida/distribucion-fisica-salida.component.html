@@ -16,7 +16,7 @@
               [disabled]="selectedComunications.length == 0" (click)="generarPlanilla()"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
             </button>
-            <button pButton type="button" label="Cancelar"
+            <button pButton type="button" label="Finalizar"
             (click)="Finalizar()"
             style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
           </button>
@@ -159,75 +159,33 @@
                            [(selection)]="selectedComunications"
                            [paginator]="true" [rows]="10" [responsive]="true" [value]="listadoComunicaciones">
                 <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-                <p-column field="correspondencia.nroRadicado" header="Número radicado" [sortable]="true"></p-column>
-                <p-column field="correspondencia.fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" let-i="rowIndex" pTemplate="body">
-                    {{correspondencia[col.field] | date: 'dd/MM/yyyy hh:mm a'}}
-                  </ng-template>
-                </p-column>
-                <p-column header="Tipología documental" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{findTipoDoc(correspondencia)}}
-                    </ng-template>
-                </p-column>
-                <p-column header="Nombre / Razón social" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{(getDatosDestinatario(correspondencia).razonSocial || getDatosDestinatario(correspondencia).nombre)}}
-                    </ng-template>
-                </p-column>
-                <p-column header="Sede administrativa destino" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{getDatosDestinatario(correspondencia).descSede}}
-                    </ng-template>
-                </p-column>
-                <p-column header="Dependencia destino" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{getDatosDestinatario(correspondencia).descDependencia}}
-                    </ng-template>
-                </p-column>
-                <p-column header="País" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                        {{findPais(correspondencia)}}
-                    </ng-template>
-                </p-column>
-                <p-column header="Departamento" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                        {{getDatosDestinatario(correspondencia).datosContactoList[0]?.departamento?.nombre}}
-                    </ng-template>
-                </p-column>
-                <p-column header="Ciudad / Municipio" [sortable]="true">
+                <p-column field="nroRadicado" header="Número radicado" [sortable]="true"></p-column>
+                <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
                   <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{getDatosDestinatario(correspondencia).datosContactoList[0]?.municipio?.nombre}}
+                    {{correspondencia.fecRadicado| date:'dd/MM/yyyy hh:mm a'}}
                   </ng-template>
                 </p-column>
+                <p-column field="tipoDoc" header="Tipología documental" [sortable]="true"></p-column>
+                <p-column field="nombre_razonSocial" header="Nombre / Razón social" [sortable]="true"></p-column>
+                <p-column field="nombreSedeDestino" header="Sede administrativa destino" [sortable]="true"></p-column>
+                <p-column field="nombreDependenciaDestino" header="Dependencia destino" [sortable]="true"></p-column>
+                <p-column field="nombrePais" header="País" [sortable]="true"></p-column>
+                <p-column field="nombreDepartamento" header="Departamento" [sortable]="true"></p-column>
+                <p-column field="nombreCiudadMunicipio" header="Ciudad / Municipio" [sortable]="true"></p-column>
                 <p-column header="Dirección" [sortable]="true">
                     <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                        {{getDatosDestinatario(correspondencia).datosContactoList?.direccion | direccionToText}}
+                      {{correspondencia.direccion | direccionToText}}
                     </ng-template>
                 </p-column>
-                <p-column field="correspondencia.folio" header="Folios" [sortable]="true"
-                          [style]="{'width':'110px'}">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{getDatosDocumentosnroFolios(correspondencia)}}
-                  </ng-template>
-                </p-column>
-                <p-column field="correspondencia.anexos" header="Anexos" [sortable]="true"
-                          [style]="{'width':'110px'}">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{getDatosDocumentosnroAnexos(correspondencia)}}
-                  </ng-template>
-                </p-column>
+                <p-column field="folio" header="Folios" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+                <p-column field="anexos" header="Anexos" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+                <p-column field="claseEnvio_modaliadCorreo" header="Clase envío / Modalidad correo" [sortable]="true"></p-column>
                 <p-column  header="Información envío" [style]="{'width':'180px','text-align':'center'}">                             
                     <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                         <button pButton type="button" style="float: right; width: 145px;"
                             (click)="InformacionEnvio(i)" label="Información envío">
                          </button>
                     </ng-template>                            
-                </p-column>
-                <p-column  header="Clase envío / Modalidad correo" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{correspondencia.correspondencia.descClaseEnvio}} / {{correspondencia.correspondencia.descModalidadEnvio}}
-                  </ng-template>
                 </p-column>
               </p-dataTable>
             </div>

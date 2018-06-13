@@ -4,7 +4,7 @@ import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
 import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
-import { ComunicacionOficialDTO } from '../../../domain/comunicacionOficialDTO';
+import { ComunicacionDataModel } from '../../page-components/distribucion-fisica-salida/models/comunicacion-data.model';
 
 @Component({
   selector: 'app-informacion-envio',
@@ -16,7 +16,7 @@ export class InformacionEnvioComponent implements OnInit {
   form: FormGroup;  
   validations: any = {};
   
-  private _comunicacionSeleccionada: ComunicacionOficialDTO = null;
+  private _comunicacionSeleccionada: ComunicacionDataModel = null;
   @Output() completado: EventEmitter<any> = new EventEmitter();
   @Output() cancelado: EventEmitter<any> = new EventEmitter();
 
@@ -48,7 +48,7 @@ export class InformacionEnvioComponent implements OnInit {
       }
   }
 
-@Input() set comunicacionSeleccionada(value: ComunicacionOficialDTO) {    
+@Input() set comunicacionSeleccionada(value: ComunicacionDataModel) {    
     this._comunicacionSeleccionada = value;
     this.ActualizarFormulario();    
  }
@@ -56,16 +56,16 @@ export class InformacionEnvioComponent implements OnInit {
  ActualizarFormulario() {
   if(this.form) {
     this.form.reset();
-    this.form.controls['nro_guia'].setValue(this._comunicacionSeleccionada.correspondencia.envio_nroguia);
-    this.form.controls['peso'].setValue(this._comunicacionSeleccionada.correspondencia.envio_peso);
-    this.form.controls['valor'].setValue(this._comunicacionSeleccionada.correspondencia.envio_valor);
+    this.form.controls['nro_guia'].setValue(this._comunicacionSeleccionada.envio_nroguia);
+    this.form.controls['peso'].setValue(this._comunicacionSeleccionada.envio_peso);
+    this.form.controls['valor'].setValue(this._comunicacionSeleccionada.envio_valor);
   }
 }
 
  Guardar() {
-  this._comunicacionSeleccionada.correspondencia.envio_nroguia = this.form.controls['nro_guia'].value;
-  this._comunicacionSeleccionada.correspondencia.envio_peso = this.form.controls['peso'].value;
-  this._comunicacionSeleccionada.correspondencia.envio_valor = this.form.controls['valor'].value;
+  this._comunicacionSeleccionada.envio_nroguia = this.form.controls['nro_guia'].value;
+  this._comunicacionSeleccionada.envio_peso = this.form.controls['peso'].value;
+  this._comunicacionSeleccionada.envio_valor = this.form.controls['valor'].value;
   this.completado.emit(this._comunicacionSeleccionada);
  }
  Cancelar() {
