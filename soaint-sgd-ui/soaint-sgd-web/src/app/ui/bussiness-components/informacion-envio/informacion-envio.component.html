@@ -30,7 +30,7 @@
             <label for="valor">Valor de envío</label>
         </div>
         <div class="ui-g-12 md-inputfield">
-            <input type="text" pInputText id="valor" formControlName="valor" (onBlur)="OnBlurEvents('valor')"/>
+            <input type="text" pInputText id="valor" formControlName="valor" (blur)="OnBlurEvents('valor')"/>
         <div class="ui-message ui-messages-error"
             *ngIf="validations.valor">
         {{ validations.valor }}

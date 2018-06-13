@@ -924,106 +924,111 @@ public final class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para modificar metadatos del documento de Alfresco
      *
-     * @param session             Objeto de conexion a Alfresco
-     * @param idDocumento         Nombre del documento que se va a crear
-     * @param nroRadicado         Documento que se va a subir
-     * @param tipologiaDocumental Tipo de comunicacion que puede ser Externa o Interna
-     * @return Devuelve el id de la carpeta creada
+     * @param session Objeto de conexion a Alfresco
+     * @param dto     Obj DocumentoDTO con las modificaciones
      */
     @Override
-    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) {
-        log.info("### Modificar documento: " + idDocumento);
-        final DocumentoDTO dto = new DocumentoDTO();
-        dto.setIdDocumento(idDocumento);
-        MensajeRespuesta response = new MensajeRespuesta();
+    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO dto, Session session) {
+        final MensajeRespuesta response = new MensajeRespuesta();
         final Map<String, Object> idResponse = new HashMap<>();
         idResponse.put("idECM", null);
         response.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
         response.setResponse(idResponse);
-        if (StringUtils.isEmpty(idDocumento)) {
-            response.setMensaje("Especifique el id del documento a modificar");
+        if (ObjectUtils.isEmpty(dto)) {
+            response.setMensaje("El documento introducido el nulo");
             return response;
         }
-        try {
-            final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
-            final CmisObject object = session.getObject(idDocObject);
-            if (!(object instanceof Document)) {
-                response.setMensaje("El id especificado no coincide con el de un documento");
-                return response;
-            }
-            final Map<String, Object> updateProperties = new HashMap<>();
-            final String nroRadicadoObj = object.getPropertyValue(ConstantesECM.CMCOR_NRO_RADICADO);
-            if (!StringUtils.isEmpty(nroRadicado) && StringUtils.isEmpty(nroRadicadoObj)) {
-                SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
-                if (null == selectorType) {
-                    response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
+        final String idDocumento = dto.getIdDocumento();
+        if (StringUtils.isEmpty(idDocumento)) {
+            response.setMensaje("El ID del documento introducido el nulo");
+            return response;
+        }
+        log.info("### Modificar documento: " + idDocumento);
+        final String docName = dto.getNombreDocumento();
+        if (!StringUtils.isEmpty(docName)) {
+            try {
+                final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
+                final CmisObject object = session.getObject(idDocObject);
+                if (!(object instanceof Document)) {
+                    response.setMensaje("El id especificado no coincide con el de un documento");
                     return response;
                 }
-                updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
-                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
-                final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
-
-                if ("Anexo".equals(docType)) {
-                    response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
-                    return response;
-                }
-                final Folder sourceFolder = utilities.getFolderFrom((Document) object);
-                if (null != sourceFolder) {
-                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, session);
-                    final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
-                    final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
-                    final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
-                    for (QueryResult queryResult :
-                            principalAdjuntosQueryResults) {
-                        String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                        CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                        tmpObject = tmpObject.updateProperties(updateProperties);
-                        Document document = (Document) tmpObject;
-                        document.move(sourceFolder, targetFolder.getFolder());
-                        document.refresh();
-                        utilities.crearLink(linkTargetFolder.getFolder(), document, session);
+                final Map<String, Object> updateProperties = new HashMap<>();
+                final String nroRadicado = dto.getNroRadicado();
+                if (!StringUtils.isEmpty(nroRadicado)) {
+                    SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                    if (null == selectorType) {
+                        response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
+                        return response;
+                    }
+                    updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
+                    updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
+                    final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+                    if ("Anexo".equals(docType)) {
+                        response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
+                        return response;
+                    }
+                    final Folder sourceFolder = utilities.getFolderFrom((Document) object);
+                    if (null != sourceFolder) {
+                        dto.setNroRadicado(null);
+                        final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, session);
+                        final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
+                        final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
+                        final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+                        for (QueryResult queryResult :
+                                principalAdjuntosQueryResults) {
+                            String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                            CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
+                            tmpObject = tmpObject.updateProperties(updateProperties);
+                            Document document = (Document) tmpObject;
+                            document.move(sourceFolder, targetFolder.getFolder());
+                            document.refresh();
+                            utilities.crearLink(linkTargetFolder.getFolder(), document, session);
+                        }
                     }
                 }
-            }
-            if (!StringUtils.isEmpty(nombreRemitente)) {
-                updateProperties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, nombreRemitente);
-            }
-            if (!StringUtils.isEmpty(tipologiaDocumental)) {
-                updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
-            }
-            updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, "");
-            CmisObject cmisObject = object.updateProperties(updateProperties);
-            log.info("### Modificados los metadatos de correctamente");
-            updateProperties.clear();
-            updateProperties.put("idECM", cmisObject.getId().split(";")[0]);
-            response.setMensaje("OK");
-            response.setResponse(updateProperties);
-            response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
-            return response;
-        } catch (CmisObjectNotFoundException e) {
-            final ItemIterable<QueryResult> queryResultItemIterable = utilities.getPrincipalAdjuntosQueryResults(session, dto);
-            String idDoc = null;
-            final Iterator<QueryResult> iterator = queryResultItemIterable.iterator();
-            while (iterator.hasNext() && null == idDoc) {
-                QueryResult next = iterator.next();
-                final String idTmp = next.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                final Document document = (Document) session.getObject(session.createObjectId(idTmp));
-                final String docType = document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
-                if ("Principal".equals(docType)) {
-                    idDoc = idTmp.split(";")[0];
+                final String nombreRemitente = dto.getNombreRemitente();
+                if (!StringUtils.isEmpty(nombreRemitente)) {
+                    updateProperties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, nombreRemitente);
                 }
-            }
-            if (null == idDoc) {
+                final String tipologiaDocumental = dto.getTipologiaDocumental();
+                if (!StringUtils.isEmpty(tipologiaDocumental)) {
+                    updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
+                }
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, "");
+                CmisObject cmisObject = object.updateProperties(updateProperties);
+                log.info("### Modificados los metadatos de correctamente");
+                updateProperties.clear();
+                updateProperties.put("idECM", cmisObject.getId().split(";")[0]);
+                response.setMensaje("OK");
+                response.setResponse(updateProperties);
+                response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+                return response;
+
+            } catch (Exception e) {
                 log.error("*** Error al modificar el documento *** ", e);
-                response.setMensaje("Documento no encontrado");
+                response.setMensaje(e.getMessage());
                 return response;
             }
-            return modificarMetadatosDocumento(session, idDoc, nroRadicado, tipologiaDocumental, nombreRemitente);
-        } catch (Exception e) {
-            log.error("*** Error al modificar el documento *** ", e);
-            response.setMensaje(e.getMessage());
-            return response;
         }
+        dto.setIdDocumento(null);
+        if (!StringUtils.isEmpty(dto.getNroRadicado())) {
+            final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+            for (QueryResult queryResult : principalAdjuntosQueryResults) {
+                String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
+                CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+                Document document = (Document) cmisObject;
+                String docType = document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+                if (!StringUtils.isEmpty(docType) && "principal".equals(docType.toLowerCase())) {
+                    dto.setIdDocumento(document.getId().split(";")[0]);
+                    break;
+                }
+            }
+        }
+        response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+        response.getResponse().put("idECM", dto.getIdDocumento());
+        response.setMensaje(ConstantesECM.SUCCESS);
+        return response;
     }
 
     /**

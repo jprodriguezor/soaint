@@ -89,17 +89,12 @@ public interface ContentControl extends Serializable {
     MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc);
 
     /**
-     * Modificar documento Content
+     * Metodo para modificar metadatos del documento de Alfresco
      *
-     * @param session             Objeto conexion
-     * @param idDocumento         nombre de documento
-     * @param nroRadicado         número de radicado del documento
-     * @param tipologiaDocumental tipologia documental
-     * @param nombreRemitente     Nombre del remitente
-     * @return MensajeRespuesta
-     * @throws IOException exception
+     * @param session             Objeto de conexion a Alfresco
+     * @param dto                 Obj DocumentoDTO con las modificaciones
      */
-    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws SystemException;
+    MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO dto, Session session) throws SystemException;
 
 
     /**

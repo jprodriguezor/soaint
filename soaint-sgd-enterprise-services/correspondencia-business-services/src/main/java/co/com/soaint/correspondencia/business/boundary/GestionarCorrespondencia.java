@@ -174,16 +174,16 @@ public class GestionarCorrespondencia {
         return control.actualizarComunicacion(comunicacionOficialDTO);
     }
 
-    /**
-     *
-     * @param comunicacionOficialDTO
-     * @return
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
-        return control.radicarCorrespondenciaSalida(comunicacionOficialDTO);
-    }
+//    /**
+//     *
+//     * @param comunicacionOficialDTO
+//     * @return
+//     * @throws BusinessException
+//     * @throws SystemException
+//     */
+//    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+//        return control.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+//    }
 
     /**
      * @param comunicacionOficialDTO
