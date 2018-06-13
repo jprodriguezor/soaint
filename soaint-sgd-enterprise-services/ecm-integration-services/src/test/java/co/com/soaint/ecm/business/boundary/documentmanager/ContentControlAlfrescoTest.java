@@ -546,7 +546,8 @@ public class ContentControlAlfrescoTest {
         documentoDTO12.setIdDocumento("qwqwqwqw");
         try {
             DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoFail");
-            assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+            /*assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());*/
+            assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(documentoDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             logger.error("Error");
         }
@@ -556,7 +557,8 @@ public class ContentControlAlfrescoTest {
     public void testModificarMetadatosDocumentoSuccess() {
         try {
             DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoSuccess");
-            assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+            /*assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());*/
+            assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(documentoDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             logger.error("error");
         }

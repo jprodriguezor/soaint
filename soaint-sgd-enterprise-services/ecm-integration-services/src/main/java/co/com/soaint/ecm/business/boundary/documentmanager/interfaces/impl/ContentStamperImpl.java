@@ -38,6 +38,7 @@ public final class ContentStamperImpl implements ContentStamper {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
         Document document = new Document(PageSize.A4, 0, 0, 0, 0);
         try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            boolean isHtml = false;
             if (MimeTypes.getMIMEType("html").equals(mimeType)) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 PdfWriter writer = PdfWriter.getInstance(document, outputStream);
@@ -53,9 +54,12 @@ public final class ContentStamperImpl implements ContentStamper {
                 outputStream.flush();
                 outputStream.close();
                 is.close();
+                isHtml = true;
             }
             PdfReader reader = new PdfReader(contentBytes);
-            resizePdf(reader);
+            if (!isHtml) {
+                resizePdf(reader);
+            }
             PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
             Image image = getImage(stamperImg);
             PdfImage stream = new PdfImage(image, "", null);
