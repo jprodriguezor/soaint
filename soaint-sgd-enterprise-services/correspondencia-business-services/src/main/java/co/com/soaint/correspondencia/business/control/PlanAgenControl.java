@@ -44,6 +44,9 @@ public class PlanAgenControl {
     PpdDocumentoControl ppdDocumentoControl;
 
     @Autowired
+    OrganigramaAdministrativoControl organigramaAdministrativoControl;
+
+    @Autowired
     DatosContactoControl datosContactoControl;
 
     @Autowired
@@ -99,7 +102,7 @@ public class PlanAgenControl {
                     .getResultList();
             for (PlanAgenDTO planAgen : planAgenDTOList) {
 
-                PlanAgenSalidaDTO planAgenSalidaDTO = planAgenDTOTransformToPlanAgenSaidaDTO(planAgen);
+                PlanAgenSalidaDTO planAgenSalidaDTO = planAgenDTOTransformToPlanAgenSalidaDTO(planAgen);
 
                 List<AgenteDTO> remitentes = agenteControl.listarRemitentesByIdeDocumento(planAgen.getIdeDocumento());
                 if (remitentes.get(0).getCodTipoPers() != null)
@@ -180,7 +183,7 @@ public class PlanAgenControl {
      * @param planAgenDTO
      * @return
      */
-    public PlanAgenSalidaDTO planAgenDTOTransformToPlanAgenSaidaDTO(PlanAgenDTO planAgenDTO) throws SystemException, BusinessException {
+    public PlanAgenSalidaDTO planAgenDTOTransformToPlanAgenSalidaDTO(PlanAgenDTO planAgenDTO) throws SystemException, BusinessException {
 
         AgenteDTO agenteDTO = agenteControl.consultarAgenteByIdeAgente(planAgenDTO.getIdeAgente());
         if (agenteDTO != null && agenteDTO.getCodTipAgent()== TipoAgenteEnum.DESTINATARIO.getCodigo()){
@@ -201,6 +204,8 @@ public class PlanAgenControl {
                 .observaciones(planAgenDTO.getObservaciones())
                 .codCauDevo(planAgenDTO.getCodCauDevo())
                 .fecCarguePla(planAgenDTO.getFecCarguePla())
+                .desNuevaDepen(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(planAgenDTO.getCodNuevaDepen()))
+                .desNuevaSede(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(planAgenDTO.getCodNuevaSede()))
                 .agente(agenteControl.agenteTransformToFull(agenteDTO))
                 .correspondencia(correspondenciaControl.correspondenciaTransformToFull(correspondenciaDTO))
                 .build();
