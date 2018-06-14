@@ -1,4 +1,7 @@
 import {ConstanteDTO} from "./constanteDTO";
+import { DireccionDTO } from "./DireccionDTO";
+import { CorrespondenciaDTO } from "./correspondenciaDTO";
+import { AgentDTO } from "./agentDTO";
 
 export interface PlanAgenDTO {
   idePlanAgen: number;
@@ -24,4 +27,6 @@ export interface PlanAgenDTO {
   razonSocial: string;
   folios: number;
   anexos: number;
+  correspondencia?: CorrespondenciaDTO;
+  agente?: AgentDTO;
 }

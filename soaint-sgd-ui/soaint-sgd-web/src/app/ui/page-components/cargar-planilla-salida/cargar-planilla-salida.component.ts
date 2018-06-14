@@ -225,36 +225,16 @@ export class CargarPlanillaSalidaComponent implements OnInit {
   }
 
   createAgents():PlanAgenDTO[] {
-    const agents:PlanAgenDTO[] = [];
-    this.selectedComunications.forEach((element) => {
-      const agent:PlanAgenDTO = {
-        idePlanAgen: element.idePlanAgen,
-        estado: this.popupEditar.form.get('estadoEntrega').value.codigo,
-        varPeso: element.varPeso,
-        varValor: element.varValor,
-        varNumeroGuia: element.varNumeroGuia,
-        fecObservacion: element.fecObservacion,
-        usuario: this.funcionarioLog.nombre,
-        codNuevaSede: this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codSede : null,
-        codNuevaDepen: this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codigo : null,
-        observaciones: this.popupEditar.form.get('observaciones').value,
-        codCauDevo: element.codCauDevo,
-        fecCarguePla: this.popupEditar.form.get('fechaEntrega').value,
-        ideAgente: element.ideAgente,
-        ideDocumento: element.ideDocumento,
-        nroRadicado: element.nroRadicado,
-        tipoPersona: element.tipoPersona,
-        tipologiaDocumental: null,
-        nit: element.nit,
-        nroDocuIdentidad: element.nroDocuIdentidad,
-        nombre: element.nombre,
-        razonSocial: element.razonSocial,
-        folios: element.folios,
-        anexos: element.anexos,
-      };
-      agents.push(agent);
-    });
-
+    let agents:PlanAgenDTO[] = [];
+    agents = this.selectedComunications.reduce((_listado, _current) => {
+      _current.estado= this.popupEditar.form.get('estadoEntrega').value.codigo;
+      _current.codNuevaSede= this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codSede : null;
+      _current.codNuevaDepen= this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codigo : null;
+      _current.observaciones= this.popupEditar.form.get('observaciones').value;
+      _current.fecCarguePla= this.popupEditar.form.get('fechaEntrega').value;
+      _listado.push(_current);
+      return _listado;
+    }, []);
     return agents;
   }
 
@@ -262,7 +242,7 @@ export class CargarPlanillaSalidaComponent implements OnInit {
     const agents: PlanAgenDTO[] = this.createAgents();
     const coms = [...this.planAgentes];
     agents.forEach((element) => {
-      const index = coms.findIndex((el) => el.ideAgente === element.ideAgente);
+      const index = coms.findIndex((el) => el.ideAgente === element.agente.ideAgente);
       if (index > -1) {
         coms[index] = element;
       }
@@ -271,7 +251,6 @@ export class CargarPlanillaSalidaComponent implements OnInit {
     this.selectedComunications = [];
     this.hideEditarPlanillaDialog();
     this.refreshView();
-
   }
 
   onDocUploaded(event):void {

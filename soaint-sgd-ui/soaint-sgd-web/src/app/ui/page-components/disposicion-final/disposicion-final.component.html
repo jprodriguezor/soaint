@@ -235,15 +235,13 @@
                         [rows]="10"
                         [responsive]="true"
                         [value]="state.ListadoUnidadDocumental"
-                        [(selection)]="state.unidadesSeleccionadas"
+                        [(selection)]="state.unidadesSeleccionadas" [expandableRows]="true"
                         emptyMessage="No hay resultados que mostrar">
                         <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-                        <p-column field="subserie" header="Nombre serie/subserie" [sortable]="true"></p-column>
+                        <p-column header="Detalle" expander="true"></p-column>
+                        <p-column field="subserie" header="Nombre serie / subserie" [sortable]="true"></p-column>
                         <p-column field="codigoUnidadDocumental" header="Identificador unidad documental" [sortable]="true"></p-column>
                         <p-column field="nombreUnidadDocumental" header="Nombre unidad documental" [sortable]="true"></p-column>
-                        <p-column field="descriptor1" header="Descriptor 1" [sortable]="true"></p-column>
-                        <p-column field="descriptor2" header="Descriptor 2" [sortable]="true"></p-column>
-                        <p-column field="faseArchivo" header="Fase archivo" [sortable]="true"></p-column>
                         <p-column field="inactivo" header="Estado">
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                               {{i | toActiveString}}
@@ -252,9 +250,7 @@
                         <p-column field="fechaExternaInicial" header="Fecha externa inicial" [sortable]="true"></p-column>
                         <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
-                        <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
-                        <p-column field="disposicion" header="Disposición" [sortable]="true"></p-column>
-                        <p-column field="estado" header="Aprobado/Rechazado" [sortable]="true"></p-column>
+                        <p-column field="estado" header="Aprobado / Rechazado" [sortable]="true"></p-column>
                         <p-column  header="Notas" [style]="{'width':'120px','text-align':'center'}">                             
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                                 <button pButton type="button" style="width: 35px; float: right"
@@ -262,6 +258,32 @@
                                  </button>
                             </ng-template>
                             </p-column>
+                            <template let-data pTemplate="rowexpansion">
+                                    <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+                                      <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                          <div class="ui-grid ui-grid-responsive ui-grid-pad">
+                                              <div class="ui-grid-row">
+                                                  <div class="ui-grid-col-2 label">Descriptor 1: </div>
+                                                  <div class="ui-grid-col-2">{{data.descriptor1}}</div>  
+                                                  <div class="ui-grid-col-2 label">Fase archivo: </div>
+                                                  <div class="ui-grid-col-2">{{data.faseArchivo}}</div>
+                                              </div>
+                                              <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-2 label">Descriptor 2: </div>
+                                                    <div class="ui-grid-col-2">{{data.descriptor2}}</div>  
+                                                  <div class="ui-grid-col-2 label">Soporte: </div>
+                                                  <div class="ui-grid-col-2">{{data.soporte}}</div>
+                                              </div>
+                                              <div class="ui-grid-row">
+                                                  <div class="ui-grid-col-2 label">disposicion: </div>
+                                                  <div class="ui-grid-col-2">{{data.disposicion}}</div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      </div>
+                                  </div>
+                                  </template>
                     </p-dataTable>
                 </div>
             </div>

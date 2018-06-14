@@ -157,29 +157,31 @@
             <div class="ui-g-12">
               <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                            [(selection)]="selectedComunications"
-                           [paginator]="true" [rows]="10" [responsive]="true" [value]="listadoComunicaciones">
-                <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+                           [paginator]="true" [rows]="10" [responsive]="true" [value]="listadoComunicaciones"
+                           [expandableRows]="true">
+                <p-column selectionMode="multiple" styleClass="col-icon" [style]="{'width':'50px'}"></p-column>
+                <p-column header="Detalle" expander="true"  styleClass="col-icon" [style]="{'width':'100px'}"></p-column>
                 <p-column field="nroRadicado" header="Número radicado" [sortable]="true"></p-column>
                 <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{correspondencia.fecRadicado| date:'dd/MM/yyyy hh:mm a'}}
+                  <ng-template let-col let-data="rowData" pTemplate="body">
+                    {{data.fecRadicado| date:'dd/MM/yyyy hh:mm a'}}
                   </ng-template>
                 </p-column>
                 <p-column field="tipoDoc" header="Tipología documental" [sortable]="true"></p-column>
                 <p-column field="nombre_razonSocial" header="Nombre / Razón social" [sortable]="true"></p-column>
                 <p-column field="nombreSedeDestino" header="Sede administrativa destino" [sortable]="true"></p-column>
                 <p-column field="nombreDependenciaDestino" header="Dependencia destino" [sortable]="true"></p-column>
-                <p-column field="nombrePais" header="País" [sortable]="true"></p-column>
+                <!-- <p-column field="nombrePais" header="País" [sortable]="true"></p-column>
                 <p-column field="nombreDepartamento" header="Departamento" [sortable]="true"></p-column>
                 <p-column field="nombreCiudadMunicipio" header="Ciudad / Municipio" [sortable]="true"></p-column>
                 <p-column header="Dirección" [sortable]="true">
-                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                      {{correspondencia.direccion | direccionToText}}
+                    <ng-template let-col let-data="rowData" pTemplate="body">
+                      {{data.direccion | direccionToText}}
                     </ng-template>
-                </p-column>
+                </p-column> -->
                 <p-column field="folio" header="Folios" [sortable]="true" [style]="{'width':'110px'}"></p-column>
                 <p-column field="anexos" header="Anexos" [sortable]="true" [style]="{'width':'110px'}"></p-column>
-                <p-column field="claseEnvio_modaliadCorreo" header="Clase envío / Modalidad correo" [sortable]="true"></p-column>
+                <!-- <p-column field="claseEnvio_modaliadCorreo" header="Clase envío / Modalidad correo" [sortable]="true"></p-column> -->
                 <p-column  header="Información envío" [style]="{'width':'180px','text-align':'center'}">                             
                     <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                         <button pButton type="button" style="float: right; width: 145px;"
@@ -187,6 +189,32 @@
                          </button>
                     </ng-template>                            
                 </p-column>
+                <template let-data pTemplate="rowexpansion">
+                  <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div class="ui-grid ui-grid-responsive ui-grid-pad">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 label">País: </div>
+                                    <div class="ui-grid-col-2">{{data.nombrePais}}</div>
+                                    <div class="ui-grid-col-2 label">Departamento: </div>
+                                    <div class="ui-grid-col-2">{{data.nombreDepartamento}}</div>
+                                    <div class="ui-grid-col-2 label">Clase envío: </div>
+                                    <div class="ui-grid-col-2">{{data.descClaseEnvio}}</div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 label">Ciudad / Municipio: </div>
+                                    <div class="ui-grid-col-2">{{data.nombreCiudadMunicipio}}</div>
+                                    <div class="ui-grid-col-2 label">Dirección: </div>
+                                    <div class="ui-grid-col-2">{{data.direccion | direccionToText}}</div>
+                                    <div class="ui-grid-col-2 label">Modalidad correo: </div>
+                                    <div class="ui-grid-col-2">{{data.descModalidadCorreo}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </template>
               </p-dataTable>
             </div>
           </div>
