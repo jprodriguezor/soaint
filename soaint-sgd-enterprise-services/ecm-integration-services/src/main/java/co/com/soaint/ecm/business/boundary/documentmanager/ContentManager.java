@@ -10,6 +10,7 @@ import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -68,7 +69,7 @@ public class ContentManager implements Serializable {
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento principal/adjunto al content..");
         log.info("### Se invoca el metodo de subir el documento principal/adjunto..");
-        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector, true);
+        return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
     }
 
     /**

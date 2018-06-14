@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlUtilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentDigitized;
+import co.com.soaint.ecm.domain.entity.SelectorType;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
@@ -105,8 +106,9 @@ public final class ContentDigitizedImpl implements ContentDigitized {
             throw new SystemException("El codigo dependencia de la correspondencia es nulo");
         }
         principalDTO.setCodigoDependencia(dependencyCode);
+        principalDTO.setLabelRequired(false);
         final MensajeRespuesta mensajeRespuesta = contentControl
-                .subirDocumentoPrincipalAdjunto(session, principalDTO, null, false);
+                .subirDocumentoPrincipalAdjunto(session, principalDTO, null);
         principalDTO = mensajeRespuesta.getDocumentoDTOList().get(0);
         final String idDocPrincipal = principalDTO.getIdDocumento();
         mainDocument.delete();
@@ -115,25 +117,30 @@ public final class ContentDigitizedImpl implements ContentDigitized {
             DocumentoDTO dto = utilities.transformarDocumento(document);
             dto.setCodigoDependencia(dependencyCode);
             dto.setIdDocumentoPadre(idDocPrincipal);
+            dto.setLabelRequired(false);
             contentControl
-                    .subirDocumentoPrincipalAdjunto(session, dto, null, false);
+                    .subirDocumentoPrincipalAdjunto(session, dto, null);
             document.delete();
         }
         final String idInstancia = correspondenciaDTO.getIdeInstancia();
         if (StringUtils.isEmpty(idInstancia)) {
             throw new SystemException("El ID instancia de la correspondencia es nulo");
         }
-        notifyBpmProcess(idInstancia, idDocPrincipal);
+        notifyBpmProcess(nroRadicado, idInstancia, idDocPrincipal);
     }
 
-    private void notifyBpmProcess(String ideInstancia, String ideEcm) throws SystemException {
+    private void notifyBpmProcess(String nroRadicado, String ideInstancia, String ideEcm) throws SystemException {
+
         final RespuestaDigitalizarDTO digitalizarDTO = getRespuestaDigitalizarDTO(ideInstancia);
         final Map<String, Object> parameters = new HashMap<>();
+        final SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
 
         parameters.put("nombreSennal", digitalizarDTO.getNombreSennal());
-        parameters.put("ideEcm", ideEcm);
+        if (null != selectorType && (selectorType == SelectorType.EE || selectorType == SelectorType.EI)) {
+            parameters.put("ideEcm", ideEcm);
+        }
 
-        EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
+        final EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
                 .idProceso(digitalizarDTO.getIdProceso())
                 .instanciaProceso(Long.parseLong(ideInstancia))
@@ -174,7 +181,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
 
     private Response iniciarProceso(EntradaProcesoDTO entradaProcesoDTO) {
         WebTarget wt = ClientBuilder.newClient().target(BPM_ENDPOINT);
-        return wt.path("/bpm/proceso/sennal/inicio")
+        return wt.path("/bpm/proceso/sennal")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }

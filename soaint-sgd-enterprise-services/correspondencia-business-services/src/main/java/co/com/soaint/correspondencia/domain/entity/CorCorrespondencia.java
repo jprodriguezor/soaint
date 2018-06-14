@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
         @NamedQuery(name = "CorCorrespondencia.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
                 "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
-                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado, c.codClaseEnvio, c.codModalidadEnvio) " +
                 "FROM CorCorrespondencia c WHERE c.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorCorrespondencia.getIdeInstanciaPorRadicado", query = "SELECT c.ideInstancia " +
                 "FROM CorCorrespondencia c WHERE c.nroRadicado = :NRO_RADICADO"),
@@ -84,7 +84,7 @@ import java.util.stream.Collectors;
         @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaNoAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
                 "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
-                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado, c.codClaseEnvio, c.codModalidadEnvio) " +
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.corAgenteList ca " +
                 "INNER JOIN c.ppdDocumentoList d " +
@@ -96,20 +96,20 @@ import java.util.stream.Collectors;
                 " AND ca.codTipAgent = :TIPO_AGENTE " +
                 "AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO) " +
                 "ORDER BY c.codDependencia, c.codTipoCmc, c.nroRadicado"),
-        @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
-                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
-                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
-                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
-                "FROM CorCorrespondencia c " +
-                "INNER JOIN c.corAgenteList ca " +
-                "INNER JOIN c.ppdDocumentoList d " +
-                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND ((:TIPO_COM1 IS NULL OR c.codTipoCmc = :TIPO_COM1) OR (:TIPO_COM2 IS NULL OR c.codTipoCmc = :TIPO_COM2)) "+
-                "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) "+
-                "AND c.codClaseEnvio = :CLASE_ENVIO AND c.codModalidadEnvio = :MOD_ENVIO "+
-                "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) "+
-                "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION AND ca.codTipAgent = :TIPO_AGENTE " +
-                "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO) " +
-                "ORDER BY c.codDependencia, c.codTipoCmc, c.nroRadicado"),
+//        @NamedQuery(name = "CorCorrespondencia.findByComunicacionsSalidaConDistribucionFisicaNroPlantillaAsociado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+//                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+//                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+//                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+//                "FROM CorCorrespondencia c " +
+//                "INNER JOIN c.corAgenteList ca " +
+//                "INNER JOIN c.ppdDocumentoList d " +
+//                "WHERE c.reqDistFisica = :REQ_DIST_FISICA AND ((:TIPO_COM1 IS NULL OR c.codTipoCmc = :TIPO_COM1) OR (:TIPO_COM2 IS NULL OR c.codTipoCmc = :TIPO_COM2)) "+
+//                "AND ((:FECHA_INI IS NULL OR c.fecRadicado >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR c.fecRadicado < :FECHA_FIN)) "+
+//                "AND c.codClaseEnvio = :CLASE_ENVIO AND c.codModalidadEnvio = :MOD_ENVIO "+
+//                "AND (:COD_DEPENDENCIA IS NULL OR ca.codDependencia = :COD_DEPENDENCIA) "+
+//                "AND ca.estadoDistribucion = :ESTADO_DISTRIBUCION AND ca.codTipAgent = :TIPO_AGENTE " +
+//                "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO) " +
+//                "ORDER BY c.codDependencia, c.codTipoCmc, c.nroRadicado"),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
