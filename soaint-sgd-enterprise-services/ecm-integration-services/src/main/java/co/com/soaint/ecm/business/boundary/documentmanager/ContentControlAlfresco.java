@@ -684,7 +684,7 @@ public final class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector, boolean requiereEtiqueta) throws SystemException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) throws SystemException {
         log.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
         final String idDocPrincipal = documento.getIdDocumentoPadre();
         if (StringUtils.isEmpty(idDocPrincipal)) {
@@ -700,7 +700,7 @@ public final class ContentControlAlfresco implements ContentControl {
                 if (null == selectorType) {
                     throw new SystemException("El selector no valido '" + nroRadicado + "'");
                 }
-                dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, requiereEtiqueta, session);
+                dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, session);
             }
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             documentoDTOS.add(documentoDTOS.size(), dto);

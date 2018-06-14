@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 @Log4j2
 @Getter
@@ -36,18 +35,18 @@ public final class ContentStamperImpl implements ContentStamper {
     @Override
     public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, String mimeType) throws SystemException {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
-        Document document = new Document(PageSize.A4, 0, 0, 0, 0);
         try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             boolean isHtml = false;
             if (MimeTypes.getMIMEType("html").equals(mimeType)) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+                final Document document = new Document(PageSize.A4);
+                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                final PdfWriter writer = PdfWriter.getInstance(document, outputStream);
                 document.open();
                 final Charset UTF8_CHARSET = Charset.forName("UTF-8");
                 final String htmlCad = new String(contentBytes, UTF8_CHARSET);
                 contentBytes = (top() + htmlCad + bottom()).getBytes(UTF8_CHARSET);
-                XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
-                InputStream is = new ByteArrayInputStream(contentBytes);
+                final XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
+                final InputStream is = new ByteArrayInputStream(contentBytes);
                 worker.parseXHtml(writer, document, is, Charset.forName("UTF-8"));
                 document.close();
                 contentBytes = outputStream.toByteArray();
@@ -56,24 +55,23 @@ public final class ContentStamperImpl implements ContentStamper {
                 is.close();
                 isHtml = true;
             }
-            PdfReader reader = new PdfReader(contentBytes);
+            final PdfReader reader = new PdfReader(contentBytes);
             float absoluteY = 695F;
             if (!isHtml) {
                 resizePdf(reader);
                 absoluteY = 659.301F;
             }
-            PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
-            Image image = getImage(stamperImg);
+            final PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
+            final Image image = getImage(stamperImg);
             image.setAbsolutePosition(370F, absoluteY); //695
-            PdfImage stream = new PdfImage(image, "", null);
+            final PdfImage stream = new PdfImage(image, "", null);
             PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
             image.setDirectReference(ref.getIndirectReference());
-            PdfContentByte over = stamper.getOverContent(1);
+            final PdfContentByte over = stamper.getOverContent(1);
             over.addImage(image);
             stamper.flush();
             stamper.close();
             reader.close();
-            document.close();
             return byteArrayOutputStream.toByteArray();
 
         } catch (Exception e) {
@@ -98,7 +96,7 @@ public final class ContentStamperImpl implements ContentStamper {
         float width = 8.5f * 72;
         float height = 11f * 72;
 
-        Rectangle cropBox = reader.getCropBox(1);
+        final Rectangle cropBox = reader.getCropBox(1);
         float widthToAdd = width - cropBox.getWidth();
         float heightToAdd = height - cropBox.getHeight();
         float[] newBoxValues = new float[] {
@@ -107,9 +105,9 @@ public final class ContentStamperImpl implements ContentStamper {
                 cropBox.getRight() + widthToAdd / 2,
                 cropBox.getTop() + heightToAdd / 2
         };
-        PdfArray newBox = new PdfArray(newBoxValues);
+        final PdfArray newBox = new PdfArray(newBoxValues);
+        final PdfDictionary pageDict = reader.getPageN(1);
 
-        PdfDictionary pageDict = reader.getPageN(1);
         pageDict.put(PdfName.CROPBOX, newBox);
         pageDict.put(PdfName.MEDIABOX, newBox);
 

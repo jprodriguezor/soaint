@@ -165,12 +165,12 @@ public class ECMConnectionRule implements TestRule {
 
     public MensajeRespuesta uploadNewDocument(String nombreDocumento) throws SystemException {
         DocumentoDTO doc = newDocumento(nombreDocumento);
-        return contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE", true);
+        return contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
     }
 
     public DocumentoDTO existingDocumento(String nombre) throws SystemException {
         DocumentoDTO doc = newDocumento(nombre);
-        MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE", true);
+        MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), doc, "EE");
         doc.setIdDocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
 
         return doc;
