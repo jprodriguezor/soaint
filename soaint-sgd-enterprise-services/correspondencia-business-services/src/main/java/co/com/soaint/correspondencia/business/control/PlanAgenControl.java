@@ -117,6 +117,8 @@ public class PlanAgenControl {
                     planAgenSalidaDTO.setFolios(ppdDocumentoDTOList.get(0).getNroFolios());
                     planAgenSalidaDTO.setAnexos(ppdDocumentoDTOList.get(0).getNroAnexos());
                 }
+                List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByIdAgente(planAgenSalidaDTO.getAgente().getIdeAgente());
+                planAgenSalidaDTO.getAgente().setDatosContactoList(datosContactoControl.datosContactoListTransformToFull(datosContacto));
                 planAgenSalidaDTOS.add(planAgenSalidaDTO);
             }
 
