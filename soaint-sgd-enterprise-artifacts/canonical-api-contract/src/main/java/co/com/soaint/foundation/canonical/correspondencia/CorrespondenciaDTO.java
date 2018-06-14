@@ -102,4 +102,31 @@ public class CorrespondenciaDTO implements Serializable {
         this.fecVenGestion = fecVenGestion;
         this.codEstado = codEstado;
     }
+
+    public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
+                              String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,
+                              String codTipoCmc, String reqDistFisica,
+                              String ideInstancia, String codFuncRadica, String codSede, String codDependencia,
+                              String reqDigita, String nroGuia, String codEmpMsj, Date fecVenGestion, String codEstado, String codClaseEnvio, String codModalidadEnvio){
+        this.ideDocumento = ideDocumento;
+        this.descripcion = descripcion;
+        this.tiempoRespuesta = tiempoRespuesta;
+        this.codUnidadTiempo = codUnidadTiempo;
+        this.codMedioRecepcion = codMedioRecepcion;
+        this.fecRadicado = fecRadicado;
+        this.nroRadicado = nroRadicado;
+        this.codTipoCmc = codTipoCmc;
+        this.reqDistFisica = reqDistFisica;
+        this.ideInstancia = ideInstancia;
+        this.codFuncRadica = codFuncRadica;
+        this.codSede = codSede;
+        this.codDependencia = codDependencia;
+        this.reqDigita = reqDigita;
+        this.nroGuia = nroGuia;
+        this.codEmpMsj = codEmpMsj;
+        this.fecVenGestion = fecVenGestion;
+        this.codEstado = codEstado;
+        this.codClaseEnvio = codClaseEnvio;
+        this.codModalidadEnvio = codModalidadEnvio;
+    }
 }

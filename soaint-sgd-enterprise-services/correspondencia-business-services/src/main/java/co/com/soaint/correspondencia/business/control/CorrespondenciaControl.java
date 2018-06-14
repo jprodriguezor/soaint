@@ -340,7 +340,12 @@ public class CorrespondenciaControl {
                 funcionario = funcionarioDTO.getNomFuncionario()+" "+funcionarioDTO.getValApellido1()+" "+funcionarioDTO.getValApellido2();
             }
 
+            log.info("correspondenciaTransformToFull ModalidadEnvio "+correspondenciaDTO.getCodModalidadEnvio());
+            log.info("correspondenciaTransformToFull ClaseEnvio"+correspondenciaDTO.getCodClaseEnvio());
+
             return CorrespondenciaFullDTO.newInstance()
+                    .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
+                    .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
                     .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
@@ -353,8 +358,6 @@ public class CorrespondenciaControl {
                     .descFuncRadica(funcionario)
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
-                    .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
-                    .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
                     .descSede(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()))
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
@@ -636,9 +639,12 @@ public class CorrespondenciaControl {
                         List<DatosContactoDTO> datosContactoDTO = datosContactoControl.consultarDatosContactoByIdAgente(agenteFull.getIdeAgente());
                         agenteFull.setDatosContactoList(datosContactoControl.datosContactoListTransformToFull(datosContactoDTO));
                     }
+
+                    List<PpdDocumentoDTO> ppdDocumentoDTOS = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaDTO.getIdeDocumento());
                     ComunicacionOficialFullDTO comunicacionOficialFull = ComunicacionOficialFullDTO.newInstance()
                             .correspondencia(correspondenciaFull)
                             .agentes(agenteFullList)
+                            .ppdDocumentos(ppdDocumentoControl.ppdDocumentoListTransformToFull(ppdDocumentoDTOS))
                             .build();
                     comunicacionOficialFullDTOList.add(comunicacionOficialFull);
                 }
