@@ -46,7 +46,7 @@ public interface ContentControl extends Serializable {
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector, boolean requiereEtiqueta) throws SystemException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws SystemException;
 
     /**
      * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo

@@ -1235,7 +1235,7 @@ public final class ContentControlUtilities implements Serializable {
         return transformarDocumento(document);
     }
 
-    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, boolean requiereEtiqueta, Session session) throws SystemException {
+    DocumentoDTO subirDocumentoPrincipalRadicacion(DocumentoDTO documentoDTO, SelectorType selectorType, Session session) throws SystemException {
         final String nombreDoc = documentoDTO.getNombreDocumento();
         if (StringUtils.isEmpty(nombreDoc)) {
             throw new SystemException("No se ha especificado el nombre del documento");
@@ -1244,10 +1244,12 @@ public final class ContentControlUtilities implements Serializable {
         if (ObjectUtils.isEmpty(bytes)) {
             throw new SystemException("No se ha especificado el contenido del documento");
         }
+        final boolean isLabelRequired = ObjectUtils.isEmpty(documentoDTO.getLabelRequired())
+                ? true : documentoDTO.getLabelRequired();
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
         final Document document = createDocument(carpetaTarget, documentoDTO);
         documentoDTO = transformarDocumento(document);
-        if (requiereEtiqueta && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)) {
+        if (isLabelRequired && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)) {
             estamparEtiquetaRadicacion(documentoDTO, session);
         }
         return documentoDTO;
@@ -1704,5 +1706,22 @@ public final class ContentControlUtilities implements Serializable {
         byte[] imageInByte = baos.toByteArray();
         baos.close();
         return imageInByte;
+    }
+
+    public static void main(String[] args) {
+        DocumentoDTO dto = new DocumentoDTO();
+        a a = new a();
+
+        System.out.println(dto.getLabelRequired());
+        System.out.println(a);
+    }
+
+    private static class a {
+        boolean b;
+
+        @Override
+        public String toString() {
+            return "b: " + b;
+        }
     }
 }

@@ -106,8 +106,9 @@ public final class ContentDigitizedImpl implements ContentDigitized {
             throw new SystemException("El codigo dependencia de la correspondencia es nulo");
         }
         principalDTO.setCodigoDependencia(dependencyCode);
+        principalDTO.setLabelRequired(false);
         final MensajeRespuesta mensajeRespuesta = contentControl
-                .subirDocumentoPrincipalAdjunto(session, principalDTO, null, false);
+                .subirDocumentoPrincipalAdjunto(session, principalDTO, null);
         principalDTO = mensajeRespuesta.getDocumentoDTOList().get(0);
         final String idDocPrincipal = principalDTO.getIdDocumento();
         mainDocument.delete();
@@ -116,8 +117,9 @@ public final class ContentDigitizedImpl implements ContentDigitized {
             DocumentoDTO dto = utilities.transformarDocumento(document);
             dto.setCodigoDependencia(dependencyCode);
             dto.setIdDocumentoPadre(idDocPrincipal);
+            dto.setLabelRequired(false);
             contentControl
-                    .subirDocumentoPrincipalAdjunto(session, dto, null, false);
+                    .subirDocumentoPrincipalAdjunto(session, dto, null);
             document.delete();
         }
         final String idInstancia = correspondenciaDTO.getIdeInstancia();
@@ -128,6 +130,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
     }
 
     private void notifyBpmProcess(String nroRadicado, String ideInstancia, String ideEcm) throws SystemException {
+
         final RespuestaDigitalizarDTO digitalizarDTO = getRespuestaDigitalizarDTO(ideInstancia);
         final Map<String, Object> parameters = new HashMap<>();
         final SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
@@ -137,7 +140,7 @@ public final class ContentDigitizedImpl implements ContentDigitized {
             parameters.put("ideEcm", ideEcm);
         }
 
-        EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
+        final EntradaProcesoDTO procesoDTO = EntradaProcesoDTO.newInstance()
                 .idDespliegue(digitalizarDTO.getIdDespliegue())
                 .idProceso(digitalizarDTO.getIdProceso())
                 .instanciaProceso(Long.parseLong(ideInstancia))
