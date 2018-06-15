@@ -1,9 +1,6 @@
 <div class="ui-fluid">
   <app-task-container>
     <div customActions>
-        <button pButton type="button" [disabled]="!(closedTask | async)" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-        (click)="abort()">
-      </button>
         <button pButton type="button" label="Actualizar planilla"
           [disabled]="!canUpdatePlanilla()" (click)="actualizarPlanilla()"
           style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
@@ -17,7 +14,6 @@
     <div taskBody>
         <div class="ui-g-12">
             <div class="card card-w-title">
-                <documento-ecm *ngIf="canUpdatePlanilla()" #documentList></documento-ecm>
                 <p-panel header="Actualizar planilla" [style]="{border: 'none'}">
                     <div class="ui-g ui-fluid" *ngIf="!(closedTask | async)">
                       <div class="ui-g-12">
@@ -95,15 +91,9 @@
   <p-header>
     Registrar resultado
   </p-header>
-  <app-editar-planilla #popupEditar [planilla]="data"></app-editar-planilla>
+  <app-editar-planilla #popupEditar [planilla]="data" (completado)="editarPlanilla()"></app-editar-planilla>
 
   <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button pButton type="button" class="ui-button-primary"
-              label="Cerrar" (click)="hideEditarPlanillaDialog()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!form.valid"
-              label="Aceptar" (click)="editarPlanilla()"></button>
-    </div>
   </p-footer>
 </p-dialog>
 

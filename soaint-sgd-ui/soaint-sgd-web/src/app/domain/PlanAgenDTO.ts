@@ -11,7 +11,9 @@ export interface PlanAgenDTO {
   varNumeroGuia: string;
   fecObservacion: string;
   codNuevaSede: string;
+  desNuevaSede?: string;
   codNuevaDepen: string;
+  desNuevaDepen?: string;
   observaciones: string;
   codCauDevo: string;
   fecCarguePla: string;

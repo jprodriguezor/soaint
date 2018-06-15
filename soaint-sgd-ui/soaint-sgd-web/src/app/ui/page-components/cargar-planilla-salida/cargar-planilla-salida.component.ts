@@ -49,7 +49,6 @@ import { afterTaskComplete } from '../../../infrastructure/state-management/tare
 })
 export class CargarPlanillaSalidaComponent implements OnInit {
 
-  form:FormGroup;
 
   planAgentes:PlanAgenDTO[] = [];
 
@@ -60,34 +59,6 @@ export class CargarPlanillaSalidaComponent implements OnInit {
   start_date:Date = new Date();
 
   editarPlanillaDialogVisible = false;
-
-  dependencia:any;
-
-  funcionariosSuggestions$:Observable<FuncionarioDTO[]>;
-
-  justificationDialogVisible$:Observable<boolean>;
-
-  detailsDialogVisible$:Observable<boolean>;
-
-  agregarObservacionesDialogVisible$:Observable<boolean>;
-
-  rejectDialogVisible$:Observable<boolean>;
-
-  dependenciaSelected$:Observable<DependenciaDTO>;
-
-  dependenciaSelected:DependenciaDTO;
-
-  funcionarioLog:FuncionarioDTO;
-
-  funcionarioSubcription:Subscription;
-
-  comunicacionesSubcription:Subscription;
-
-  tipologiaDocumentalSuggestions$:Observable<ConstanteDTO[]>;
-
-  tipologiasDocumentales:ConstanteDTO[];
-
-  dependencias:DependenciaDTO[] = [];
 
   activeTaskUnsubscriber:Subscription;
 
@@ -109,24 +80,14 @@ export class CargarPlanillaSalidaComponent implements OnInit {
               private _planillaService:PlanillasApiService,
               private _changeDetectorRef:ChangeDetectorRef,
               private _taskSandbox: taskSandbox,
-              private _api:ApiBase,
-              private formBuilder:FormBuilder) {
-    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-    this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-    });
-    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
-    this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
-    this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
-    this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
-    this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
-    this.start_date.setHours(this.start_date.getHours() - 24);
-    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
-    this.comunicacionesSubcription = this._store.select(PlanillasArrayData).subscribe((result) => {
-      this.selectedComunications = [];
-    });
+              private _api:ApiBase) {
+
+
+  }
+
+  ngOnInit() {
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
+    this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
@@ -135,20 +96,9 @@ export class CargarPlanillaSalidaComponent implements OnInit {
       }
     });
 
-    this.initForm();
-  }
+    this.start_date.setHours(this.start_date.getHours() - 24);
 
-  ngOnInit() {
-    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
-    this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
-    this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
-    this.tipologiaDocumentalSuggestions$.subscribe((results) => {
-      this.tipologiasDocumentales = results;
-    });
-
-    this._funcionarioSandbox.loadAllFuncionariosDispatch();
-    this._constSandbox.loadDatosGeneralesDispatch();
-    this.listarDependencias();
+    this.listarPlanAgentes();
   }
 
   getDatosRemitente(comunicacion):Observable<AgentDTO> {
@@ -157,36 +107,11 @@ export class CargarPlanillaSalidaComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.funcionarioSubcription.unsubscribe();
-    this.comunicacionesSubcription.unsubscribe();
     this.activeTaskUnsubscriber.unsubscribe();
-  }
-
-  initForm() {
-    this.form = this.formBuilder.group({
-      'numeroPlanilla': [null]
-    });
   }
 
   getEstadoLabel(estado) {
     return this.popupEditar.estadoEntregaSuggestions.find((element) => element.codigo === estado);
-  }
-
-  listarDependencias() {
-    this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-      this.dependencias = results.dependencias;
-      this.listarPlanAgentes();
-    });
-  }
-
-  findDependency(code):string {
-    const result = this.dependencias.find((element) => element.codigo === code);
-    return result ? result.nombre : '';
-  }
-
-  findSede(code):string {
-    const result = this.dependencias.find((element) => element.codSede === code);
-    return result ? result.nomSede : '';
   }
 
   listarPlanAgentes() {
@@ -198,22 +123,6 @@ export class CargarPlanillaSalidaComponent implements OnInit {
       this.refreshView();
     });
   }
-
-  findNombrePais(agente: PlanAgenDTO): string {
-    return 'Colombia';
-  }
-
-  findNombreMunicipio(agente: PlanAgenDTO): string {
-    return 'Bogota';
-  }
-
-  findNombreDepartamento(agente: PlanAgenDTO): string {
-    return 'CO';
-  }
-  findDireccion(agente: PlanAgenDTO): string  {
-    return '1 y 2'
-  }
-
 
   showEditarPlanillaDialog() {
     this.popupEditar.resetData();
@@ -253,49 +162,15 @@ export class CargarPlanillaSalidaComponent implements OnInit {
     this.refreshView();
   }
 
-  onDocUploaded(event):void {
-    console.log(event);
-  }
-
-  onClear(event) {
-    console.log(event);
-  }
-
-  customUploader(event) {
-
-    const formData = new FormData();
-
-
-    event.files.forEach((file) => {
-
-      formData.append('file[]', file, file.name);
-
-      this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
-        formData.append('tipoComunicacion', '1');
-        formData.append('fileName', '2');
-        this._api.sendFile(this.uploadUrl, formData, []).subscribe(response => {
-          let objresponse = JSON.parse(response.ecmIds[0]);
-          console.log(objresponse);
-          if (objresponse.codMensaje == "1111") {
-            this._store.dispatch(new PushNotificationAction({
-              severity: 'error',
-              summary: ERROR_ADJUNTAR_DOCUMENTO + objresponse.mensaje + ' ' + file.name
-            }));
-          } else {
-            this._store.dispatch(new PushNotificationAction({
-              severity: 'success',
-              summary: SUCCESS_ADJUNTAR_DOCUMENTO + file.name
-            }));
-          }
-        });
-      });
-    });
-  }
-
   actualizarPlanilla() {
+    // limpiar agente object
     this.planAgentes.forEach((p) => {
       delete p.usuario;
       delete p['_$visited'];
+      delete p.desNuevaDepen;
+      delete p.desNuevaSede;
+      delete p.agente;
+      delete p.correspondencia;
     });
     const agentes: PlanAgentesDTO = {
       pagente: this.planAgentes

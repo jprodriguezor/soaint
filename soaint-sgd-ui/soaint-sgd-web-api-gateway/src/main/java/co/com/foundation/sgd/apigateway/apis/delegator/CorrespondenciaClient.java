@@ -311,5 +311,15 @@ public class CorrespondenciaClient {
                 .request()
                 .put(Entity.json(solicitud));
     }
+
+    public Response actualizarInstancia(){
+        log.info("Delegator: actualizar instancia  - [trafic] - devoluciones");
+
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/asignacion-web-api/asignacion/actualizar-instancia")
+                .request()
+                .put(Entity.json(null));
+    }
+
     /** --------------------- Fin -------------------------------*/
 }

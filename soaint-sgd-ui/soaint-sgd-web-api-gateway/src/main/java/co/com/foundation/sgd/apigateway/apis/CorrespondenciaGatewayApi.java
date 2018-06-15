@@ -5,6 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.ui.ReasignarComunicacionDTO;
@@ -226,6 +227,19 @@ public class CorrespondenciaGatewayApi {
     @Path("/devolver")
     @JWTTokenSecurity
     public Response devolverComunicaciones(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones - documentos trámites");
+        return devolver(devolucion);
+    }
+
+    @POST
+    @Path("/devolver/asignacion")
+    @JWTTokenSecurity
+    public Response devolverComunicacionesAsignacion(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones - asignación");
+        return devolver(devolucion);
+    }
+
+    public Response devolver(DevolucionDTO devolucion) {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
         Response response = client.devolverComunicaciones(devolucion);
         devolucion.getItemsDevolucion().forEach(item -> {
@@ -233,26 +247,15 @@ public class CorrespondenciaGatewayApi {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.gestor-devoluciones");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
-            devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
-
+            devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
+                Response response_instancia =  this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso);
+                if(response_instancia.getStatus() == HttpStatus.OK.value()) {
+                    RespuestaProcesoDTO entity = response_instancia.readEntity(RespuestaProcesoDTO.class);
+                    itemDevolucion.getCorrespondencia().setIdeInstancia(entity.getCodigoProceso());
+                    this.client.actualizarInstancia();
+                }
+            }));
         });
-        String responseObject = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseObject).build();
-    }
-
-    @POST
-    @Path("/devolver/asignacion")
-    @JWTTokenSecurity
-    public Response devolverComunicacionesAsignacion(DevolucionDTO devolucion) {
-        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
-
-        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso.gestor-devoluciones");
-        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
-
-        devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
-
-        Response response = client.devolverComunicaciones(devolucion);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
