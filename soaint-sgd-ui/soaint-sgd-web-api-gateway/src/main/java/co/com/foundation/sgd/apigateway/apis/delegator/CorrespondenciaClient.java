@@ -312,13 +312,13 @@ public class CorrespondenciaClient {
                 .put(Entity.json(solicitud));
     }
 
-    public Response actualizarInstancia(){
+    public Response actualizarInstancia(CorrespondenciaDTO correspondencia){
         log.info("Delegator: actualizar instancia  - [trafic] - devoluciones");
 
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/asignacion-web-api/asignacion/actualizar-instancia")
+        return wt.path("/correspondencia-web-api/correspondencia/actualizar-ide-instancia")
                 .request()
-                .put(Entity.json(null));
+                .put(Entity.json(correspondencia));
     }
 
     /** --------------------- Fin -------------------------------*/
