@@ -242,22 +242,25 @@ public class CorrespondenciaGatewayApi {
     public Response devolver(DevolucionDTO devolucion) {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
         Response response = client.devolverComunicaciones(devolucion);
-        devolucion.getItemsDevolucion().forEach(item -> {
+        if(response.getStatus() == HttpStatus.OK.value()) {
+            devolucion.getItemsDevolucion().forEach(item -> {
+                EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+                entradaProceso.setIdProceso("proceso.gestor-devoluciones");
+                entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+                devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
+                    Response response_instancia =  this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso);
+                    if(response_instancia.getStatus() == HttpStatus.OK.value()) {
+                        RespuestaProcesoDTO entity = response_instancia.readEntity(RespuestaProcesoDTO.class);
+                        itemDevolucion.getCorrespondencia().setIdeInstancia(entity.getCodigoProceso());
+                        this.client.actualizarInstancia(itemDevolucion.getCorrespondencia());
+                    }
+                }));
+            });
 
-            EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-            entradaProceso.setIdProceso("proceso.gestor-devoluciones");
-            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
-            devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
-                Response response_instancia =  this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso);
-                if(response_instancia.getStatus() == HttpStatus.OK.value()) {
-                    RespuestaProcesoDTO entity = response_instancia.readEntity(RespuestaProcesoDTO.class);
-                    itemDevolucion.getCorrespondencia().setIdeInstancia(entity.getCodigoProceso());
-                    this.client.actualizarInstancia();
-                }
-            }));
-        });
+        }
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
+
     }
 
     @GET
