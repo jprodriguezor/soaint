@@ -124,7 +124,7 @@ public class RecordTaskProcessor implements Serializable {
                             recordServices.gestionarUnidadDocumentalECM(dto);
                             dto.setInactivo(true);
                         }
-                        dto.setFaseArchivo(PhaseType.ARCHIVO_CENTRAL.getName());
+                        dto.setFaseArchivo(PhaseType.AC.getPhaseName());
                         contentControl.actualizarUnidadDocumental(dto, session);
                         dto.setCerrada(null);
                         recordServices.modificarRecordFolder(dto);

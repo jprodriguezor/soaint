@@ -372,31 +372,6 @@ public final class ContentControlUtilities implements Serializable {
         return new String[]{serieName, subSerieName};
     }
 
-    String getAbrevDisposition(String disposicion) {
-        disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
-        FinalDispositionType dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-        if (dispositionType.getName().equals(disposicion)) {
-            return dispositionType.getKey();
-        }
-        dispositionType = FinalDispositionType.DIGITALIZAR;
-        if (dispositionType.getName().equals(disposicion)) {
-            return dispositionType.getKey();
-        }
-        dispositionType = FinalDispositionType.ELIMINAR;
-        if (dispositionType.getName().equals(disposicion)) {
-            return dispositionType.getKey();
-        }
-        dispositionType = FinalDispositionType.MICROFILMAR;
-        if (dispositionType.getName().equals(disposicion)) {
-            return dispositionType.getKey();
-        }
-        dispositionType = FinalDispositionType.SELECCIONAR;
-        if (dispositionType.getName().equals(disposicion)) {
-            return dispositionType.getKey();
-        }
-        return "";
-    }
-
     /**
      * Metodo para buscar crear carpetas
      *
@@ -823,35 +798,17 @@ public final class ContentControlUtilities implements Serializable {
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
                 final StringBuilder in = new StringBuilder();
-                for (final String disposition :
-                        disposicionList) {
-                    final String comma = in.length() == 0 ? "" : ",";
-                    FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
-                    if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
-                        continue;
+                disposicionList.forEach(disposition -> {
+                    if (!StringUtils.isEmpty(disposition)) {
+                        final String comma = in.length() == 0 ? "" : ",";
+                        disposition = disposition.trim().toUpperCase();
+                        FinalDispositionType dispositionType = FinalDispositionType.valueOf(disposition);
+                        in.append(comma).append("'").append(dispositionType.getDispositionName()).append("'");
                     }
-                    dispositionType = FinalDispositionType.ELIMINAR;
-                    if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
-                        continue;
-                    }
-                    dispositionType = FinalDispositionType.MICROFILMAR;
-                    if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
-                        continue;
-                    }
-                    dispositionType = FinalDispositionType.DIGITALIZAR;
-                    if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
-                        continue;
-                    }
-                    dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-                    in.append(comma).append("'").append(dispositionType.getName()).append("'");
-                }
+                });
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
-                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " LIKE '" + PhaseType.ARCHIVO_CENTRAL.getName() + "%'";
+                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " LIKE '" + PhaseType.AC.getPhaseName() + "%'";
                 log.info("Ejecutar consulta {}", query);
             } else {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
@@ -1168,7 +1125,8 @@ public final class ContentControlUtilities implements Serializable {
             documentECM.delete(false);
 
             final ContentStream contentStream = new ContentStreamImpl(docName,
-                    BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"), new ByteArrayInputStream(stampedDocument));
+                    BigInteger.valueOf(stampedDocument.length), MimeTypes.getMIMEType("pdf"),
+                    new ByteArrayInputStream(stampedDocument));
             final Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
             final String newIdDocument = document.getId().split(";")[0];
             documentoDTO.setIdDocumento(newIdDocument);
@@ -1706,22 +1664,5 @@ public final class ContentControlUtilities implements Serializable {
         byte[] imageInByte = baos.toByteArray();
         baos.close();
         return imageInByte;
-    }
-
-    public static void main(String[] args) {
-        DocumentoDTO dto = new DocumentoDTO();
-        a a = new a();
-
-        System.out.println(dto.getLabelRequired());
-        System.out.println(a);
-    }
-
-    private static class a {
-        boolean b;
-
-        @Override
-        public String toString() {
-            return "b: " + b;
-        }
     }
 }
