@@ -1412,7 +1412,7 @@ public final class ContentControlAlfresco implements ContentControl {
                         || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)) {
                     final ItemIterable<CmisObject> children = udFolder.getChildren();
                     for (CmisObject cmisObject : children) {
-                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "cmcor:CM_DocumentoPersonalizado")) {
+                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
                             final Document document = (Document) cmisObject;
                             final DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
                             documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
