@@ -242,7 +242,7 @@ public class CorrespondenciaGatewayApi {
     public Response devolver(DevolucionDTO devolucion) {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
         Response response = client.devolverComunicaciones(devolucion);
-        if(response.getStatus() == HttpStatus.OK.value()) {
+        if(response.getStatus() == HttpStatus.NO_CONTENT.value() || response.getStatus() == HttpStatus.OK.value()) {
             devolucion.getItemsDevolucion().forEach(item -> {
                 EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
                 entradaProceso.setIdProceso("proceso.gestor-devoluciones");
@@ -260,7 +260,6 @@ public class CorrespondenciaGatewayApi {
         }
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
-
     }
 
     @GET
