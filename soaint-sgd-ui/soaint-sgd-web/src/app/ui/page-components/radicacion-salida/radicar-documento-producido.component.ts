@@ -118,7 +118,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     const conditions: boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
-      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0,
+      !isNullOrUndefined(this.task)
     ];
 
     return conditions.every(condition => condition);
