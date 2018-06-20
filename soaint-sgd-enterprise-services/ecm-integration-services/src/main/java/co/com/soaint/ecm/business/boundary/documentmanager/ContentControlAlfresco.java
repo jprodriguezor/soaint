@@ -1252,7 +1252,10 @@ public final class ContentControlAlfresco implements ContentControl {
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
                     unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    unidadDocumentalDTO.setDisposicion(utilities.getAbrevDisposition(unidadDocumentalDTO.getDisposicion()));
+                    final FinalDispositionType type = FinalDispositionType.getDispositionBy(unidadDocumentalDTO.getDisposicion());
+                    if (null != type) {
+                        unidadDocumentalDTO.setDisposicion(type.name());
+                    }
                 });
             });
             final Map<String, Object> responseMap = new HashMap<>();
@@ -1281,14 +1284,17 @@ public final class ContentControlAlfresco implements ContentControl {
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
-            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getKey().equals(disposicion)) {
-                eliminarUnidadDocumental(idUnidadDocumental, session);
-            } else {
-                Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
-                if (optionalFolder.isPresent()) {
-                    dto.setDisposicion(utilities.getAbrevDisposition(disposicion));
-                    utilities.updateProperties(optionalFolder.get(), dto);
+            if (!StringUtils.isEmpty(disposicion)) {
+                final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
+                final FinalDispositionType dispositionType = FinalDispositionType.valueOf(disposicion.trim().toUpperCase());
+                if ("aprobado".equals(estado) && FinalDispositionType.E == dispositionType) {
+                    eliminarUnidadDocumental(idUnidadDocumental, session);
+                } else {
+                    Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                    if (optionalFolder.isPresent()) {
+                        dto.setDisposicion(dispositionType.name());
+                        utilities.updateProperties(optionalFolder.get(), dto);
+                    }
                 }
             }
         }
