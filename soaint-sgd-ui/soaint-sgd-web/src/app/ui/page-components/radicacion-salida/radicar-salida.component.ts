@@ -133,7 +133,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       .subscribe(value => {
         console.log(value);
         // Habilitando o desabilitando la tarea que se ejecutar� secuencialmente a la actual
-        if (value && value === 2) {
+        if (value && value == 2) {
           const payload: LoadNextTaskPayload = {
             idProceso: this.task.idProceso,
             idInstanciaProceso: this.task.idInstanciaProceso,
@@ -462,10 +462,11 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
       this.datosGenerales.form.get("reqDistFisica").value != 1 || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
-      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0,
+      !isNullOrUndefined(this.task)
     ];
 
-    return  conditions.every( condition => condition);
+    return  conditions.every( condition => condition) ;
   }
 
   private validatorSubscription():Subscription{
