@@ -749,18 +749,8 @@ public final class ContentControlAlfresco implements ContentControl {
         }
         for (CmisObject cmisObject :
                 folder.getChildren()) {
-            if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
-                    cmisObject.getType().getId().startsWith("D:cmcor:")) {
+            if (cmisObject instanceof Document && cmisObject.getType().getId().startsWith("D:cmcor:")) {
                 documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
-                continue;
-            }
-            if (cmisObject instanceof Item) {
-                String docId = cmisObject.getPropertyValue(PropertyIds.DESCRIPTION);
-                final Session session = obtenerConexion().getSession();
-                cmisObject = session.getObject(docId);
-                if (cmisObject instanceof Document) {
-                    documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
-                }
             }
         }
         return documentoDTOS;
@@ -788,16 +778,19 @@ public final class ContentControlAlfresco implements ContentControl {
             if (ObjectUtils.isEmpty(listaDocumentos)) {
                 throw new SystemException("No se han especificado los documentos para archivar en la Unidad Documental");
             }
-
-            for (DocumentoDTO documentoDTO :
-                    listaDocumentos) {
-                CmisObject documentObj = session.getObject(new ObjectIdImpl(documentoDTO.getIdDocumento()));
-                if (documentObj.getType().getId().startsWith("D:cmcor:")) {
-                    Document document = (Document) documentObj;
+            for (DocumentoDTO documentoDTO : listaDocumentos) {
+                final CmisObject documentObj = session.getObject(session.createObjectId(documentoDTO.getIdDocumento()));
+                if (documentObj.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
+                    final Document document = (Document) documentObj;
                     final Folder sourceFolder = utilities.getFolderFrom(document);
                     if (null != sourceFolder) {
-                        final String folderName = sourceFolder.getName();
-                        final boolean isCommunication = folderName.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                        final String docName = documentoDTO.getNombreDocumento();
+                        if (!document.getName().equals(docName)) {
+                            document.rename(docName);
+                        }
+                        document.move(sourceFolder, targetFolder);
+
+                        /*final boolean isCommunication = folderName.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
                                 || folderName.startsWith(ConstantesECM.COMUNICACION_INTERNA);
                         final String docName = documentoDTO.getNombreDocumento();
                         if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
@@ -807,7 +800,7 @@ public final class ContentControlAlfresco implements ContentControl {
                             utilities.crearLink(targetFolder, document, session);
                         } else {
                             document.move(sourceFolder, targetFolder);
-                            /*final List<Folder> parents = document.getParents();
+                            *//*final List<Folder> parents = document.getParents();
                             final Optional<Folder> sourceTarget = parents.parallelStream()
                                     .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
                                             StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
@@ -820,8 +813,8 @@ public final class ContentControlAlfresco implements ContentControl {
                                 }
                                 properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
                                 targetFolder.updateProperties(properties);
-                            });*/
-                        }
+                            });*//*
+                        }*/
                         final Map<String, Object> properties = new HashMap<>();
                         Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
                         if (ObjectUtils.isEmpty(startDate)) {
@@ -1143,8 +1136,7 @@ public final class ContentControlAlfresco implements ContentControl {
         final List<Folder> folderList = utilities.getUDListWithIDBy(codigoDependencia, session);
         final List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (Folder folder :
-                folderList) {
+        for (Folder folder : folderList) {
             final List<DocumentoDTO> documentsFromFolder = getDocumentsFromFolder(folder);
             final String idUnidadDocumental = folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
 
@@ -1406,33 +1398,26 @@ public final class ContentControlAlfresco implements ContentControl {
             throw new SystemException("Especifique el codigo de la dependencia");
         }
         final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'" +
+                " AND " + PropertyIds.NAME + " NOT LIKE '" + ConstantesECM.PRODUCCION_DOCUMENTAL + "%'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
-        for (QueryResult queryResult :
-                queryResults) {
+        for (QueryResult queryResult : queryResults) {
             final String id = queryResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_UD_ID);
             if (StringUtils.isEmpty(id) || id.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                 final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-                final ItemIterable<CmisObject> children = udFolder.getChildren();
                 final String nameFolder = udFolder.getName();
-                final boolean isCommunication = nameFolder.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
-                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA);
-                for (CmisObject cmisObject :
-                        children) {
-                    if (cmisObject.getType().getId().contains("D:" + ConstantesECM.CMCOR)) {
-                        final Document document = (Document) cmisObject;
-                        final AlfrescoDocument alfrescoDocument = (AlfrescoDocument) document;
-                        DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
-                        documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
-                        final Collection<ObjectType> aspects = alfrescoDocument.getAspects();
-                        Optional<ObjectType> optionalType = aspects.stream().
-                                filter(objectType -> objectType.getId().equals(ConstantesECM.P_APP_LINKED)).findFirst();
-                        if (isCommunication && optionalType.isPresent()) {
-                            continue;
+                if (nameFolder.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)) {
+                    final ItemIterable<CmisObject> children = udFolder.getChildren();
+                    for (CmisObject cmisObject : children) {
+                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "cmcor:CM_DocumentoPersonalizado")) {
+                            final Document document = (Document) cmisObject;
+                            final DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
+                            documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
+                            dtos.add(dtos.size(), documentoDTO);
                         }
-                        dtos.add(dtos.size(), documentoDTO);
                     }
                 }
             }
