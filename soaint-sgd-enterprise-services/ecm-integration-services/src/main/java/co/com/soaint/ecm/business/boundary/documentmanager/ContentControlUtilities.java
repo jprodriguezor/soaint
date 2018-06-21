@@ -1095,6 +1095,7 @@ public final class ContentControlUtilities implements Serializable {
                 imageBytes = documentBytes;
                 documentBytes = getDocumentBytes(documentECM);
                 mimeType = MimeTypes.getMIMEType("html");
+                saveStamperImageFile(documentoDTO, nroRadicado);
                 isHtmlDoc = true;
             } else {
                 documentImg = getStamperImage(nroRadicado);
@@ -1213,7 +1214,26 @@ public final class ContentControlUtilities implements Serializable {
         return documentoDTO;
     }
 
-    Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
+        if (ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
+            return crearCarpetaRadicacion(selectorType, session);
+        }
+        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
+                ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
+        if (!optionalCarpeta.isPresent()) {
+            throw new SystemException("No existe la dependencia " + dependencyCode + " en el Gestor de documentos");
+        }
+        Carpeta carpeta = optionalCarpeta.get();
+        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), selectorType.getSelectorName());
+        if (!optionalFolder.isPresent()) {
+            carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
+        } else {
+            carpeta.setFolder(optionalFolder.get());
+        }
+        return carpeta;
+    }
+
+    private Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
         final String query = "SELECT * FROM cmcor:CM_Subserie" +
                 " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + ConstantesECM.DEPENDENCIA_RADICACION + "'" +
                 " AND " + ConstantesECM.CMCOR_SER_CODIGO + " = '0231'" +
@@ -1237,25 +1257,6 @@ public final class ContentControlUtilities implements Serializable {
             return carpeta;
         }
         throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
-    }
-
-    Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
-        if (ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
-            throw new SystemException("En la dependencia " + dependencyCode + " no se admiten radicaciones");
-        }
-        final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA,
-                ConstantesECM.CMCOR_DEP_CODIGO, dependencyCode, session);
-        if (!optionalCarpeta.isPresent()) {
-            throw new SystemException("No existe la dependencia " + dependencyCode + " en el Gestor de documentos");
-        }
-        Carpeta carpeta = optionalCarpeta.get();
-        final Optional<Folder> optionalFolder = sonFolderExistsFrom(carpeta.getFolder(), selectorType.getSelectorName());
-        if (!optionalFolder.isPresent()) {
-            carpeta = crearCarpeta(carpeta, selectorType.getSelectorName(), "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, carpeta, null);
-        } else {
-            carpeta.setFolder(optionalFolder.get());
-        }
-        return carpeta;
     }
 
     private void updateAnexos(String idDocument, String newIdDocument, Session session) {
