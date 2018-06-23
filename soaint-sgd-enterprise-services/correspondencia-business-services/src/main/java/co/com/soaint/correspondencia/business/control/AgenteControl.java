@@ -71,7 +71,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumEstadoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(EstadoAgenteEnum.ASIGNADO.getCodigo()))
             return EstadoAgenteEnum.ASIGNADO.getNombre();
         else if (codigo.equals(EstadoAgenteEnum.DEVUELTO.getCodigo()))
@@ -90,7 +92,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
             return TipoAgenteEnum.DESTINATARIO.getNombre();
         else if (codigo.equals(TipoAgenteEnum.REMITENTE.getCodigo()))
@@ -105,7 +109,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoRemitente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoRemitenteEnum.EXTERNO.getCodigo()))
             return TipoRemitenteEnum.EXTERNO.getNombre();
         else if (codigo.equals(TipoRemitenteEnum.INTERNO.getCodigo()))
@@ -428,8 +434,8 @@ public class AgenteControl {
             return AgenteFullDTO.newInstance()
                     .codCortesia(agenteDTO.getCodCortesia())
                     .descCortesia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodCortesia()))
-                    .codDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodDependencia()))
+                    .codDependencia(agenteDTO.getCodDependencia())
+                    .descDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
                     .codEnCalidad(agenteDTO.getCodEnCalidad())
                     .descEnCalidad(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodEnCalidad()))
                     .codEstado(agenteDTO.getCodEstado())
@@ -455,7 +461,6 @@ public class AgenteControl {
                     .razonSocial(agenteDTO.getRazonSocial())
                     .datosContactoList(datosContactoControl.datosContactoListTransformToFull(agenteDTO.getDatosContactoList()))
                     .build();
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -478,7 +483,6 @@ public class AgenteControl {
 
             return agenteFullDTOList;
 
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -496,8 +500,8 @@ public class AgenteControl {
     public List<AgenteFullDTO> consultarAgentesFullByCorrespondencia(BigInteger idDocumento) throws SystemException, BusinessException {
 
         List<AgenteDTO> agenteDTOList = new ArrayList<>();
-        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
-        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarRemitentesByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumentoMail(idDocumento).forEach(agenteDTOList::add);
 
         return agenteListTransformToFull(agenteDTOList);
     }

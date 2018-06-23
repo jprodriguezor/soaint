@@ -117,7 +117,6 @@ public class DatosContactoControl {
                     .codPrefijoCuadrant(contactoDTO.getCodPrefijoCuadrant())
                     .codTipoVia(contactoDTO.getCodTipoVia())
                     .corrElectronico(contactoDTO.getCorrElectronico())
-                    .descPrefijoCuadrant(contactoDTO.getCodPrefijoCuadrant())
                     .descTipoVia(constantesControl.consultarNombreConstanteByCodigo(contactoDTO.getCodTipoVia()))
                     .descPrefijoCuadrant(constantesControl.consultarNombreConstanteByCodigo(contactoDTO.getCodPrefijoCuadrant()))
                     .direccion(contactoDTO.getDireccion())
@@ -150,9 +149,7 @@ public class DatosContactoControl {
             }
 
             return datosContactoFullDTOList;
-
-            //pendiente construir transform de lista de contactoFullDTO
-        } catch (Exception e){
+            } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
