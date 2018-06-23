@@ -4,7 +4,10 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.domain.entity.*;
+import co.com.soaint.ecm.domain.entity.Carpeta;
+import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.FinalDispositionType;
+import co.com.soaint.ecm.domain.entity.SelectorType;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -13,6 +16,7 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.alfresco.cmis.client.AlfrescoDocument;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -26,6 +30,7 @@ import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +47,7 @@ import java.util.*;
  */
 @Log4j2
 @BusinessControl
-public class ContentControlAlfresco implements ContentControl {
+public final class ContentControlAlfresco implements ContentControl {
 
     private static final long serialVersionUID = 1L;
 
@@ -74,7 +79,7 @@ public class ContentControlAlfresco implements ContentControl {
             parameter.put(SessionParameter.PASSWORD, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_PASS));
 
             // configuracion de conexion
-            parameter.put(SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
+            parameter.put(SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT_ECM));
             parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
             parameter.put(SessionParameter.REPOSITORY_ID, configuracion.getPropiedad("REPOSITORY_ID"));
 
@@ -684,10 +689,10 @@ public class ContentControlAlfresco implements ContentControl {
         final String idDocPrincipal = documento.getIdDocumentoPadre();
         if (StringUtils.isEmpty(idDocPrincipal)) {
             DocumentoDTO dto;
+            final String nroRadicado = documento.getNroRadicado();
             if (!StringUtils.isEmpty(selector) && "PD".equals(selector.toUpperCase())) {
                 dto = utilities.subirDocumentoPrincipalPD(documento, session);
             } else {
-                final String nroRadicado = documento.getNroRadicado();
                 if (StringUtils.isEmpty(nroRadicado)) {
                     throw new SystemException("No se ha especificado el numero de radicado");
                 }
@@ -697,10 +702,6 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 dto = utilities.subirDocumentoPrincipalRadicacion(documento, selectorType, session);
             }
-            /*final String nroRadicado = dto.getNroRadicado();
-            if (!StringUtils.isEmpty(nroRadicado) && "Principal".equals(dto.getTipoPadreAdjunto())) {
-                utilities.estamparEtiquetaRadicacion(dto, session);
-            }*/
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             documentoDTOS.add(documentoDTOS.size(), dto);
             return MensajeRespuesta.newInstance()
@@ -743,12 +744,12 @@ public class ContentControlAlfresco implements ContentControl {
     public List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws SystemException {
         final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
         if (folder == null) {
+            log.error("El Folder introducido es null");
             return documentoDTOS;
         }
         for (CmisObject cmisObject :
                 folder.getChildren()) {
-            if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
-                    cmisObject.getType().getId().startsWith("D:cmcor:")) {
+            if (cmisObject instanceof Document && cmisObject.getType().getId().startsWith("D:cmcor:")) {
                 documentoDTOS.add(documentoDTOS.size(), utilities.transformarDocumento((Document) cmisObject));
             }
         }
@@ -777,20 +778,43 @@ public class ContentControlAlfresco implements ContentControl {
             if (ObjectUtils.isEmpty(listaDocumentos)) {
                 throw new SystemException("No se han especificado los documentos para archivar en la Unidad Documental");
             }
-            listaDocumentos.forEach(documentoDTO -> {
-                CmisObject documentObj = session.getObject(new ObjectIdImpl(documentoDTO.getIdDocumento()));
-                if (documentObj.getType().getId().startsWith("D:cmcor:")) {
-                    Document document = (Document) documentObj;
-                    final String docName = documentoDTO.getNombreDocumento();
-                    if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
-                        document.rename(docName);
-                    }
-                    final List<Folder> parents = document.getParents();
-                    final Optional<Folder> sourceTarget = parents.parallelStream()
-                            .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
-                                    StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
-                    sourceTarget.ifPresent(folder -> {
-                        document.move(folder, targetFolder);
+            for (DocumentoDTO documentoDTO : listaDocumentos) {
+                final CmisObject documentObj = session.getObject(session.createObjectId(documentoDTO.getIdDocumento()));
+                if (documentObj.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
+                    final Document document = (Document) documentObj;
+                    final Folder sourceFolder = utilities.getFolderFrom(document);
+                    if (null != sourceFolder) {
+                        final String docName = documentoDTO.getNombreDocumento();
+                        if (!document.getName().equals(docName)) {
+                            document.rename(docName);
+                        }
+                        document.move(sourceFolder, targetFolder);
+
+                        /*final boolean isCommunication = folderName.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                                || folderName.startsWith(ConstantesECM.COMUNICACION_INTERNA);
+                        final String docName = documentoDTO.getNombreDocumento();
+                        if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
+                            document.rename(docName);
+                        }
+                        if (isCommunication) {
+                            utilities.crearLink(targetFolder, document, session);
+                        } else {
+                            document.move(sourceFolder, targetFolder);
+                            *//*final List<Folder> parents = document.getParents();
+                            final Optional<Folder> sourceTarget = parents.parallelStream()
+                                    .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
+                                            StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
+                            sourceTarget.ifPresent(folder -> {
+                                document.move(folder, targetFolder);
+                                final Map<String, Object> properties = new HashMap<>();
+                                Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
+                                if (ObjectUtils.isEmpty(startDate)) {
+                                    properties.put(ConstantesECM.CMCOR_UD_FECHA_INICIAL, GregorianCalendar.getInstance());
+                                }
+                                properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
+                                targetFolder.updateProperties(properties);
+                            });*//*
+                        }*/
                         final Map<String, Object> properties = new HashMap<>();
                         Calendar startDate = targetFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_INICIAL);
                         if (ObjectUtils.isEmpty(startDate)) {
@@ -798,9 +822,12 @@ public class ContentControlAlfresco implements ContentControl {
                         }
                         properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
                         targetFolder.updateProperties(properties);
-                    });
+                    }
                 }
-            });
+            }
+            /*listaDocumentos.forEach(documentoDTO -> {
+
+            });*/
             unidadDocumentalDTO = utilities.transformarUnidadDocumental(targetFolder);
             final List<DocumentoDTO> documentsFromFolder = getDocumentsFromFolder(targetFolder);
             unidadDocumentalDTO.setListaDocumentos(documentsFromFolder);
@@ -836,9 +863,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         byte[] bytes = documento.getDocumento();
         if ("html".equals(documento.getTipoDocumento())) {
-            documento.setTipoDocumento(DocumentMimeType.APPLICATION_HTML.getType());
+            documento.setTipoDocumento(MimeTypes.getMIMEType("html"));
         } else {
-            documento.setTipoDocumento(DocumentMimeType.APPLICATION_PDF.getType());
+            documento.setTipoDocumento(MimeTypes.getMIMEType("pdf"));
         }
 
         if (documento.getIdDocumento() == null) {
@@ -890,56 +917,110 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para modificar metadatos del documento de Alfresco
      *
-     * @param session             Objeto de conexion a Alfresco
-     * @param idDocumento         Nombre del documento que se va a crear
-     * @param nroRadicado         Documento que se va a subir
-     * @param tipologiaDocumental Tipo de comunicacion que puede ser Externa o Interna
-     * @return Devuelve el id de la carpeta creada
+     * @param session Objeto de conexion a Alfresco
+     * @param dto     Obj DocumentoDTO con las modificaciones
      */
     @Override
-    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws SystemException {
-        log.info("### Modificar documento: " + idDocumento);
-        MensajeRespuesta response = new MensajeRespuesta();
-        if (StringUtils.isEmpty(idDocumento)) {
-            throw new SystemException("Especifique el id del documento a modificar");
+    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO dto, Session session) {
+        final MensajeRespuesta response = new MensajeRespuesta();
+        final Map<String, Object> idResponse = new HashMap<>();
+        idResponse.put("idECM", null);
+        response.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
+        response.setResponse(idResponse);
+        if (ObjectUtils.isEmpty(dto)) {
+            response.setMensaje("El documento introducido el nulo");
+            return response;
         }
-        try {
-            final ObjectId idDoc = new ObjectIdImpl(idDocumento);
-            final CmisObject object = session.getObject(idDoc);
-            final Map<String, Object> updateProperties = new HashMap<>();
-            if (!StringUtils.isEmpty(nroRadicado)) {
+        final String idDocumento = dto.getIdDocumento();
+        if (StringUtils.isEmpty(idDocumento)) {
+            response.setMensaje("El ID del documento introducido el nulo");
+            return response;
+        }
+        log.info("### Modificar documento: " + idDocumento);
+        final String docName = dto.getNombreDocumento();
+        if (!StringUtils.isEmpty(docName)) {
+            try {
+                final ObjectId idDocObject = new ObjectIdImpl(idDocumento);
+                final CmisObject object = session.getObject(idDocObject);
+                if (!(object instanceof Document)) {
+                    response.setMensaje("El id especificado no coincide con el de un documento");
+                    return response;
+                }
+                final Map<String, Object> updateProperties = new HashMap<>();
+                final String nroRadicado = dto.getNroRadicado();
+                final SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                if (null == selectorType) {
+                    response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
+                    return response;
+                }
                 updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
                 final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
                 if ("Anexo".equals(docType)) {
-                    throw new SystemException("No se debe modificar el numero de radicado de un documento anexo");
+                    response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
+                    return response;
                 }
-                final DocumentoDTO dto = new DocumentoDTO();
-                dto.setIdDocumento(idDocumento);
-                final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
-                principalAdjuntosQueryResults.forEach(queryResult -> {
-                    String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                    CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                    tmpObject.updateProperties(updateProperties);
-                });
-            }
-            if (!StringUtils.isEmpty(nombreRemitente)) {
-                updateProperties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, nombreRemitente);
-            }
-            if (!StringUtils.isEmpty(tipologiaDocumental)) {
-                updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
-            }
-            if (!updateProperties.isEmpty()) {
-                object.updateProperties(updateProperties);
-            }
-            log.info("### Modificados los metadatos de correctamente");
-            response.setMensaje("OK");
-            response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+                final Folder sourceFolder = utilities.getFolderFrom((Document) object);
+                if (null != sourceFolder) {
+                    dto.setNroRadicado(null);
+                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, ConstantesECM.DEPENDENCIA_RADICACION, session);
+                    final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
+                    final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
+                    final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+                    for (QueryResult queryResult :
+                            principalAdjuntosQueryResults) {
+                        String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                        CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
+                        tmpObject = tmpObject.updateProperties(updateProperties);
+                        Document document = (Document) tmpObject;
+                        document.move(sourceFolder, targetFolder.getFolder());
+                        document.refresh();
+                        if (!ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
+                            utilities.crearLink(linkTargetFolder.getFolder(), document, session);
+                        }
+                    }
+                }
+                final String nombreRemitente = dto.getNombreRemitente();
+                if (!StringUtils.isEmpty(nombreRemitente)) {
+                    updateProperties.put(ConstantesECM.CMCOR_NOMBRE_REMITENTE, nombreRemitente);
+                }
+                final String tipologiaDocumental = dto.getTipologiaDocumental();
+                if (!StringUtils.isEmpty(tipologiaDocumental)) {
+                    updateProperties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, tipologiaDocumental);
+                }
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, "");
+                CmisObject cmisObject = object.updateProperties(updateProperties);
+                log.info("### Modificados los metadatos de correctamente");
+                updateProperties.clear();
+                updateProperties.put("idECM", cmisObject.getId().split(";")[0]);
+                response.setMensaje("OK");
+                response.setResponse(updateProperties);
+                response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+                return response;
 
-        } catch (CmisObjectNotFoundException e) {
-            log.error("*** Error al modificar el documento *** ", e);
-            response.setMensaje("Documento no encontrado");
-            response.setCodMensaje("00006");
+            } catch (Exception e) {
+                log.error("*** Error al modificar el documento *** ", e);
+                response.setMensaje(e.getMessage());
+                return response;
+            }
         }
+        dto.setIdDocumento(null);
+        if (!StringUtils.isEmpty(dto.getNroRadicado())) {
+            final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+            for (QueryResult queryResult : principalAdjuntosQueryResults) {
+                String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
+                CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+                Document document = (Document) cmisObject;
+                String docType = document.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+                if (!StringUtils.isEmpty(docType) && "principal".equals(docType.toLowerCase())) {
+                    dto.setIdDocumento(document.getId().split(";")[0]);
+                    break;
+                }
+            }
+        }
+        response.setCodMensaje(ConstantesECM.SUCCESS_COD_MENSAJE);
+        response.getResponse().put("idECM", dto.getIdDocumento());
+        response.setMensaje(ConstantesECM.SUCCESS);
         return response;
     }
 
@@ -1055,8 +1136,7 @@ public class ContentControlAlfresco implements ContentControl {
         final List<Folder> folderList = utilities.getUDListWithIDBy(codigoDependencia, session);
         final List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (Folder folder :
-                folderList) {
+        for (Folder folder : folderList) {
             final List<DocumentoDTO> documentsFromFolder = getDocumentsFromFolder(folder);
             final String idUnidadDocumental = folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
 
@@ -1164,7 +1244,10 @@ public class ContentControlAlfresco implements ContentControl {
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
                     unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    unidadDocumentalDTO.setDisposicion(utilities.getAbrevDisposition(unidadDocumentalDTO.getDisposicion()));
+                    final FinalDispositionType type = FinalDispositionType.getDispositionBy(unidadDocumentalDTO.getDisposicion());
+                    if (null != type) {
+                        unidadDocumentalDTO.setDisposicion(type.name());
+                    }
                 });
             });
             final Map<String, Object> responseMap = new HashMap<>();
@@ -1193,14 +1276,17 @@ public class ContentControlAlfresco implements ContentControl {
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
-            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getKey().equals(disposicion)) {
-                eliminarUnidadDocumental(idUnidadDocumental, session);
-            } else {
-                Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
-                if (optionalFolder.isPresent()) {
-                    dto.setDisposicion(utilities.getAbrevDisposition(disposicion));
-                    utilities.updateProperties(optionalFolder.get(), dto);
+            if (!StringUtils.isEmpty(disposicion)) {
+                final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
+                final FinalDispositionType dispositionType = FinalDispositionType.valueOf(disposicion.trim().toUpperCase());
+                if ("aprobado".equals(estado) && FinalDispositionType.E == dispositionType) {
+                    eliminarUnidadDocumental(idUnidadDocumental, session);
+                } else {
+                    Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                    if (optionalFolder.isPresent()) {
+                        dto.setDisposicion(dispositionType.name());
+                        utilities.updateProperties(optionalFolder.get(), dto);
+                    }
                 }
             }
         }
@@ -1215,9 +1301,12 @@ public class ContentControlAlfresco implements ContentControl {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         try {
             utilities.estamparEtiquetaRadicacion(documentoDTO, session);
+            final Map<String, Object> mapResponse = new HashMap<>();
+            mapResponse.put("documentoDto", documentoDTO);
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje("Imagen guardada satisfactoriamente")
+                    .response(mapResponse)
                     .build();
 
         } catch (Exception e) {
@@ -1256,10 +1345,11 @@ public class ContentControlAlfresco implements ContentControl {
                 throw new SystemException("El id proporcionado no coincide con el de un documento principal");
             }
             final String documentMimeType = StringUtils.isEmpty(documento.getTipoDocumento()) ?
-                    DocumentMimeType.APPLICATION_PDF.getType() : documento.getTipoDocumento();
-            ContentStream contentStream = new ContentStreamImpl(nombreDoc,
+                    MimeTypes.getMIMEType("pdf") : documento.getTipoDocumento();
+            final ContentStream contentStream = new ContentStreamImpl(nombreDoc,
                     BigInteger.valueOf(bytes.length), documentMimeType, new ByteArrayInputStream(bytes));
-            Map<String, Object> properties = new HashMap<>();
+            //final String nroRadicado
+            final Map<String, Object> properties = new HashMap<>();
             properties.put(PropertyIds.NAME, nombreDoc);
             properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Anexo");
@@ -1271,12 +1361,12 @@ public class ContentControlAlfresco implements ContentControl {
             if (null != folder) {
                 document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
                 if (null != document) {
-                    properties.clear();
-                    properties.put("documentoAnexo", utilities.transformarDocumento(document));
+                    final List<DocumentoDTO> response = new ArrayList<>();
+                    response.add(response.size(), utilities.transformarDocumento(document));
                     return MensajeRespuesta.newInstance()
                             .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                             .mensaje("Operacion completada satisfactoriamente")
-                            .response(properties)
+                            .documentoDTOList(response)
                             .build();
                 }
             }
@@ -1308,22 +1398,26 @@ public class ContentControlAlfresco implements ContentControl {
             throw new SystemException("Especifique el codigo de la dependencia");
         }
         final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'" +
+                " AND " + PropertyIds.NAME + " NOT LIKE '" + ConstantesECM.PRODUCCION_DOCUMENTAL + "%'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
-        for (QueryResult queryResult :
-                queryResults) {
+        for (QueryResult queryResult : queryResults) {
             final String id = queryResult.getPropertyValueByQueryName(ConstantesECM.CMCOR_UD_ID);
             if (StringUtils.isEmpty(id) || id.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                 final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-                final ItemIterable<CmisObject> children = udFolder.getChildren();
-                for (CmisObject cmisObject :
-                        children) {
-                    if (cmisObject.getType().getId().contains("D:" + ConstantesECM.CMCOR)) {
-                        DocumentoDTO documentoDTO = utilities.transformarDocumento((Document) cmisObject);
-                        documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
-                        dtos.add(dtos.size(), documentoDTO);
+                final String nameFolder = udFolder.getName();
+                if (nameFolder.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
+                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)) {
+                    final ItemIterable<CmisObject> children = udFolder.getChildren();
+                    for (CmisObject cmisObject : children) {
+                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
+                            final Document document = (Document) cmisObject;
+                            final DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
+                            documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
+                            dtos.add(dtos.size(), documentoDTO);
+                        }
                     }
                 }
             }

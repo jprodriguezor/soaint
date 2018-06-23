@@ -169,7 +169,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               break;
             default:
               this._store.dispatch(new PushNotificationAction({
-                severity: 'error', summary: 'UPSSS!!! HA OCURRIDO UN ERROR'
+                severity: 'error', summary: data.mensaje
               }));
           }
         }

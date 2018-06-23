@@ -378,12 +378,8 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   addAnexoToList(anexo: AnexoDTO) {
     this.listaAnexos = [
-      ...[anexo],
-      ...this.listaAnexos.filter(
-            value =>
-            value.tipo.nombre !== anexo.tipo.nombre ||
-            value.soporte !== anexo.soporte
-      )
+       ...this.listaAnexos,
+      ...[anexo]
     ];
   }
 

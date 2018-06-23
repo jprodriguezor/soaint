@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Store} from '@ngrx/store';
@@ -18,7 +18,8 @@ export class EditarPlanillaComponent implements OnInit {
   @Input()
   planilla: any;
 
-  showDependencia = false;
+  @Output()
+  completado: EventEmitter<any> = new EventEmitter<{}>()
 
   maxDateValue: Date = new Date();
 
@@ -27,7 +28,7 @@ export class EditarPlanillaComponent implements OnInit {
     {nombre: 'DEVUELTO', codigo: 'DV'}
     //{nombre: 'ANULADO', codigo: 'AN'},
     //{nombre: 'PENDIENTE', codigo: 'PD'},
-    // {nombre: 'REDIRECCIONAR', codigo: 'RE'},
+    //{nombre: 'REDIRECCIONAR', codigo: 'RE'},
   ];
 
   dependencias: DependenciaDTO[] = [];
@@ -48,10 +49,10 @@ export class EditarPlanillaComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      estadoEntrega: [null],
-      fechaEntrega: [null],
+      estadoEntrega: [null, [Validators.required]],
+      fechaEntrega: [null,  [Validators.required]],
       dependenciaDestino: [null],
-      observaciones: [null]
+      observaciones: [null,  [Validators.required]]
     });
   }
 
@@ -59,11 +60,6 @@ export class EditarPlanillaComponent implements OnInit {
     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
       this.dependencias = results.dependencias;
     });
-  }
-
-  estadoEntregaChange() {
-    console.log('State Change');
-    /*this.showDependencia = this.form.get('estadoEntrega').value && this.form.get('estadoEntrega').value.codigo === 'DV';*/
   }
 
   findDependency(code): string {
@@ -76,5 +72,10 @@ export class EditarPlanillaComponent implements OnInit {
     const result = this.dependencias.find((element) => element.codSede === code);
     return result ? result.nomSede : '';
   }
+
+  editarPlanilla() {
+    this.completado.emit({});
+  }
+
 
 }

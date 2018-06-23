@@ -5,6 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.ui.ReasignarComunicacionDTO;
@@ -73,7 +74,7 @@ public class CorrespondenciaGatewayApi {
                                                            @QueryParam("cod_tipo_doc") final String codTipoDoc,
                                                            @QueryParam("nro_radicado") final String nroRadicado) {
 
-        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribución física");
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia salida para distribuciï¿½n fï¿½sica");
         Response response = client.listarComunicacionesSalidaDistibucionFisica(fechaIni, fechaFin, codDependencia, modEnvio, claseEnvio, codTipoDoc, nroRadicado);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
@@ -226,33 +227,37 @@ public class CorrespondenciaGatewayApi {
     @Path("/devolver")
     @JWTTokenSecurity
     public Response devolverComunicaciones(DevolucionDTO devolucion) {
-        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
-        Response response = client.devolverComunicaciones(devolucion);
-        devolucion.getItemsDevolucion().forEach(item -> {
-
-            EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-            entradaProceso.setIdProceso("proceso.gestor-devoluciones");
-            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
-            devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
-
-        });
-        String responseObject = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseObject).build();
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones - documentos trÃ¡mites");
+        return devolver(devolucion);
     }
 
     @POST
     @Path("/devolver/asignacion")
     @JWTTokenSecurity
     public Response devolverComunicacionesAsignacion(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones - asignaciÃ³n");
+        return devolver(devolucion);
+    }
+
+    public Response devolver(DevolucionDTO devolucion) {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
-
-        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso.gestor-devoluciones");
-        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
-
-        devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
-
         Response response = client.devolverComunicaciones(devolucion);
+        if(response.getStatus() == HttpStatus.NO_CONTENT.value() || response.getStatus() == HttpStatus.OK.value()) {
+            devolucion.getItemsDevolucion().forEach(item -> {
+                EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+                entradaProceso.setIdProceso("proceso.gestor-devoluciones");
+                entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+                devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
+                    Response response_instancia =  this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso);
+                    if(response_instancia.getStatus() == HttpStatus.OK.value()) {
+                        RespuestaProcesoDTO entity = response_instancia.readEntity(RespuestaProcesoDTO.class);
+                        itemDevolucion.getCorrespondencia().setIdeInstancia(entity.getCodigoProceso());
+                        this.client.actualizarInstancia(itemDevolucion.getCorrespondencia());
+                    }
+                }));
+            });
+
+        }
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
@@ -367,8 +372,22 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-planillas-salida")
+    @JWTTokenSecurity
+    public Response listarPlanillasSalida(@QueryParam("fecha_ini") final String fechaIni,
+                                    @QueryParam("fecha_fin") final String fechaFin,
+                                    @QueryParam("cod_dependencia") final String codDependencia,
+                                    @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                    @QueryParam("nro_planilla") final String nroPlanilla) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando planillas");
+        Response response = client.listarPlanillasSalida(nroPlanilla);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @POST
-    @Path("/generar-plantilla")
+    @Path("/generar-planilla")
     public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla distribucion");
         Response response = client.generarPlantilla(planilla);
@@ -392,6 +411,27 @@ public class CorrespondenciaGatewayApi {
         log.info("processing rest request - cargar planilla distribucion");
         Response response = client.cargarPlantilla(planilla);
         String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/generar-planilla-salida")
+    public Response generarPlanillaSalida(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla salida distribucion");
+        Response response = client.generarPlantilla(planilla);
+        PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
+
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas-salida");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso.gestion-planillas-salida:1.0.0-SNAPSHOT");
+        entradaProceso.setUsuario("arce");
+        entradaProceso.setPass("arce");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciarTercero(entradaProceso);
+
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 

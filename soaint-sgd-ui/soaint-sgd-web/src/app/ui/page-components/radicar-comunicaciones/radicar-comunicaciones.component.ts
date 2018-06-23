@@ -23,6 +23,7 @@ import {RadicarSuccessAction} from '../../../infrastructure/state-management/rad
 import 'rxjs/add/operator/skipWhile';
 import {ComunicacionOficialEntradaDTV} from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
 import {Sandbox as ComunicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import {isNullOrUndefined} from "util";
 
 
 declare const require: any;
@@ -216,9 +217,9 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       console.log(this.valueGeneral);
       let requiereDigitalizacion = 0;
 
-      if (this.valueGeneral.reqDigit === 1) {
+      if (this.valueGeneral.reqDigit == 1) {
         requiereDigitalizacion = 1;
-      } else if (this.valueGeneral.reqDigit === 2) {
+      } else if (this.valueGeneral.reqDigit == 2) {
         requiereDigitalizacion = 2;
       }
 

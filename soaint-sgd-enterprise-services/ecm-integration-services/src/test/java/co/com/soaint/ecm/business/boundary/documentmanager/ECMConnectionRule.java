@@ -33,7 +33,7 @@ public class ECMConnectionRule implements TestRule {
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD, "http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS, "admin");
             System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER, "admin");
-            System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+            System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT_ECM, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
             System.setProperty(SystemParameters.API_CORE_ALFRESCO, "http://192.168.3.245:8080/alfresco/api/-default-/public/alfresco/versions/1");
             System.setProperty(SystemParameters.API_SERVICE_ALFRESCO, "http://192.168.3.245:8080/alfresco/service/api/node/workspace/SpacesStore/");
         }
@@ -100,7 +100,7 @@ public class ECMConnectionRule implements TestRule {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-        parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
+        parameter.put(SessionParameter.ATOMPUB_URL, System.getProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT_ECM));
 
 
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());

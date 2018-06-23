@@ -53,11 +53,15 @@ public class Configuracion {
     @Value("${carpetaPlantilla}")
     private String acarpetaPlantilla;
 
-    private final CronType cronType;
+    private final CronType cronTypeUD;
+    private final CronType cronTypeDD;
 
-    private Configuracion(@Value("${scheduling.job.cron}") String cronName){
-       this.cronType = CronType.valueOf(cronName.toUpperCase());
+    private Configuracion(@Value("${scheduling.job.cron.ud}") String cronUDName,
+                          @Value("${scheduling.job.cron.dd}") String cronDDName) {
+        this.cronTypeUD = CronType.valueOf(cronUDName.toUpperCase());
+        this.cronTypeDD = CronType.valueOf(cronDDName.toUpperCase());
     }
+
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *

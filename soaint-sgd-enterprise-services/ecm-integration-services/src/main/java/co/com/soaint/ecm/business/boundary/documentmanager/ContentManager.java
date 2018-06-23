@@ -10,6 +10,7 @@ import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -133,9 +134,7 @@ public class ContentManager implements Serializable {
      */
     public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws SystemException {
         log.info("### Modificando metadatos del documento..");log.info("### Se invoca el metodo de modificar el documento..");
-        return contentControl.modificarMetadatosDocumento(conexion.getSession(),
-                metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(),
-                metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
+        return contentControl.modificarMetadatosDocumento(metadatosDocumentos, conexion.getSession());
     }
 
     /**

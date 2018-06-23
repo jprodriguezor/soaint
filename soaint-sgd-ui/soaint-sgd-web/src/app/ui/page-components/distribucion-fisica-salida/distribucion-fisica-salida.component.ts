@@ -8,6 +8,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as DistribucionArrayData} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-selectors';
+import {getArrayData as getPaisArrayData} from '../../../infrastructure/state-management/paisDTO-state/paisDTO-selectors';
+import {getArrayData as getMunicipioArrayData} from '../../../infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
+import {getArrayData as getDepartamentoArrayData} from '../../../infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
+
 import {Sandbox as FuncionarioSandBox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {Subscription} from 'rxjs/Subscription';
@@ -38,6 +42,15 @@ import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tare
 import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 import { getModalidadCorreoArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/modalidad-correo-selectors';
 import { getClaseEnvioArrayData } from '../../../infrastructure/state-management/constanteDTO-state/selectors/clase-envio-selectors';
+import { ROUTES_PATH } from '../../../app.route-names';
+import { go } from '@ngrx/router-store';
+import { PaisDTO } from '../../../domain/paisDTO';
+import { DepartamentoDTO } from '../../../domain/departamentoDTO';
+import { MunicipioDTO } from '../../../domain/municipioDTO';
+import { LoadAction as PaisLoadAction } from '../../../infrastructure/state-management/paisDTO-state/paisDTO-actions';
+import { LoadAction as DepartamentoLoadAction} from '../../../infrastructure/state-management/departamentoDTO-state/departamentoDTO-actions';
+import { LoadAction as MunicipioLoadAction} from '../../../infrastructure/state-management/municipioDTO-state/municipioDTO-actions';
+import { ComunicacionDataModel } from './models/comunicacion-data.model';
 
 
 
@@ -47,15 +60,15 @@ import { getClaseEnvioArrayData } from '../../../infrastructure/state-management
   styleUrls: ['./distribucion-fisica-salida.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDestroy {
+export class DistribucionFisicaSalidaComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
   comunicaciones$: Observable<ComunicacionOficialDTO[]>;
 
-  listadoComunicaciones: ComunicacionOficialDTO[] = [];
+  listadoComunicaciones: ComunicacionDataModel[] = [];
 
-  selectedComunications: ComunicacionOficialDTO[] = [];
+  selectedComunications: ComunicacionDataModel[] = [];
 
   start_date: Date = new Date();
 
@@ -68,6 +81,14 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
   numeroPlanillaDialogVisible: boolean = false;
 
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
+
+  paisSuggestions$: Observable<PaisDTO[]>;
+
+  listadoPais: PaisDTO[] = [];
+
+  departamentoSuggestions$: Observable<DepartamentoDTO[]>;
+
+  municipioSuggestions$: Observable<MunicipioDTO[]>;
 
   modalidadCorreo: ConstanteDTO[];
 
@@ -89,18 +110,13 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   dependencias: DependenciaDTO[] = [];
 
-  comunicacionSeleccionada: ComunicacionOficialDTO;
+  comunicacionSeleccionada: ComunicacionDataModel;
 
   informacionEnvioDialogVisible = false;
 
   detalleDialogVisible = false;
 
   validations: any = {};
-
-  // tarea
-  task: TareaDTO;
-  taskVariables: VariablesTareaDTO = {};
-  closedTask:  Observable<boolean> ;
 
 
   @ViewChild('popUpInformacionEnvio') popUpInformacionEnvio;
@@ -132,8 +148,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this.start_date.setHours(this.start_date.getHours() - 24);
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this._constSandbox.loadDatosGeneralesDispatch();
-    this.InitDataForm();
-    this.InitPropiedadesTarea();
+    this.DispatchFillData();
+    // this.InitPropiedadesTarea();
     this.InitSubscriptions();
     this.initForm();
   }
@@ -141,49 +157,45 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
   InitSubscriptions() {
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData); 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+    
+    this._store.select(getPaisArrayData)
+    .subscribe(response => {
+      this.listadoPais = [...response]
+    });
 
-
-    this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
-    this.tipologiaDocumentalSuggestions$.subscribe((results) => {
+    this._store.select(getTipologiaDocumentalArrayData)
+    .subscribe((results) => {
       this.tipologiasDocumentales = results;
     });  
-    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+
+    this._store.select(getAuthenticatedFuncionario)
+    .subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
+
     this.dependenciaSelected$.subscribe((result) => {
       this.dependenciaSelected = result;
     });
+
+    this._dependenciaSandbox.loadDependencies({})
+    .subscribe((results) => {
+      this.dependencias = results.dependencias;
+    });
+
+    this._store.select(getModalidadCorreoArrayData)
+    .subscribe(response => {
+      this.modalidadCorreo = response;
+    });
+
+    this._store.select(getClaseEnvioArrayData)
+    .subscribe(response => {
+      this.claseEnvio = response;
+    });
   }
 
-  InitPropiedadesTarea() {
-    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
-    this._store.select(getActiveTask).subscribe((activeTask) => {
-      this.task = activeTask;
-  });
-  }
-
-  getDatosRemitente(comunicacion): Observable<AgentDTO> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosRemitente();
-  }
-
-  getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-      const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-      return radicacionEntradaDTV.getDatosDestinatarios();
-  }
-
-  getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDestinatarioInmediate();
-  }
-
-  getDatosDocumentos(comunicacion): Observable<DocumentoDTO[]> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDocumento();
-  }
 
   ngOnDestroy() {
-    this.funcionarioSubcription.unsubscribe();
+    
   }
 
   initForm() {
@@ -216,19 +228,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this.listadoComunicaciones = [];
   }
 
-  InitDataForm() {
-    this._dependenciaSandbox.loadDependencies({})
-    .subscribe((results) => {
-      this.dependencias = results.dependencias;
-    });
-    this._store.select(getModalidadCorreoArrayData)
-    .subscribe(response => {
-      this.modalidadCorreo = response;
-    });
-    this._store.select(getClaseEnvioArrayData)
-    .subscribe(response => {
-      this.claseEnvio = response;
-    });
+  DispatchFillData() {
+    this._store.dispatch(new PaisLoadAction({}));
   }
 
   convertDate(inputFormat) {
@@ -237,10 +238,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     }
     const d = new Date(inputFormat);
     return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
-  }
-
-  findTipoDoc(code): string {
-    return this.tipologiasDocumentales.find((element) => element.codigo == code).nombre;
   }
 
   findDependency(code): string {
@@ -253,14 +250,25 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     return result ? result.nomSede : '';
   }
 
+
   listarDistribuciones() {
     this.comunicaciones$ =  this.correspondenciaApiService.ListarComunicacionesSalidaDistibucionFisica(this.GetPayload());
     this.comunicaciones$.subscribe(response => {
-      this.listadoComunicaciones = response;
+      let comunicaciones = response;
+      const comunicaciones_transformadas = comunicaciones.reduce((_listado, _current) => {
+          const item = new ComunicacionDataModel(_current);
+          _listado.push(item);
+          return _listado;
+      }, []);
+
+      this.listadoComunicaciones = [];
+      this.listadoComunicaciones = [...comunicaciones_transformadas];
       this.selectedComunications = [];
+      this._detectChanges.detectChanges();
     });
 
   }
+
 
   GetPayload(): any {
     const payload: any = {
@@ -276,15 +284,15 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
       payload.cod_tipo_doc = this.form.get('tipologia').value.codigo;
     }
     if (this.form.value.nroRadicado) {
-      payload.nro_radicado = this.form.get('nroRadicado').value.codigo;
+      payload.nro_radicado = this.form.get('nroRadicado').value;
     }
-
+    return payload;
   }
 
   generarDatosExportar(): PlanillaDTO {
     const agensDTO: PlanAgenDTO[] = [];
 
-    this.selectedComunications.forEach((element) => {
+    this.selectedComunications.forEach((element: any) => {
        const agenDTO: PlanAgenDTO = {
         idePlanAgen: null,
         estado: null,
@@ -298,8 +306,8 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
         usuario: null,
         codCauDevo: null,
         fecCarguePla: null,
-        ideAgente: this.getDatosDestinatarioInmediate(element)[0].ideAgente,
-        ideDocumento: element.correspondencia.ideDocumento,
+        ideAgente: element.ideAgente,
+        ideDocumento: element.ideDocumento,
         nroRadicado: null,
         tipoPersona: null,
         tipologiaDocumental: null,
@@ -338,32 +346,40 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
   };
 
   generarPlanilla() {
-    if (this.InformacionEnvioCompletada()) {
+    if (!this.InformacionEnvioCompletada()) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn', 
+        summary: 'Complete información de envío en las comunicacion(es) seleccionada(s)'
+      }));
+    } else {
       const dependenciaDestinoArray= [];
       const sedeDestinoArray= [];
       const planilla = this.generarDatosExportar();
   
-      this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this._planillaService.generarPlanillasSalida(planilla).subscribe((result) => {
   
         this.selectedComunications.forEach((element) => {
-          dependenciaDestinoArray.push(element.correspondencia.codDependencia);
-          sedeDestinoArray.push(element.correspondencia.codSede);
+          dependenciaDestinoArray.push(element.codDependencia);
+          sedeDestinoArray.push(element.codSede);
         });  
         this.popUpPlanillaGenerada.setDependenciaDestino(this.findDependency(dependenciaDestinoArray[0] ));
         this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
         this.planillaGenerada = result;
         this.numeroPlanillaDialogVisible = true;
-        this.CompletedTask();
+        this.listarDistribuciones();
         this._detectChanges.detectChanges();
       });
-    } else {
-      this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'La información de envío no está completa en las comunicaciones seleccionadas'}));
+
     }
 
   }
 
+  Finalizar(): void {
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+  }
+
   InformacionEnvioCompletada(): boolean {
-    const anyInvalid = this.listadoComunicaciones.find(com => isNullOrUndefined(com.correspondencia.envio_peso) || isNullOrUndefined(com.correspondencia.envio_valor));
+    const anyInvalid = this.selectedComunications.find(com => com.envio_peso === null || com.envio_peso === undefined);
     return anyInvalid ? false : true;
   }
 
@@ -372,9 +388,9 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
     this.informacionEnvioDialogVisible = true;
   }
 
-  ActualizarInformacionEnvio(comunicacion?: ComunicacionOficialDTO) {
+  ActualizarInformacionEnvio(comunicacion?: ComunicacionDataModel) {
     if(!isNullOrUndefined(comunicacion)) {
-      const index = this.listadoComunicaciones.findIndex(com => com.correspondencia.nroRadicado === comunicacion.correspondencia.nroRadicado);
+      const index = this.listadoComunicaciones.findIndex(com => com.nroRadicado === comunicacion.nroRadicado);
       this.listadoComunicaciones[index] = comunicacion;
     } 
     this.informacionEnvioDialogVisible = false; 
@@ -408,24 +424,6 @@ export class DistribucionFisicaSalidaComponent implements TaskForm, OnInit, OnDe
 
   hideDetallePlanillaDialog() {
     this.detalleDialogVisible = false;
-  }
-
-  abort() {
-    this._store.dispatch(new AbortTaskAction({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      instanciaProceso: this.task.idInstanciaProceso
-  }))
-  }
-
-  CompletedTask() {
-    this._taskSandBox.completeTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      idTarea: this.task.idTarea,
-      parametros: {
-      }
-    });
   }
 
   save(): Observable<any> {

@@ -2,7 +2,6 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.DocumentMimeType;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -13,6 +12,7 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +29,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -548,7 +546,8 @@ public class ContentControlAlfrescoTest {
         documentoDTO12.setIdDocumento("qwqwqwqw");
         try {
             DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoFail");
-            assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+            /*assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());*/
+            assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(documentoDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             logger.error("Error");
         }
@@ -558,7 +557,8 @@ public class ContentControlAlfrescoTest {
     public void testModificarMetadatosDocumentoSuccess() {
         try {
             DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoSuccess");
-            assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+            /*assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());*/
+            assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(documentoDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             logger.error("error");
         }
@@ -997,7 +997,7 @@ public class ContentControlAlfrescoTest {
 
         DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionHTMLSuccess");
         documentoDTO.setDocumento("PCFET0NUWVBFIGh0bWw+CjwhLS0gc2F2ZWQgZnJvbSB1cmw9KDAwNTApaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS5jdS9fL2Nocm9tZS9uZXd0YWI/aWU9VVRGLTggLS0+CjxodG1sIGxhbmc9ImVzLTQxOSI+CjxoMT5IZWxsbyBXb3JsZCB0ZXN0RXN0YW1wYXJFdGlxdWV0YVJhZGljYWNpb25TdWNjZXNzPC9oMT4KPC9odG1sPg==".getBytes());
-        documentoDTO.setTipoDocumento(DocumentMimeType.APPLICATION_HTML.getType());
+        documentoDTO.setTipoDocumento(MimeTypes.getMIMEType("html"));
         try {
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
 
