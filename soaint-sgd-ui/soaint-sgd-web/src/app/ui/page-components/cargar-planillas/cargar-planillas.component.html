@@ -4,21 +4,6 @@
     <div taskBody>
       <div class="ui-g-12">
         <div class="card card-w-title">
-          <p-fileUpload id="doc-digitalize" #uploader [style]="{'padding-bottom': '16px'}"
-                        *ngIf="canUpdatePlanilla()"
-                        mode="advanced"
-                        chooseLabel="Buscar"
-                        uploadLabel="Subir documento"
-                        cancelLabel="Cancelar"
-                        multiple="false"
-                        accept="application/*"
-                        maxFileSize="1000000"
-                        customUpload="true"
-                        (uploadHandler)="customUploader($event)"
-                        (onUpload)="onDocUploaded($event)"
-                        (onClear)="onClear($event)">
-          </p-fileUpload>
-
           <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
             <div class="ui-g ui-fluid">
               <div class="ui-g-12">
@@ -95,14 +80,8 @@
   <p-header>
     Registrar resultado
   </p-header>
-  <app-editar-planilla #popupEditar [planilla]="data"></app-editar-planilla>
+  <app-editar-planilla #popupEditar [planilla]="data" (completado)="editarPlanilla()"></app-editar-planilla>
 
   <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button pButton type="button" class="ui-button-primary"
-              label="Cerrar" (click)="hideEditarPlanillaDialog()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!form.valid"
-              label="Aceptar" (click)="editarPlanilla()"></button>
-    </div>
   </p-footer>
 </p-dialog>

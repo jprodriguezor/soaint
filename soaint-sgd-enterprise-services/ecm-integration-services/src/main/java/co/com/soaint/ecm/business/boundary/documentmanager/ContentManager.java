@@ -10,6 +10,7 @@ import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -65,7 +66,7 @@ public class ContentManager implements Serializable {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(DocumentoDTO documento, String selector) throws SystemException {
         log.info("### Subiendo documento principal/adjunto al content..");
         log.info("### Se invoca el metodo de subir el documento principal/adjunto..");
         return contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, selector);
@@ -131,11 +132,9 @@ public class ContentManager implements Serializable {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) {
+    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws SystemException {
         log.info("### Modificando metadatos del documento..");log.info("### Se invoca el metodo de modificar el documento..");
-        return contentControl.modificarMetadatosDocumento(conexion.getSession(),
-                metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(),
-                metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
+        return contentControl.modificarMetadatosDocumento(metadatosDocumentos, conexion.getSession());
     }
 
     /**
@@ -335,5 +334,16 @@ public class ContentManager implements Serializable {
     public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) throws SystemException {
         log.info("processing rest request - Estampar la etiquta de radicacion");
         return contentControl.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
+    }
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    public MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento) throws SystemException {
+        log.info("processing rest request - Subir Documento Anexo al ECM:");
+        return contentControl.subirDocumentoAnexo(documento, conexion.getSession());
     }
 }

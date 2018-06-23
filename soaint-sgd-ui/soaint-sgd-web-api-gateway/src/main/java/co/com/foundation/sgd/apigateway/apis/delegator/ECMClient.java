@@ -8,16 +8,17 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
 
 @ApiDelegator
 @Log4j2
@@ -26,6 +27,8 @@ public class ECMClient {
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
     private String record_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL);
     private String corresponencia_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
+
+    //private Client client = ClientBuilder.newClient();
 
     public ECMClient() {
         super();
@@ -40,7 +43,6 @@ public class ECMClient {
 
         return response.readEntity(MensajeRespuesta.class);
     }
-
 
     public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -58,6 +60,13 @@ public class ECMClient {
         return response.readEntity(Boolean.class);
     }
 
+    public MensajeRespuesta uploadDocumentoAnexo(DocumentoDTO documentoDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/subirDocumentoAnexoECM/").request()
+                .post(Entity.json(documentoDTO));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
 
     public MensajeRespuesta uploadDocument(DocumentoDTO documentoDTO, String tipoComunicacion) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -94,12 +103,12 @@ public class ECMClient {
                     documentoAsociadoECMDTO.setNroRadicado(numero);
                     documentoAsociadoECMDTO.setNroRadicadoReferido(referidoList);
 
+                    MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
+                    mensajeRespuestas.add(asociadoResponse);
+
                 } catch (Exception e) {
                     log.info("Error generando el documento ", e);
                 }
-
-                MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
-                mensajeRespuestas.add(asociadoResponse);
 
             });
         } catch (Exception e) {

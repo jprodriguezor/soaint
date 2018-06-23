@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.PlanillasControl;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlanillaSalidaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ReportDTO;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
@@ -60,6 +61,17 @@ public class GestionarPlanillas {
      */
     public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla) throws BusinessException, SystemException {
         return control.listarPlanillasByNroPlanilla(nroPlanilla, EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PlanillaSalidaDTO listarPlanillasSalidaByNroPlanilla(String nroPlanilla) throws BusinessException, SystemException {
+        return control.listarPlanillasSalidaByNroPlanilla(nroPlanilla, EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
     }
 
     /**

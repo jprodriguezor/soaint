@@ -6,12 +6,17 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
+import org.springframework.util.StringUtils;
 
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * @author ADMIN
@@ -45,6 +50,22 @@ public class Utilities {
         return resultText;
     }
 
+    public static String removeFileExtension(String filename) {
+        if (!StringUtils.isEmpty(filename)) {
+            int index = filename.lastIndexOf('.');
+            if (index == -1) {
+                return filename;
+            }
+            String extension = filename.substring(index + 1);
+            String mimeType = MimeTypes.getMIMEType(extension);
+            if (MimeTypes.getMIMEType("").equals(mimeType)) {
+                return filename;
+            }
+            return filename.substring(0, index);
+        }
+        return "";
+    }
+
     /**
      * Metodo para comparar fechas
      *
@@ -64,5 +85,14 @@ public class Utilities {
         if (dias == 0) return calendar;
         calendar.add(Calendar.DAY_OF_YEAR, dias);
         return calendar;
+    }
+
+    public static LocalDateTime toLocalDateTime(Calendar calendar) {
+        if (calendar == null) {
+            calendar = Calendar.getInstance();
+        }
+        TimeZone tz = calendar.getTimeZone();
+        ZoneId zid = tz == null ? ZoneId.systemDefault() : tz.toZoneId();
+        return LocalDateTime.ofInstant(calendar.toInstant(), zid);
     }
 }

@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -17,6 +18,8 @@ public class ProduccionDocumentalClient {
 
     private String ecm_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
+
+    //Client client = ClientBuilder.newClient();
 
     @Autowired
     private ProcesoClient procesoClient;

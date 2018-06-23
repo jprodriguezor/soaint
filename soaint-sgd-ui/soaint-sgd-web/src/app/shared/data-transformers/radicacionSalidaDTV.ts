@@ -10,6 +10,7 @@ import {CorrespondenciaDTO} from "../../domain/correspondenciaDTO";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {isNullOrUndefined} from "util";
+import {ComunicacionOficialDTO} from "../../domain/comunicacionOficialDTO";
 
 export class RadicacionSalidaDTV extends  RadicacionBase {
 
@@ -20,6 +21,8 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
     const datosEnvio = (<RadicacionSalidaFormInterface>this.source).datosEnvio;
 
     let correspondencia = super.getCorrespondencia();
+
+    correspondencia.reqDistFisica = this.source.generales.reqDistFisica == 1 ? '1' : '0';
 
     if(datosEnvio !== undefined){
 
@@ -63,22 +66,24 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
       const datosContactos = this.transformContactData(agenteExt.datosContactoList);
 
-      if(!this.hasError && !this.source.generales.reqDistFisica){
+      if(!this.hasError && this.source.generales.reqDistFisica == 2){
 
         this.hasError = datosContactos.every( contact => isNullOrUndefined(contact.corrElectronico));
       }
+
+      console.log("agente Externo",agenteExt);
 
       const tipoAgente: AgentDTO = {
         ideAgente: null,
         codTipoRemite: TIPO_REMITENTE_EXTERNO,
         codTipoPers: agenteExt.tipoPersona.codTipoPers,
-        nombre: agenteExt.Nombre,
-        razonSocial: null,
-        nit: null,
+        nombre: agenteExt.nombre,
+        razonSocial: agenteExt.razonSocial || null,
+        nit: agenteExt.nit || null,
         codCortesia: null,
-        codEnCalidad: null,
-        codTipDocIdent: null,
-        nroDocuIdentidad: null,
+        codEnCalidad: isNullOrUndefined(agenteExt.actuaCalidad )? null : agenteExt.actuaCalidad.codigo,
+        codTipDocIdent: isNullOrUndefined(agenteExt.tipoDocumento) ? null : agenteExt.tipoDocumento.codigo,
+        nroDocuIdentidad: agenteExt.nroDocumentoIdentidad || null,
         codSede:  null,
         codDependencia: null,
         fecAsignacion: null,
@@ -91,6 +96,15 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
     });
 
     return agentes;
+  }
+
+  getComunicacionOficial():ComunicacionOficialDTO{
+
+    let comunicacion = super.getComunicacionOficial();
+
+    comunicacion.esRemitenteReferidoDestinatario = this.source.generales.responderRemitente;
+
+    return comunicacion;
   }
 
 

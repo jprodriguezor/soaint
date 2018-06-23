@@ -7,6 +7,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +16,6 @@ import java.util.Optional;
  */
 @Service
 public interface IRecordServices {
-
-    String RMA_IS_CLOSED = "rma:isClosed";
 
     /**
      * Permite crear la estructura en el record
@@ -65,4 +64,6 @@ public interface IRecordServices {
      * @return Void
      */
     void eliminarRecordFolder(String idUnidadDocumental) throws SystemException;
+
+    Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO);
 }

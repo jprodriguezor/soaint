@@ -19,12 +19,11 @@ import java.util.List;
  * Created by Dasiel
  */
 
-
+@Log4j2
+@Service
 @Path("/ecm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Log4j2
-@Service
 public class EcmIntegrationServicesClientRest {
     @Autowired
     private
@@ -125,6 +124,24 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.obtenerDocumentosAdjuntos(documento);
         } catch (Exception e) {
             log.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
+            return this.getSmsErrorResponse(e);
+        }
+    }
+
+    /**
+     * Subir Documento Anexo al ECM
+     *
+     * @param documento DTO que contiene los datos del documento Anexo
+     * @return MensajeRespuesta DocumentoDTO adicionado
+     */
+    @POST
+    @Path("/subirDocumentoAnexoECM/")
+    public MensajeRespuesta subirDocumentoAnexoECM(@RequestBody DocumentoDTO documento) {
+        log.info("processing rest request - Subir Documento Anexo al ECM: ");
+        try {
+            return fEcmManager.subirDocumentoAnexoECM(documento);
+        } catch (Exception e) {
+            log.error("Error en operacion - Subir Documento Anexo al ECM ");
             return this.getSmsErrorResponse(e);
         }
     }

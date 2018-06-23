@@ -39,6 +39,7 @@ public class UnidadDocumentalDTO extends BaseDTO {
     private String estado; // aprobado/rechazado
     private String disposicion; //tipos disposiciones
     private Calendar fechaExtremaFinal;
+    private String fechaAutoCierre;
     private Boolean cerrada;
 
     //heredadas

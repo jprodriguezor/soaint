@@ -6,6 +6,7 @@
 
         <class>co.com.soaint.bpm.services.domain.entity.BamtasksummaryEntity</class>
         <class>co.com.soaint.bpm.services.domain.entity.TaskEventEntity</class>
+        <class>co.com.soaint.bpm.services.domain.entity.AuditTaskImplEntity</class>
         <properties>
 
             <property name="hibernate.show_sql" value="true"/>

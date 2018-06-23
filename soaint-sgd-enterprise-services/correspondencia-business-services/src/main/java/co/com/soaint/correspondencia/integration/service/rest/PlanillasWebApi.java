@@ -2,6 +2,8 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlanillaSalidaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlanillasDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ReportDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +70,21 @@ public class PlanillasWebApi {
     }
 
     /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/planillas-salida")
+    public PlanillasDTO listarPlanillasSalida() throws BusinessException, SystemException {
+        log.info("processing rest request - listar planilla distribucion by nroPlanilla");
+        List<PlanillaDTO> lista = new ArrayList<PlanillaDTO>();
+        lista.add(PlanillaDTO.newInstance().nroPlanilla("creado").build());
+        return PlanillasDTO.newInstance().planillaDTOList(lista).build();
+
+    }
+
+    /**
      *
      * @param nroPlanilla
      * @return
@@ -77,6 +96,20 @@ public class PlanillasWebApi {
     public PlanillaDTO listarPlanillasByNroPlanilla(@PathParam("nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
         log.info("processing rest request - listar planilla distribucion by nroPlanilla");
         return boundary.listarPlanillasByNroPlanilla(nroPlanilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/planillas-salida/{nro_planilla}")
+    public PlanillaSalidaDTO listarPlanillasSalidaByNroPlanilla(@PathParam("nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
+        log.info("processing rest request - listar planilla distribucion by nroPlanilla");
+        return boundary.listarPlanillasSalidaByNroPlanilla(nroPlanilla);
     }
 
     /**

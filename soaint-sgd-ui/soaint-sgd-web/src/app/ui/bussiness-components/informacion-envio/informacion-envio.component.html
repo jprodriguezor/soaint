@@ -1,0 +1,55 @@
+<form [formGroup]="form" name="formDefault">  
+  <div class="ui-g ui-fluid">
+     <div class="ui-sm-12 ui-g-4 ui-lg-4">
+       <div class="ui-g form-group">
+         <div class="ui-g-12">
+             <label for="nro_guia">No. Guía</label>
+         </div>
+         <div class="ui-g-12 md-inputfield">
+             <input type="text" pInputText id="nro_guia" formControlName="nro_guia"/>
+         </div>
+     </div>
+     </div>
+     <div class="ui-sm-12 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+            <label for="peso">Peso</label>
+        </div>
+        <div class="ui-g-12 md-inputfield">
+            <input type="text" pInputText id="peso" formControlName="peso" (onBlur)="OnBlurEvents('peso')"/>
+        <div class="ui-message ui-messages-error"
+            *ngIf="validations.peso">
+        {{ validations.peso }}
+      </div>
+        </div>
+    </div>
+    </div>
+    <div class="ui-sm-12 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+            <label for="valor">Valor de envío</label>
+        </div>
+        <div class="ui-g-12 md-inputfield">
+            <input type="text" pInputText id="valor" formControlName="valor" (blur)="OnBlurEvents('valor')"/>
+        <div class="ui-message ui-messages-error"
+            *ngIf="validations.valor">
+        {{ validations.valor }}
+      </div>
+        </div>
+    </div>
+    </div>
+     <div class="ui-sm-12 ui-g-12 ui-lg-12">
+       <div class="ui-g form-group">
+           <div class="ui-g-12 md-dropdownfield">
+            <button pButton type="button" class="ui-button-primary" style="width:auto;margin-left:5px;margin-top:20px;float:right;"
+            label="Cerrar" (click)="Cancelar()"></button> 
+            <button pButton type="button" class="ui-button-primary"
+              label="Guardar" [disabled]="form.invalid" style="width:auto;margin-left:5px;margin-top:20px;float:right;" (click)="Guardar()">
+            </button>
+            </div>           
+       </div>
+   </div>
+   </div>
+ </form>
+
+

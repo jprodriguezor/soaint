@@ -6,6 +6,7 @@ import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -18,6 +19,8 @@ import java.nio.file.Paths;
 public class TipoPlantillaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
+
+    //private Client client = ClientBuilder.newClient();
 
     @Value("${contants.tipoplantilla.value}")
     private String tipoplantilla = "";

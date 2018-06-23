@@ -12,6 +12,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -90,6 +91,19 @@ public class GestionarCorrespondencia {
         control.actualizarIdeInstancia(correspondenciaDTO);
     }
 
+    public String getIdeInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.getIdeInstanciaPorRadicado(nroRadicado);
+    }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public CorrespondenciaDTO getCorrespondenciaInstanciaPorRadicado(String nroRadicado) throws SystemException, BusinessException {
+        return control.consultarCorrespondenciaByNroRadicado(nroRadicado);
+    }
+
     /**
      *
      * @param fechaIni
@@ -121,6 +135,26 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @param fechaIni
+     * @param fechaFin
+     * @param modEnvio
+     * @param claseEnvio
+     * @param codDependencia
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionesOficialesFullDTO listarComunicacionDeSalidaConDistribucionFisica(String fechaIni,
+                                                                                      String fechaFin,
+                                                                                      String modEnvio,
+                                                                                      String claseEnvio,
+                                                                                      String codDependencia,
+                                                                                      String nroRadicado) throws BusinessException, SystemException, ParseException {
+        return control.listarComunicacionDeSalidaConDistribucionFisica(fechaIni, fechaFin, modEnvio, claseEnvio, codDependencia, nroRadicado);
+    }
+
+    /**
      *
      * @param nroRadicado
      * @return
@@ -140,15 +174,26 @@ public class GestionarCorrespondencia {
         return control.actualizarComunicacion(comunicacionOficialDTO);
     }
 
+//    /**
+//     *
+//     * @param comunicacionOficialDTO
+//     * @return
+//     * @throws BusinessException
+//     * @throws SystemException
+//     */
+//    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+//        return control.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+//    }
+
     /**
-     *
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
-        return control.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
+                                                                                                throws BusinessException, SystemException {
+        return control.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO);
     }
 
     /**

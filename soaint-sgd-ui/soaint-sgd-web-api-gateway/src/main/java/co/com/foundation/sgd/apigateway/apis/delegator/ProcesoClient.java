@@ -3,12 +3,11 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ItemDevolucionDTO;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -25,6 +24,8 @@ import java.util.Map;
 public class ProcesoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL);
+
+    //private Client client = ClientBuilder.newClient();
 
     public Response list() {
         log.info("Proccess - [trafic] - listing Proccess with endpoint: " + endpoint);

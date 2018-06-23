@@ -29,4 +29,7 @@ export const ROUTES_PATH = {
   disposicionFinal: 'disposicion-final',
   completarDatosDistribucion:"completar-datos-distribucion",
   transferenciasDocumentales:"transferencia-documentales",
+  distribucionFisicaSalida:"distribucion-fisica-salida",
+  cargarPlanillaSalida:"cargar-planilla-salida",
+
 };

@@ -174,30 +174,49 @@
             <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
             <p-column field="id" header="Identificador unidad documental"></p-column>
             <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
-            <p-column field="descriptor1" header="Descriptor 1"></p-column>
-            <p-column field="descriptor2" header="Descriptor 2"></p-column>
-            <p-column field="faseArchivo" header="Fase archivo"></p-column>
             <p-column field="inactivo" header="Estado">
               <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
                 {{unidad[col.field] | toActiveString}}
               </ng-template>
             </p-column>
             <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="fechaExtremaFinal" header="Fecha extrema final">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="fechaCierre" header="Fecha cierre trámite">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{i[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="soporte" header="Soporte"></p-column>
+            <template let-data pTemplate="rowexpansion">
+                <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                      <div class="ui-grid ui-grid-responsive ui-grid-pad">
+                          <div class="ui-grid-row">
+                              <div class="ui-grid-col-2 label">Descriptor 1: </div>
+                              <div class="ui-grid-col-2">{{data.descriptor1}}</div>  
+                              <div class="ui-grid-col-2 label">Fase archivo: </div>
+                              <div class="ui-grid-col-2">{{data.faseArchivo}}</div>
+                          </div>
+                          <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 label">Descriptor 2: </div>
+                                <div class="ui-grid-col-2">{{data.descriptor2}}</div>  
+                              <div class="ui-grid-col-2 label">Soporte: </div>
+                              <div class="ui-grid-col-2">{{data.soporte}}</div>
+                          </div>
+                      </div>
+                  </div>
+                  </div>
+              </div>
+              </template>
             <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                 <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"

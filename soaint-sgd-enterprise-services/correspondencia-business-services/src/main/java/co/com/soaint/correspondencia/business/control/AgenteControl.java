@@ -55,6 +55,9 @@ public class AgenteControl {
     @Autowired
     private OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
+    @Autowired
+    private FuncionariosControl funcionariosControl;
+
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
@@ -68,7 +71,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumEstadoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(EstadoAgenteEnum.ASIGNADO.getCodigo()))
             return EstadoAgenteEnum.ASIGNADO.getNombre();
         else if (codigo.equals(EstadoAgenteEnum.DEVUELTO.getCodigo()))
@@ -87,7 +92,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoAgente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
             return TipoAgenteEnum.DESTINATARIO.getNombre();
         else if (codigo.equals(TipoAgenteEnum.REMITENTE.getCodigo()))
@@ -102,7 +109,9 @@ public class AgenteControl {
      * @throws SystemException
      */
     private String consultarNombreEnumTipoRemitente(String codigo) throws BusinessException, SystemException {
-
+        if (codigo == null) {
+            return null;
+        }
         if (codigo.equals(TipoRemitenteEnum.EXTERNO.getCodigo()))
             return TipoRemitenteEnum.EXTERNO.getNombre();
         else if (codigo.equals(TipoRemitenteEnum.INTERNO.getCodigo()))
@@ -425,8 +434,8 @@ public class AgenteControl {
             return AgenteFullDTO.newInstance()
                     .codCortesia(agenteDTO.getCodCortesia())
                     .descCortesia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodCortesia()))
-                    .codDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodDependencia()))
+                    .codDependencia(agenteDTO.getCodDependencia())
+                    .descDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
                     .codEnCalidad(agenteDTO.getCodEnCalidad())
                     .descEnCalidad(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodEnCalidad()))
                     .codEstado(agenteDTO.getCodEstado())
@@ -452,7 +461,6 @@ public class AgenteControl {
                     .razonSocial(agenteDTO.getRazonSocial())
                     .datosContactoList(datosContactoControl.datosContactoListTransformToFull(agenteDTO.getDatosContactoList()))
                     .build();
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -475,7 +483,6 @@ public class AgenteControl {
 
             return agenteFullDTOList;
 
-            //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -493,10 +500,24 @@ public class AgenteControl {
     public List<AgenteFullDTO> consultarAgentesFullByCorrespondencia(BigInteger idDocumento) throws SystemException, BusinessException {
 
         List<AgenteDTO> agenteDTOList = new ArrayList<>();
-        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
-        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarRemitentesByIdeDocumento(idDocumento).forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumentoMail(idDocumento).forEach(agenteDTOList::add);
 
         return agenteListTransformToFull(agenteDTOList);
+    }
+
+    /**
+     * @param agenteDTO
+     * @return
+     */
+    public void actualizarIdeFunciAgenteInterno(CorAgente agenteDTO) throws SystemException {
+
+            if (TipoRemitenteEnum.INTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())){
+                List<FuncionarioDTO> funcionarios = funcionariosControl.listarFuncionariosByCodDependencia(agenteDTO.getCodDependencia());
+                BigInteger ideFunci = (funcionarios.size()>0)? funcionarios.get(0).getIdeFunci(): null;
+                agenteDTO.setIdeFunci(ideFunci);
+            }
+//        return agenteDTO;
     }
 
     /**
@@ -505,10 +526,12 @@ public class AgenteControl {
      * @param rDistFisica
      * @return
      */
-    public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) {
+    public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) throws SystemException {
         List<CorAgente> corAgentes = new ArrayList<>();
+
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
+            this.actualizarIdeFunciAgenteInterno(corAgente);
 
             if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()) && datosContactoList != null)
                 AgenteControl.asignarDatosContacto(corAgente, datosContactoList);
@@ -528,10 +551,12 @@ public class AgenteControl {
      * @param rDistFisica
      * @return
      */
-    public List<CorAgente> conformarAgentesSalida(List<AgenteDTO> agentes, String rDistFisica) {
+    public List<CorAgente> conformarAgentesSalida(List<AgenteDTO> agentes, String rDistFisica) throws SystemException {
         List<CorAgente> corAgentes = new ArrayList<>();
+
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
+            this.actualizarIdeFunciAgenteInterno(corAgente);
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()))
                 AgenteControl.asignarDatosContacto(corAgente, agenteDTO.getDatosContactoList());
@@ -540,7 +565,6 @@ public class AgenteControl {
                 corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
                 corAgente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
             }
-
             corAgentes.add(corAgente);
         }
         return corAgentes;

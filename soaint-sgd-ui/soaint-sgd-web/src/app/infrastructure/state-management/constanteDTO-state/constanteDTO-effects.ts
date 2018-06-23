@@ -76,6 +76,8 @@ export class Effects {
        tipoDocumento,
        tipologiaDocumental,
        soporteAnexo,
+       claseEnvio,
+       modalidadCorreo
       ) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
@@ -85,6 +87,8 @@ export class Effects {
           tipoDocumento: {key: 'tipoDocumento', data: tipoDocumento},
           tipologiaDocumental: {key: 'tipologiaDocumental', data: tipologiaDocumental},
           soporteAnexo: {key: 'soporteAnexo', data: soporteAnexo},
+          claseEnvio: {key: 'claseEnvio', data: claseEnvio},
+          modalidadCorreo: {key: 'modalidadCorreo', data: modalidadCorreo},
         }
       }).take(1)
       .mergeMap((data: any) => {
@@ -96,6 +100,8 @@ export class Effects {
           new actions.LoadSuccessAction(data.tipoDocumento),
           new actions.LoadSuccessAction(data.tipologiaDocumental),
           new actions.LoadSuccessAction(data.soporteAnexo),
+          new actions.LoadSuccessAction(data.claseEnvio),
+          new actions.LoadSuccessAction(data.modalidadCorreo),
         ];
       })
       .catch(error => Observable.of(new actions.LoadFailAction({error})))

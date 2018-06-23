@@ -3,6 +3,9 @@
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
 
+
+export const megaf = false;
+
 export const environment = {
   production: false,
   security_endpoint: `${host}/securidad-gateway-api`,
@@ -49,6 +52,7 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
+  listarCorrespondencia_salida_distribucion_fisica_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida-distribucion-fisica`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -87,34 +91,35 @@ export const environment = {
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
+  listarPlanillasSalida_endpoint: `${host}/correspondencia-gateway-api/listar-planillas-salida`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
-  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
-
+  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-planilla-salida`,
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
 
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
   listarAnexos_endpoint: `${host}/correspondencia-gateway-api/listar-anexos/`,
-  // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
-  pd_gestion_documental : {
-    subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
-    eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
-    obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
-    subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
-    eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
-    // ECM Endpoints
-    obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-    obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
-  },
+    // Produccion Documental
+  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
+  pd_gestion_documental : {
+      subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
+      eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
+      obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
+      subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
+      eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
+      // ECM Endpoints
+      obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
+  },
   listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
 
   // Archivar Documento
 
   ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`,
-  // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
+    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/subir-documentos-unidad-documental`,
@@ -175,6 +180,10 @@ export const process_info = {
   },
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
+    show: false,
+  },
+  'proceso.gestion-planillas-salida': {
+    displayValue : 'Gestión de planillas',
     show: false,
   }
 

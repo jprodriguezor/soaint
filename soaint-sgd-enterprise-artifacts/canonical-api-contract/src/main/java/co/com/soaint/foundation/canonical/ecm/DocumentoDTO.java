@@ -19,6 +19,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "nombreDocumento")
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
 @ToString(of = "nombreDocumento", includeFieldNames = false)
@@ -43,4 +44,5 @@ public class DocumentoDTO implements Serializable {
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
+    private Boolean labelRequired;
 }

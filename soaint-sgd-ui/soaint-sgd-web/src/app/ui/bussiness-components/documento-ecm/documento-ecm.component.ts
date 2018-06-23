@@ -7,9 +7,13 @@ import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-
 import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO} from '../../../shared/lang/es';
+import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO, FAIL_ADJUNTAR_ANEXOS} from '../../../shared/lang/es';
 import {isNullOrUndefined} from 'util';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
+import { ComunicacionOficialDTO } from '../../../domain/comunicacionOficialDTO';
+import { isArray } from 'rxjs/util/isArray';
+import * as codigos from '../../../shared/bussiness-properties/radicacion-properties';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -36,7 +40,9 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   status: UploadStatus;
   previewWasRefreshed = false;
   uploadUrl: string;
+  uploadDisabled = false;
   principalFile: string;
+  principalFileId = null;
   activeTaskUnsubscriber: Subscription;
 
   @ViewChild('uploader') uploader;
@@ -58,8 +64,11 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
       this.codSede = activeTask.variables.codigoSede;
       this.codDepedencia = activeTask.variables.codDependencia;
       this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-        this.depedencia = results.dependencias.find((element) => element.codigo === this.codDepedencia).nombre;
-        this.sede = results.dependencias.find((element) => element.codSede === this.codSede).nomSede;
+        const dependencia = results.dependencias.find((element) => element.codigo === this.codDepedencia);
+        this.depedencia = dependencia.nombre;
+        this.codDepedencia = dependencia.codigo;
+        this.sede = dependencia.nomSede;
+        this.codSede = dependencia.codSede;
       });
     });
   }
@@ -69,24 +78,47 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   customUploader(event) {
+    const formData = new FormData();
+    for (const file of event.files) {
+      formData.append('files', file, file.name);
+    }
+
     if (isNullOrUndefined(this.principalFile)) {
+
       this._store.dispatch(new PushNotificationAction({
         severity: 'warn',
         summary: FAIL_ADJUNTAR_PRINCIPAL
-      }));
+      }));   
+
     } else {
-      const formData = new FormData();
-      for (const file of event.files) {
-        formData.append('files', file, file.name);
-      }
-      this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
-        this.documentIdEcm = response[0];
-        this._store.dispatch(new PushNotificationAction({
-          severity: 'success',
-          summary: SUCCESS_ADJUNTAR_DOCUMENTO
-        }));
+      let _dependencia;
+      formData.append('sede',this.sede);
+      formData.append('codigoSede', this.codSede);
+      formData.append('dependencia', this.depedencia);
+      formData.append('codigoDependencia', this.codDepedencia);
+      this._api.sendFile(this.uploadUrl, formData, []).subscribe(response => {
+        const data = response;
+        if (isArray(data)) {
+          if (data.length === 0) {
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'error', summary: 'NO ADJUNTO, NO PUEDE ADJUNTAR EL DOCUMENTO'
+            }));
+          } else {
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
+            }));
+            this.uploadDisabled = true;
+            this.principalFileId = data[0];
+            this.changeDetection.detectChanges();
+          }
+        } else {
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: data.mensaje
+              }));
+          }
       });
     }
+
   }
 
   preview(file) {

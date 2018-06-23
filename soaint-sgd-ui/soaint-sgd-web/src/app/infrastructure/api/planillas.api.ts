@@ -13,6 +13,10 @@ export class PlanillasApiService {
     return this._api.post(environment.generarPlanilla_endpoint, payload);
   }
 
+  generarPlanillasSalida(payload: PlanillaDTO) {
+    return this._api.post(environment.generarPlanillaSalida_endpoint, payload);
+  }
+
   exportarPlanilla(payload: { nroPlanilla: string, formato: string }) {
     return this._api.list(environment.exportarPlanilla_endpoint, payload);
   }

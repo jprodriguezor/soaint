@@ -11,13 +11,13 @@ export  interface  RadicacionFormInterface{
     empresaMensajeria: any,
     numeroGuia: any,
     tipologiaDocumental: any,
-    unidadTiempo: any,
+    unidadTiempo?: any,
     numeroFolio: any,
     inicioConteo: any,
     reqDistFisica: any,
     reqDigit: any,
     reqDigitInmediata?: any,
-    tiempoRespuesta: any,
+    tiempoRespuesta?: any,
     asunto: any,
     radicadoReferido?: any,
     tipoAnexos?: any,
@@ -25,7 +25,8 @@ export  interface  RadicacionFormInterface{
     hasAnexos?: any,
     ideDocumento: any,
     idePpdDocumento: any,
-    ideEcm?:any
+    ideEcm?:any,
+    responderRemitente?:boolean
   },
   remitente: {
   ideAgente?: any,

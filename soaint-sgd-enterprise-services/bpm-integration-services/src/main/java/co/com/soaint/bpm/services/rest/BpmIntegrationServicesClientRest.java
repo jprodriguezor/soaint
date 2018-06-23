@@ -10,10 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -345,5 +342,11 @@ public class BpmIntegrationServicesClientRest {
         return tareas;
     }
 
+    @GET
+    @Path("/proceso/obtener/{instacia}")
+    public RespuestaDigitalizarDTO obtenerRespuestaProcesoInstancia(@PathParam("instacia") Long instanciaProceso) throws SystemException {
+        log.info("processing rest request - Obtener proceso por instancia de proceso");
+        return proceso.obtenerRespuestaProcesoInstancia(instanciaProceso);
+    }
 
 }

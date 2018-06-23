@@ -83,6 +83,8 @@ import {FuncionariosService} from "./infrastructure/api/funcionarios.service";
 import { TransferenciasDocumentalesComponent } from './ui/page-components/transferencias-documentales/transferencias-documentales.component';
 import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/popup-unidad-documental-notas/popup-unidad-documental-notas.component';
 import { TipologiaDocumentalPipePipe } from './shared/pipes/tipologia-documental-pipe.pipe';
+import { InformacionEnvioComponent } from './ui/bussiness-components/informacion-envio/informacion-envio.component';
+import { CargarPlanillaSalidaComponent } from './ui/page-components/cargar-planilla-salida/cargar-planilla-salida.component';
 
 @NgModule({
   imports: [
@@ -201,6 +203,8 @@ import { TipologiaDocumentalPipePipe } from './shared/pipes/tipologia-documental
     TransferenciasDocumentalesComponent,
     PopupUnidadDocumentalNotasComponent,
     TipologiaDocumentalPipePipe,
+    InformacionEnvioComponent,
+    CargarPlanillaSalidaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

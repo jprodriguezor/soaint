@@ -1,11 +1,10 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -27,9 +26,6 @@ import java.util.Map;
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
 public class DigitalizarDocumentoGatewayApi {
-
-    @Autowired
-    private DigitalizarDocumentoClient digitalizarDocumentoClient;
 
     @Autowired
     private ECMClient client;
@@ -58,6 +54,7 @@ public class DigitalizarDocumentoGatewayApi {
             String sede = formDataInput.getFormDataPart("sede", String.class, null);
             String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
             String nroRadicado = formDataInput.getFormDataPart("nroRadicado", String.class, null);
+            String codigoDependencia = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
             List<String> referidoList = new ArrayList<>();
             if (null != formDataInput.getFormDataMap().get("referidoList")) {
                 for (InputPart referido : formDataInput.getFormDataMap().get("referidoList")) {
@@ -72,6 +69,7 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
             documentoECMDTO.setNroRadicado(nroRadicado);
+            documentoECMDTO.setCodigoDependencia(codigoDependencia);
             documentoECMDTO.setNroRadicadoReferido(Arrays.copyOf(referidoList.toArray(), referidoList.size(), String[].class));
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
@@ -92,7 +90,7 @@ public class DigitalizarDocumentoGatewayApi {
                 }
             }
         } catch (Exception e) {
-
+            log.error("Error al subir documentos");
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
     }

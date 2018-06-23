@@ -20,4 +20,5 @@ export const TASK_CREAR_UNIDAD_DOCUMENTAL = 'Crear Unidad Documental';
 export const TASK_COMPLETAR_DATOS_DISTRIBUCION = 'Completar Datos Distribucion';
 export const TASK_APROBAR_TRANSFERENCIA_DOCUMENTAL= 'Aprobar Transferencia';
 export const TASK_VERIFICAR_TRANSFERENCIA_DOCUMENTAL= 'Verificar Transferencia';
+export const TASK_CARGAR_PLANILLA_SALIDA= 'Cargar Planilla de Salida';
 

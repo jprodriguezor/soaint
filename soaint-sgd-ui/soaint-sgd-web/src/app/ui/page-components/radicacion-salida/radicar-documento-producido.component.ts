@@ -8,6 +8,9 @@ import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
 import {Subject} from "rxjs/Subject";
 import {isNullOrUndefined} from "util";
 import * as domtoimage from 'dom-to-image';
+import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
+import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
+import {DomToImageService} from "../../../infrastructure/api/dom-to-image";
 
 @Component({
   selector: 'app-radicar-documento-producido',
@@ -27,9 +30,10 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     , protected _changeDetectorRef: ChangeDetectorRef
     , protected _sandbox: RadicacionSalidaService
     , protected _taskSandbox: TaskSandBox
+    ,protected  _domtoImageService:DomToImageService
   ) {
 
-    super(_store, _changeDetectorRef, _sandbox, _taskSandbox);
+    super(_store, _changeDetectorRef, _sandbox, _taskSandbox,_domtoImageService);
   }
 
   ngOnInit() {
@@ -52,7 +56,18 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
               resp.datosGenerales.reqDigit = 2;
               if(!isNullOrUndefined(this.task.variables.numeroRadicado))
               resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
+              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física" ? 1:2;
+
+              if(resp.datosGenerales.reqDistFisica == 1){
+                const payload: LoadNextTaskPayload = {
+                  idProceso: this.task.idProceso,
+                  idInstanciaProceso: this.task.idInstanciaProceso,
+                  idDespliegue: this.task.idDespliegue
+                };
+                this._store.dispatch(new ScheduleNextTaskAction(payload));
+              }
+              else
+                this._store.dispatch(new ScheduleNextTaskAction(null));
 
               this.datosGenerales$.next(resp.datosGenerales);
               this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
@@ -69,6 +84,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     }
   }
 
+  ngAfterViewInit(){}
+
 
   ngOnDestroy() {
 
@@ -83,7 +100,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     return {
       codDependencia:this.dependencySelected.codigo,
       numeroRadicado:noRadicado,
-      requiereDistribucion:generales.reqDistFisica ? "1" : "2"
+      requiereDistribucion:generales.reqDistFisica
     }
   }
 
@@ -101,32 +118,15 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     const conditions: boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
-      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0,
+      !isNullOrUndefined(this.task)
     ];
 
     return conditions.every(condition => condition);
   }
 
-  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
-
-    const node = document.getElementById("ticket-rad");
-
-     if(!isNullOrUndefined(node)){
-
-      domtoimage.toBlob(node).then((blob) => {
-
-        let formData = new FormData();
-
-        formData.append("documento",blob,"etiqueta.png");
-        formData.append("idDocumento",ideEcm)
-        formData.append("nroRadicado",nroRadicado);
-        formData.append("codigoDependencia",codDependencia);
-
-
-        this._sandbox.uploadTemplate(formData).subscribe();
-
-      });
-    }
+  protected mustSendImage(general:any):boolean{
+    return true;
   }
 
 }

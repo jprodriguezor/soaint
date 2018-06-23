@@ -258,7 +258,7 @@ export class StateUnidadDocumentalService {
             }
     }
 
-    ActualizarEstadoDisposicionFinal(estado: string) {
+    ActualizarEstadoUD(estado: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
         const requiereObservaciones = unidadesSeleccionadas.find(_item => (_item.observaciones === '' || _item.observaciones === null) && estado === 'Rechazado');
@@ -281,14 +281,35 @@ export class StateUnidadDocumentalService {
         }    
     }
 
-    ActualizarDisposicionFinal() {
-        this.unidadDocumentalApiService.aprobarRechazarUnidadesDocumentalesDisposicion(this.ListadoUnidadDocumental)
+
+    ActualizarDisposicionFinal(): void {
+        this.unidadDocumentalApiService.aprobarRechazarUDDisposicion(this.ListadoUnidadDocumental)
         .subscribe(response => {
             this.ManageActionResponse(response);
             if(response.codMensaje === '0000') {
                 this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
             }           
         });        
+    }
+
+    ActualizarAprobarTransferencia(): void {
+        this.unidadDocumentalApiService.aprobarRechazarUDAprobarTransferencia(this.ListadoUnidadDocumental)
+        .subscribe(response => {
+            this.ManageActionResponse(response);
+            if(response.codMensaje === '0000') {
+                this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+            }           
+        });  
+    }
+
+    ActualizarVerificarTransferencia(): void{
+        this.unidadDocumentalApiService.aprobarRechazarUDVerificarTransferencia(this.ListadoUnidadDocumental)
+        .subscribe(response => {
+            this.ManageActionResponse(response);
+            if(response.codMensaje === '0000') {
+                this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+            }           
+        });  
     }
 
     GuardarObservacion(unidadDocumental: UnidadDocumentalDTO, index: number) {

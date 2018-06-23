@@ -30,7 +30,7 @@
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
           <pd-datos-contacto #datosContacto [taskData]="task"   ></pd-datos-contacto>
 
-          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value">
+          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value == 1">
             <app-form-envio  #datosEnvio ></app-form-envio>
           </div>
 
@@ -52,12 +52,12 @@
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
                 (onHide)="hideTicketRadicado()" [width]="520">
-        <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
+        <rs-ticket-radicado id="ticket" #ticketRadicado idTicket="ticket-rad" ></rs-ticket-radicado>
 
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                    [inlineStyles]="printStyle" label="Imprimir"></button>
+                    [inlineStyles]="printStyle" label="Imprimir" [disabled]="!printButtonEnabled"></button>
           </div>
         </p-footer>
 

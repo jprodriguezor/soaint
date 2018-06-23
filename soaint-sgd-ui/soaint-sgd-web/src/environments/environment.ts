@@ -12,6 +12,7 @@
 const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
+export const megaf = false;
 
 export const environment = {
   production: false,
@@ -59,6 +60,7 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
+  listarCorrespondencia_salida_distribucion_fisica_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones-salida-distribucion-fisica`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -95,10 +97,12 @@ export const environment = {
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
   obtenerDocumentosAdjuntos: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
-  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
+  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`, 
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
+  listarPlanillasSalida_endpoint: `${host}/correspondencia-gateway-api/listar-planillas-salida`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
-  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-planilla`,
+  generarPlanillaSalida_endpoint: `${host}/correspondencia-gateway-api/generar-planilla-salida`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
@@ -185,6 +189,10 @@ export const process_info = {
   },
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
+    show: false,
+  },
+  'proceso.gestion-planillas-salida': {
+    displayValue : 'Gestión de planillas de salida',
     show: false,
   }
 

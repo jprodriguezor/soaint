@@ -185,7 +185,7 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
   }
 
   setEnableButtonNext(enable:boolean){
-    this.enableButtonNext = enable;
+    this.enableButtonNext = !this.showSolicitarButton && enable;
   }
 
 
@@ -201,6 +201,9 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
          }
        });
      }
+     else
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+
   }
 
   ngOnDestroy(): void {
