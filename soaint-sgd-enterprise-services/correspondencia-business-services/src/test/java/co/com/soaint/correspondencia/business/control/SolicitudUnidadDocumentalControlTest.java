@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -22,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -114,6 +111,30 @@ public class SolicitudUnidadDocumentalControlTest {
             .build();
 
     List<SolicitudUnidadDocumentalDTO> solicitudesUnidadDocumental = new ArrayList<SolicitudUnidadDocumentalDTO>();
+
+    @Test
+    @Transactional
+    public void obtenerCantidadSolicitudes() throws SystemException, BusinessException {
+        //when
+        Long cantidad = solicitudUnidadDocumentalControl.obtenerCantidadSolicitudes();
+
+        //then
+        assertNotNull(cantidad);
+        assertTrue(cantidad > 0);
+        assertThat(4L, is(cantidad));
+    }
+
+    @Test
+    @Transactional
+    public void listarSolicitudes() throws SystemException, BusinessException {
+        //when
+        Long cantidad = solicitudUnidadDocumentalControl.obtenerCantidadSolicitudes();
+        List<SolicitudUnidadDocumentalDTO> solicitudes = solicitudUnidadDocumentalControl.listarSolicitudes();
+
+        //then
+        assertThat(4L, is(cantidad));
+        assertThat(SolicitudUnidadDocumentalDTO.class.getName(), is(solicitudes.get(0).getClass().getName()));
+    }
 
     @Test
     @Transactional
