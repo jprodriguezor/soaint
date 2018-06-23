@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import static org.hamcrest.Matchers.*;
 
 import static org.junit.Assert.*;
 
@@ -52,7 +53,7 @@ public class FuncionariosControlTest extends JPAHibernateContextTest {
 
     @Test
     public void listarFuncionariosByCodDependenciaAndCodEstado() throws Exception {
-
+//TODO chequear test
         String funcCoddependencia="10401041";
         String funcEstado="ACTIVO";
 
@@ -60,7 +61,10 @@ public class FuncionariosControlTest extends JPAHibernateContextTest {
 
         //then
         assertNotNull(funcionario);
-        assertEquals(0, funcionario.getFuncionarios().size());
+        assertThat(0, is(funcionario.getFuncionarios().size()));
+        assertNotNull(funcionario.getFuncionarios());
+        assertTrue(funcionario.getFuncionarios().isEmpty());
+//        assertEquals(funcEstado,funcionario.getFuncionarios().get(0).getEstado());
     }
 
     @Test

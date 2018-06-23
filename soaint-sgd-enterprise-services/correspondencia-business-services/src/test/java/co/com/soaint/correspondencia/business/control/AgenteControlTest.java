@@ -31,7 +31,6 @@ public class AgenteControlTest extends JPAHibernateContextTest {
 
     @Autowired
     AgenteControl agenteControl;
-    CorAgente corAgenteCOntrol;
 
     @Before
     public void setUp() throws Exception {

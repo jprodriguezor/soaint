@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
+import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -39,6 +40,11 @@ public class AsignacionControlTest  {
     final BigInteger ID_AGENTE = BigInteger.valueOf(100);
     final BigInteger ID_DOCUMENTO = BigInteger.valueOf(836);
     final BigInteger ID_FUNCIONARIO = BigInteger.valueOf(1);
+    final String NRO_RADICADO="1040TP-CMCOE2017000001";
+    final String OBSERVACIONES="Observaciones 100";
+    final String COD_TIP_CAUSAL="CI";
+    final String COD_TIPO_PROCESO=null;
+    final BigInteger IDE_ASIG_ULTIMO = BigInteger.valueOf(100);
 
 
     AsignacionControl asignacionControl;
@@ -75,6 +81,57 @@ public class AsignacionControlTest  {
 
     @After
     public void tearDown() throws Exception {
+    }
+
+    private AsignacionTramiteDTO newAsignacionTramiteDTO() {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+        List<AsignacionDTO> asignacionDTOList = new ArrayList<>();
+        asignacionDTOList.add(asignacionDTO);
+
+        return AsignacionTramiteDTO.newInstance()
+                .asignaciones(AsignacionesDTO.newInstance()
+                        .asignaciones(asignacionDTOList).build())
+                .build();
+    }
+
+    private AsignacionDTO newAsignacionDTO() {
+        return AsignacionDTO.newInstance()
+                .loginName(LOGIN_NAME)
+                .ideAsignacion(ID_ASIGNACION)
+                .ideAgente(ID_AGENTE)
+                .ideDocumento(ID_DOCUMENTO)
+                .ideFunci(ID_FUNCIONARIO)
+                .idInstancia(ID_INSTANCIA)
+                .ideAsigUltimo(IDE_ASIG_ULTIMO)
+                .codTipProceso(COD_TIPO_PROCESO)
+                .observaciones(COD_TIP_CAUSAL)
+                .codTipCausal(OBSERVACIONES)
+                .build();
+    }
+
+    private <T> TypedQuery<T> getSingleResultMock(String namedQuery, Class<T> type, T dummyObject) {
+        TypedQuery<T> typedQuery = mock(TypedQuery.class);
+        when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
+        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        when(typedQuery.getSingleResult()).thenReturn(dummyObject);
+        return typedQuery;
+    }
+    private <T> TypedQuery<T> getResultListMock(String namedQuery, Class<T> type, List<T>list) {
+        TypedQuery<T> typedQuery = mock(TypedQuery.class);
+        when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
+        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        when(typedQuery.getResultList()).thenReturn(list);
+        return typedQuery;
+    }
+
+    private <T> TypedQuery<T> getExecuteUpdateMock(String namedQuery, Class<T> type) {
+        TypedQuery<T> typedQuery = mock(TypedQuery.class);
+        if(type == null)
+            when(em.createNamedQuery(namedQuery)).thenReturn(typedQuery);
+        else
+            when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
+        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        return typedQuery;
     }
 
     @Test
@@ -171,16 +228,121 @@ public class AsignacionControlTest  {
         verify(dctAsigUltimoTypedQuery).setParameter("ID_INSTANCIA", ID_INSTANCIA);
     }
 
+    @Test//(expected = BusinessException.class)
+    public void actualizarIdInstancia_Fail_1() throws SystemException, BusinessException {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        when(em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)).thenThrow(Exception.class);
+
+        fails.expect(SystemException.class);
+        fails.expectMessage("system.generic.error");
+
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
+    }
+
+    @Test(expected = SystemException.class)
+    public void actualizarIdInstancia_Fail_2() throws SystemException, BusinessException {
+
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+
+        when(em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)).thenThrow(BusinessException.class);
+
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
+    }
+
     @Test
     public void listarAsignacionesByFuncionarioAndNroRadicado() throws Exception {
+        //given
+        AsignacionesDTO asignacionesDTOresult= AsignacionesDTO.newInstance().build();
+        //asig
+        List<AsignacionDTO> asignacionDTOList=new ArrayList<AsignacionDTO>();
+        AsignacionDTO asignacionDTOStub = AsignacionDTO.newInstance().build();
+        asignacionDTOList.add(asignacionDTOStub);
+        List<AsignacionesDTO> sasa=new ArrayList<AsignacionesDTO>();
+
+        TypedQuery<AsignacionDTO> asignacionesDTOTypedQuery = getResultListMock("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class,asignacionDTOList);
+        //when
+        asignacionesDTOresult= asignacionControl.listarAsignacionesByFuncionarioAndNroRadicado(ID_FUNCIONARIO,NRO_RADICADO);
+
+        //then
+
+        verify(em).createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class);//se ejecuta
+        verify(asignacionesDTOTypedQuery).setParameter("IDE_FUNCI", ID_FUNCIONARIO);//con parametros
+        verify(asignacionesDTOTypedQuery).setParameter("NRO_RADICADO","%"+ NRO_RADICADO+"%");//con parametros
+    }
+
+    @Test
+    public void listarAsignacionesByFuncionarioAndNroRadicado_Fail() throws Exception {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        when(em.createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class)).thenThrow(Exception.class);
+
+        fails.expect(SystemException.class);
+        fails.expectMessage("system.generic.error");
+
+        asignacionControl.listarAsignacionesByFuncionarioAndNroRadicado(ID_FUNCIONARIO,NRO_RADICADO);
+
     }
 
     @Test
     public void actualizarTipoProceso() throws Exception {
+        // given
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        // asignacion
+        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().build();
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTypedQuery = getExecuteUpdateMock("DctAsigUltimo.updateTipoProceso", null);
+
+        // when
+        asignacionControl.actualizarTipoProceso(asignacionDTO);
+
+        // then
+        verify(em).createNamedQuery("DctAsigUltimo.updateTipoProceso");
+        verify(dctAsigUltimoTypedQuery).setParameter("IDE_ASIG_ULTIMO", IDE_ASIG_ULTIMO);
+        verify(dctAsigUltimoTypedQuery).setParameter("COD_TIPO_PROCESO", COD_TIPO_PROCESO);
+    }
+
+    @Test
+    public void actualizarTipoProceso_Fail() throws Exception {
+        AsignacionDTO asignacionDTO = newAsignacionDTO();
+
+        when(em.createNamedQuery("DctAsigUltimo.updateTipoProceso", DctAsigUltimo.class)).thenThrow(Exception.class);
+
+        fails.expect(SystemException.class);
+        fails.expectMessage("system.generic.error");
+
+        asignacionControl.actualizarIdInstancia(asignacionDTO);
     }
 
     @Test
     public void consultarAsignacionReasignarByIdeAgente() throws Exception {
+        // given
+        FuncAsigDTO funcioFuncAsigDTO = FuncAsigDTO.newInstance().build();
+
+        // asignacion
+        AsignacionDTO asignacionDTOStub= AsignacionDTO.newInstance().build();
+
+        TypedQuery<AsignacionDTO> asignacionDTOTypedQuery = getSingleResultMock("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class, asignacionDTOStub);
+
+        // when
+        funcioFuncAsigDTO=asignacionControl.consultarAsignacionReasignarByIdeAgente(ID_AGENTE);
+
+        // then
+        verify(em).createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class);//se ejecuta
+        verify(asignacionDTOTypedQuery).setParameter("IDE_AGENTE", ID_AGENTE);//con parametros
+    }
+
+    @Test
+    public void consultarAsignacionReasignarByIdeAgente_Fail() throws Exception {//estoy aki
+        FuncAsigDTO funcioFuncAsigDTO = FuncAsigDTO.newInstance().build();
+
+        when(em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)).thenThrow(Exception.class);
+
+        fails.expect(SystemException.class);
+        fails.expectMessage("system.generic.error");
+
+        asignacionControl.consultarAsignacionReasignarByIdeAgente(ID_AGENTE);
     }
 
     @Test
@@ -189,6 +351,23 @@ public class AsignacionControlTest  {
 
     @Test
     public void asignarDocumentoByNroRadicado() throws Exception {
+        FuncAsigDTO funcioFuncAsigDTO = FuncAsigDTO.newInstance().build();
+        BigInteger IDE_ASIG_ULTIMO=BigInteger.valueOf(100);
+
+        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().ideAsigUltimo(IDE_ASIG_ULTIMO).numDevoluciones(Long.valueOf(0)).build();
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTQ = getSingleResultMock("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class, dctAsigUltimoStub);
+
+        // asignacion
+        DctAsignacion asignacionDTOStub= DctAsignacion.newInstance().build();
+        TypedQuery<DctAsignacion> asignacionDTOTypedQuery = getSingleResultMock("DctAsignacion.findByIdeAsigUltimo", DctAsignacion.class, asignacionDTOStub);
+
+        // when
+        asignacionControl.actualizarAsignacionFromDevolucion(ID_AGENTE,ID_DOCUMENTO,ID_FUNCIONARIO,COD_TIP_CAUSAL,OBSERVACIONES);
+
+        // then
+        verify(em).createNamedQuery("DctAsignacion.findByIdeAsigUltimo", DctAsignacion.class);//se ejecuta
+        verify(asignacionDTOTypedQuery).setParameter("IDE_ASIG_ULTIMO", ID_AGENTE);//con parametros
+
     }
 
     @Test
@@ -201,46 +380,19 @@ public class AsignacionControlTest  {
 
     @Test
     public void getAsignacionUltimoByIdeAgente() throws Exception {
+        DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance().build();
+
+        // asignacion
+        DctAsigUltimo dctAsigUltimoStub = DctAsigUltimo.newInstance().build();
+        TypedQuery<DctAsigUltimo> dctAsigUltimoTQ = getSingleResultMock("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class, dctAsigUltimoStub);
+
+        // when
+        dctAsigUltimo=asignacionControl.getAsignacionUltimoByIdeAgente(ID_AGENTE);
+
+        // then
+        verify(em).createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class);//se ejecuta
+        verify(dctAsigUltimoTQ).setParameter("IDE_AGENTE", ID_AGENTE);//con parametros
+
     }
 
-
-    private AsignacionTramiteDTO newAsignacionTramiteDTO() {
-        AsignacionDTO asignacionDTO = newAsignacionDTO();
-        List<AsignacionDTO> asignacionDTOList = new ArrayList<>();
-        asignacionDTOList.add(asignacionDTO);
-
-        return AsignacionTramiteDTO.newInstance()
-                .asignaciones(AsignacionesDTO.newInstance()
-                        .asignaciones(asignacionDTOList).build())
-                .build();
-    }
-
-    private AsignacionDTO newAsignacionDTO() {
-        return AsignacionDTO.newInstance()
-                .loginName(LOGIN_NAME)
-                .ideAsignacion(ID_ASIGNACION)
-                .ideAgente(ID_AGENTE)
-                .ideDocumento(ID_DOCUMENTO)
-                .ideFunci(ID_FUNCIONARIO)
-                .idInstancia(ID_INSTANCIA)
-                .build();
-    }
-
-    private <T> TypedQuery<T> getSingleResultMock(String namedQuery, Class<T> type, T dummyObject) {
-        TypedQuery<T> typedQuery = mock(TypedQuery.class);
-        when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
-        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
-        when(typedQuery.getSingleResult()).thenReturn(dummyObject);
-        return typedQuery;
-    }
-
-    private <T> TypedQuery<T> getExecuteUpdateMock(String namedQuery, Class<T> type) {
-        TypedQuery<T> typedQuery = mock(TypedQuery.class);
-        if(type == null)
-            when(em.createNamedQuery(namedQuery)).thenReturn(typedQuery);
-        else
-            when(em.createNamedQuery(namedQuery,  type)).thenReturn(typedQuery);
-        when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
-        return typedQuery;
-    }
 }

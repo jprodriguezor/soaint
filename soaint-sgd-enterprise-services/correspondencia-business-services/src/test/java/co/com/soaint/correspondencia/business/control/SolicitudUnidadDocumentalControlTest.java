@@ -254,7 +254,7 @@ public class SolicitudUnidadDocumentalControlTest {
         try {
             SolicitudesUnidadDocumentalDTO resultado2 = solicitudUnidadDocumentalControl.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaInicial,null,null,dependencia2);
             assertNotNull(resultado2);
-            assertThat(resultado2.getSolicitudesUnidadDocumentalDTOS().size(), is(0));
+            assertThat(resultado2.getSolicitudesUnidadDocumentalDTOS().size(), is(1));
         } catch (BusinessException e) {
             e.printStackTrace();
         }
