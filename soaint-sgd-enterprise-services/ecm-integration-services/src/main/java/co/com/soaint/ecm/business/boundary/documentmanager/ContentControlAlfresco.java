@@ -948,34 +948,34 @@ public final class ContentControlAlfresco implements ContentControl {
                 }
                 final Map<String, Object> updateProperties = new HashMap<>();
                 final String nroRadicado = dto.getNroRadicado();
-                if (!StringUtils.isEmpty(nroRadicado)) {
-                    SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
-                    if (null == selectorType) {
-                        response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
-                        return response;
-                    }
-                    updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
-                    updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
-                    final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
-                    if ("Anexo".equals(docType)) {
-                        response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
-                        return response;
-                    }
-                    final Folder sourceFolder = utilities.getFolderFrom((Document) object);
-                    if (null != sourceFolder) {
-                        dto.setNroRadicado(null);
-                        final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, session);
-                        final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
-                        final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
-                        final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
-                        for (QueryResult queryResult :
-                                principalAdjuntosQueryResults) {
-                            String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                            CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
-                            tmpObject = tmpObject.updateProperties(updateProperties);
-                            Document document = (Document) tmpObject;
-                            document.move(sourceFolder, targetFolder.getFolder());
-                            document.refresh();
+                final SelectorType selectorType = SelectorType.getSelectorBy(nroRadicado);
+                if (null == selectorType) {
+                    response.setMensaje("El selector no es valido '" + nroRadicado + "' para un numero de radicado");
+                    return response;
+                }
+                updateProperties.put(ConstantesECM.CMCOR_NRO_RADICADO, nroRadicado);
+                updateProperties.put(ConstantesECM.CMCOR_ID_DOC_PRINCIPAL, idDocumento);
+                final String docType = object.getPropertyValue(ConstantesECM.CMCOR_TIPO_DOCUMENTO);
+                if ("Anexo".equals(docType)) {
+                    response.setMensaje("No se debe modificar el numero de radicado de un documento anexo");
+                    return response;
+                }
+                final Folder sourceFolder = utilities.getFolderFrom((Document) object);
+                if (null != sourceFolder) {
+                    dto.setNroRadicado(null);
+                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, ConstantesECM.DEPENDENCIA_RADICACION, session);
+                    final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
+                    final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
+                    final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
+                    for (QueryResult queryResult :
+                            principalAdjuntosQueryResults) {
+                        String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                        CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
+                        tmpObject = tmpObject.updateProperties(updateProperties);
+                        Document document = (Document) tmpObject;
+                        document.move(sourceFolder, targetFolder.getFolder());
+                        document.refresh();
+                        if (!ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
                             utilities.crearLink(linkTargetFolder.getFolder(), document, session);
                         }
                     }
@@ -1412,7 +1412,7 @@ public final class ContentControlAlfresco implements ContentControl {
                         || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)) {
                     final ItemIterable<CmisObject> children = udFolder.getChildren();
                     for (CmisObject cmisObject : children) {
-                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "cmcor:CM_DocumentoPersonalizado")) {
+                        if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
                             final Document document = (Document) cmisObject;
                             final DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
                             documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
