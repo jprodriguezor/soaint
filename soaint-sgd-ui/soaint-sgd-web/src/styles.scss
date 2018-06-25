@@ -297,9 +297,13 @@ span.table-text-custom {
 
 .margin-20{
   margin: 20px 0;
-} 
+}
 
 .ui-tooltip-text.ui-shadow.ui-corner-all {
   /* ptooltip  css*/
+}
+
+.radicar-comunicaciones  .pdf-container > pdf-viewer > div.ng2-pdf-viewer-container > div > canvas{
+  max-width: 100% !important;
 }
 
