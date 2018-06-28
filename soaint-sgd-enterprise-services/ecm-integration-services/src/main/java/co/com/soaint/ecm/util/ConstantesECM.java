@@ -89,9 +89,23 @@ public final class ConstantesECM {
     public static final String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
     public static final String SUCCESS = "SUCCESS";
     public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
-    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
     public static final String P_APP_LINKED = "P:app:linked";
     public static final String DEPENDENCIA_RADICACION = "10001040";
+
+    public static final String RMA_IS_CLOSED = "rma:isClosed";
+
+    public static final String RMC_X_DISPOSITION_AS_OF = "rmc:xDispositionAsOf";
+    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
+    public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
+    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
+    public static final String RMC_X_ESTADO = "rmc:xEstado";
+    public static final String RMC_X_DISPOSICION = "rmc:xDisposicion";
+    public static final String RMC_X_RET_ARCHIVO_GESTION = "rmc:xRetArchivoGestion";
+    public static final String RMC_X_RET_ARCHIVO_CENTRAL = "rmc:xRetArchivoCentral";
+    public static final String RMC_X_COD_SERIE = "rmc:xCodSerie";
+    public static final String RMC_X_SERIE = "rmc:xSerie";
+    public static final String RMC_X_SUBSERIE = "rmc:xSubserie";
+    public static final String RMC_X_COD_SUB_SERIE = "rmc:xCodSubSerie";
 
     private ConstantesECM(){}
 }

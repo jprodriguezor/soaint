@@ -4,6 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.FinalDispositionType;
@@ -34,6 +35,7 @@ import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -1444,4 +1446,51 @@ public final class ContentControlAlfresco implements ContentControl {
                     .build();
         }
     }
+
+    public static void main(String[] args) {
+
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/core-config.xml");
+
+        ContentControlAlfresco controlAlfresco = context.getBean(ContentControlAlfresco.class);
+        RecordServices recordServices = context.getBean(RecordServices.class);
+
+        Session session = controlAlfresco.obtenerConexion().getSession();
+
+        final String query = "select * from rma:recordFolder";
+
+        ItemIterable<QueryResult> query1 = session.query(query, false);
+
+        query1.forEach(queryResult -> {
+            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
+            Folder folder = (Folder) cmisObject;
+            Map<String, String> map = new HashMap<>();
+            map.put(PropertyIds.DESCRIPTION, "AAAAAAAA");
+            folder.updateProperties(map, true);
+            UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
+            dto.setId(folder.getId());
+            dto.setNombreUnidadDocumental("Archivo Gestion: 2, Archivo Central: 6");
+            recordServices.modificarRecordFolder(dto);
+            folder.refresh();
+            showProperties(folder);
+            Folder folderParent = folder.getFolderParent();
+            showProperties(folderParent);
+        });
+
+        System.out.println(query1.getPageNumItems());
+
+
+        context.close();
+    }
+
+    static void showProperties(Folder folder) {
+        List<Property<?>> properties = folder.getProperties();
+        System.out.println("********************************************************");
+        System.out.println("Starting Properties: " + folder.getName());
+        System.out.println();
+        properties.forEach(property ->System.out.println("Key: " + property.getId() + ", Value: " + property.getValue()));
+        System.out.println("********************************************************");
+        System.out.println();
+    }
+
 }

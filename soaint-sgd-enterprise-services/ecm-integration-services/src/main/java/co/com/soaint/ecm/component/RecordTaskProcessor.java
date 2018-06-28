@@ -1,6 +1,5 @@
 package co.com.soaint.ecm.component;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentDigitized;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
@@ -17,14 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Optional;
 
 @Log4j2
 @Component
@@ -32,8 +28,6 @@ import java.util.Optional;
 public class RecordTaskProcessor implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private static final String RMA_DISPOSITION_AS_OF = "rma:recordSearchDispositionActionAsOf";
 
     @Value("${scheduling.job.cron.enable}")
     private boolean cronFindDigitalizedDocEnable;
@@ -72,21 +66,21 @@ public class RecordTaskProcessor implements Serializable {
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM rmc:rmarecordFolderCustomProperties" +
                 " WHERE rmc:xAutoCierre IS NOT NULL" +
-                " AND " + RecordServices.RMC_X_AUTO_CIERRE + " NOT IN('', 'none')";
+                " AND " + ConstantesECM.RMC_X_AUTO_CIERRE + " NOT IN('', 'none')";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         queryResults.forEach(queryResult -> {
             final String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
             final CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
             final Folder folder = (Folder) cmisObject;
             try {
-                final boolean isClosed = folder.getPropertyValue(RecordServices.RMA_IS_CLOSED);
-                final String autoCloseDate = folder.getPropertyValue(RecordServices.RMC_X_AUTO_CIERRE);
+                final boolean isClosed = folder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED);
+                final String autoCloseDate = folder.getPropertyValue(ConstantesECM.RMC_X_AUTO_CIERRE);
                 if (!isClosed && !StringUtils.isEmpty(autoCloseDate)) {
                     final LocalDateTime localDateTimeVerify = LocalDateTime.parse(autoCloseDate);
                     final LocalDateTime localDateTimeCurrent = LocalDateTime.now();
                     if (localDateTimeVerify.isEqual(localDateTimeCurrent) || localDateTimeVerify.isAfter(localDateTimeCurrent)) {
-                        final String idUD = folder.getPropertyValue(RecordServices.RMC_X_IDENTIFICADOR);
-                        final String faseArchivo = folder.getPropertyValue(RecordServices.RMC_X_FASE_ARCHIVO);
+                        final String idUD = folder.getPropertyValue(ConstantesECM.RMC_X_IDENTIFICADOR);
+                        final String faseArchivo = folder.getPropertyValue(ConstantesECM.RMC_X_FASE_ARCHIVO);
                         final UnidadDocumentalDTO documentalDTO = new UnidadDocumentalDTO();
                         documentalDTO.setId(idUD);
                         documentalDTO.setFaseArchivo(faseArchivo);
@@ -104,32 +98,36 @@ public class RecordTaskProcessor implements Serializable {
     }
 
     private void finishedRetentionTimeExecutor() {
-        final Calendar currentCalendar = GregorianCalendar.getInstance();
         log.info("Buscando Unidades documentales que hayan culminado el tiempo de retencion para hoy");
         final Session session = contentControl.obtenerConexion().getSession();
-        final String query = "SELECT * FROM rma:recordSearch WHERE rma:recordSearchDispositionActionName <> 'retain'";
+        final String query = "SELECT * FROM rmc:rmarecordFolderCustomProperties" +
+                " WHERE " + ConstantesECM.RMC_X_DISPOSITION_AS_OF + " IS NOT NULL";
+        //final String query = "SELECT * FROM rma:recordSearch WHERE rma:recordSearchDispositionActionName <> 'retain'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         queryResults.forEach(queryResult -> {
-            Calendar dispositionCalendar = queryResult.getPropertyValueByQueryName(RMA_DISPOSITION_AS_OF);
-            if (!ObjectUtils.isEmpty(dispositionCalendar)) {
-                String idUd = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_IDENTIFICADOR);
-                Optional<UnidadDocumentalDTO> optionalUnidadDocumentalDTO = contentControl
-                        .getUDById(idUd, session);
-                if (optionalUnidadDocumentalDTO.isPresent()) {
-                    UnidadDocumentalDTO dto = optionalUnidadDocumentalDTO.get();
+            final String xDisposition = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_DISPOSITION_AS_OF);
+            if (!StringUtils.isEmpty(xDisposition) && !xDisposition.trim().isEmpty()) {
+                final String xFaseArchivo = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_FASE_ARCHIVO);
+                final PhaseType phaseType = PhaseType.getPhaseTypeBy(xFaseArchivo);
+                if (null != phaseType) {
                     try {
-                        final int compareTo = Utilities.comparaFecha(currentCalendar, dispositionCalendar);
-                        if (compareTo >= 0 && (dto.getCerrada() && dto.getInactivo())) {
-                            dto.setAccion(AccionUsuario.ABRIR.name());
-                            recordServices.gestionarUnidadDocumentalECM(dto);
-                            dto.setInactivo(true);
+                        final LocalDateTime dateTimeEcm = LocalDateTime.parse(xDisposition);
+                        final LocalDateTime dateTimeCurrent = LocalDateTime.now();
+                        if (phaseType == PhaseType.AG && dateTimeCurrent.isEqual(dateTimeEcm) || dateTimeCurrent.isAfter(dateTimeEcm)) {
+                            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                            final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+                            final LocalDateTime localDateTime = recordServices.getRetentionDateOf(folder, ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL);
+                            final UnidadDocumentalDTO unidadDocumentalDTO = new UnidadDocumentalDTO();
+                            unidadDocumentalDTO.setFechaArchivoRetencion(localDateTime);
+                            unidadDocumentalDTO.setFaseArchivo(PhaseType.AC.getPhaseName());
+                            final String idUD = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_IDENTIFICADOR);
+                            unidadDocumentalDTO.setId(idUD);
+                            contentControl.actualizarUnidadDocumental(unidadDocumentalDTO, session);
+                            unidadDocumentalDTO.setId(objectId);
+                            recordServices.modificarRecordFolder(unidadDocumentalDTO);
                         }
-                        dto.setFaseArchivo(PhaseType.AC.getPhaseName());
-                        contentControl.actualizarUnidadDocumental(dto, session);
-                        dto.setCerrada(null);
-                        recordServices.modificarRecordFolder(dto);
-                    } catch (SystemException e) {
-                        log.error("Error: " + e.getMessage());
+                    } catch (Exception e) {
+                        log.error("Error: {}", e.getMessage());
                     }
                 }
             }

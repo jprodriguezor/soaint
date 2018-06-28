@@ -105,11 +105,6 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
 
-    public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
-    public static String RMA_IS_CLOSED = "rma:isClosed";
-    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
-    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
-
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
         log.info("iniciar - Crear estructura en record: {}");
@@ -188,7 +183,7 @@ public class RecordServices implements IRecordServices {
         parametro.put("query", query);
         Map<String, Object> mapProperties = new HashMap<>();
         mapProperties.put(ConstantesECM.RMC_X_IDENTIFICADOR, documentalDTO.getId());
-        mapProperties.put(RMC_X_FASE_ARCHIVO, PhaseType.AG.getPhaseName());
+        mapProperties.put(ConstantesECM.RMC_X_FASE_ARCHIVO, PhaseType.AG.getPhaseName());
 
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", documentalDTO.getNombreUnidadDocumental());
@@ -293,7 +288,7 @@ public class RecordServices implements IRecordServices {
     @Override
     public Optional<Folder> getRecordFolderByUdId(String idUnidadDocumental) {
         log.info("Invocando el metodo obtener  record folder con Id {}", idUnidadDocumental);
-        String query = "select * from rmc:rmarecordFolderCustomProperties where " + RMC_X_IDENTIFICADOR + " = '" + idUnidadDocumental + "'";
+        String query = "select * from rmc:rmarecordFolderCustomProperties where " + ConstantesECM.RMC_X_IDENTIFICADOR + " = '" + idUnidadDocumental + "'";
         Session session = contentControl.obtenerConexion().getSession();
         ItemIterable<QueryResult> queryResults = session.query(query, false);
         Iterator<QueryResult> iterator = queryResults.iterator();
@@ -345,25 +340,26 @@ public class RecordServices implements IRecordServices {
     }
 
     public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
-        JSONObject properties = new JSONObject();
-        Map<String, Object> nombreMap = new HashMap<>();
+        final JSONObject properties = new JSONObject();
+        final Map<String, Object> nombreMap = new HashMap<>();
+
         if (!ObjectUtils.isEmpty(documentalDTO.getCerrada())) {
-            nombreMap.put(RMA_IS_CLOSED, documentalDTO.getCerrada());
+            nombreMap.put(ConstantesECM.RMA_IS_CLOSED, documentalDTO.getCerrada());
         }
         if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
-            nombreMap.put(RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
+            nombreMap.put(ConstantesECM.RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
         }
         if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
-            nombreMap.put("rmc:xEstado", documentalDTO.getEstado());
+            nombreMap.put(ConstantesECM.RMC_X_ESTADO, documentalDTO.getEstado());
         }
         if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
-            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
-        }
-        if (!ObjectUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION, documentalDTO.getDisposicion());
         }
         if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            nombreMap.put(RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+            nombreMap.put(ConstantesECM.RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+        }
+        if (!ObjectUtils.isEmpty(documentalDTO.getFechaArchivoRetencion())) {
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSITION_AS_OF, documentalDTO.getFechaArchivoRetencion().toString());
         }
         properties.put("properties", nombreMap);
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
@@ -375,7 +371,7 @@ public class RecordServices implements IRecordServices {
     }
 
     private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
-        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
+        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
         if (isClosed) {
             final String idUnidadDocumental = unidadDocumental.getId();
             unidadDocumental.setId(udRecordFolder.getId());
@@ -394,7 +390,7 @@ public class RecordServices implements IRecordServices {
     }
 
     private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
-        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
+        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
         if (!isClosed) {
             final Conexion conexion = contentControl.obtenerConexion();
             final Optional<UnidadDocumentalDTO> optionalDto = contentControl.
@@ -409,17 +405,31 @@ public class RecordServices implements IRecordServices {
                 if (null == phaseType || phaseType != PhaseType.AC) {
                     unidadDocumental.setFaseArchivo(PhaseType.AG.getPhaseName());
                 }
-                final String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
-                        udRecordFolder.getId() : crearCarpetaRecord(unidadDocumental);
+                final boolean isNew;
+                final String idRecordFolder;
+                if(!ObjectUtils.isEmpty(udRecordFolder)) {
+                    isNew = false;
+                    idRecordFolder = udRecordFolder.getId();
+                } else {
+                    idRecordFolder = crearCarpetaRecord(unidadDocumental);
+                    isNew = true;
+                }
                 for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
                     completeRecordFile(documentoDTO, idRecordFolder);
                 }
                 final String idUnidadDocumental = unidadDocumental.getId();
-                unidadDocumental.setId(idRecordFolder);
-                closeOrOpenUnidadDocumentalRecord(unidadDocumental);
-                unidadDocumental.setId(idUnidadDocumental);
-                if (null == unidadDocumental.getFechaCierre()) {
-                    unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                final Optional<Folder> recordFolderByUdId = getRecordFolderByUdId(idUnidadDocumental);
+                if (recordFolderByUdId.isPresent()) {
+                    if (isNew) {
+                        final LocalDateTime localDateTime = getRetentionDateOf(recordFolderByUdId.get(), ConstantesECM.RMC_X_RET_ARCHIVO_GESTION);
+                        unidadDocumental.setFechaArchivoRetencion(localDateTime);
+                    }
+                    unidadDocumental.setId(idRecordFolder);
+                    closeOrOpenUnidadDocumentalRecord(unidadDocumental);
+                    unidadDocumental.setId(idUnidadDocumental);
+                    if (null == unidadDocumental.getFechaCierre()) {
+                        unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                    }
                 }
             }
         } else {
@@ -427,6 +437,18 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setInactivo(false);
         }
         actualizarUnidadDocumental(unidadDocumental);
+    }
+
+    public LocalDateTime getRetentionDateOf(Folder udRecordFolder, String archivoRetencionProperty) {
+        if (null != udRecordFolder && !StringUtils.isEmpty(archivoRetencionProperty)) {
+            final Folder parentFolder = udRecordFolder.getFolderParent();
+            final String xRetArchivoString = parentFolder.getPropertyValue(archivoRetencionProperty);
+            if (!StringUtils.isEmpty(xRetArchivoString)) {
+                final long xRetArchivolong = Long.parseLong(xRetArchivoString);
+                return LocalDateTime.now().plusYears(xRetArchivolong);
+            }
+        }
+        return null;
     }
 
     private void completeRecordFile(DocumentoDTO documentoDTO, final String idRecordFolder) throws SystemException {
@@ -933,9 +955,11 @@ public class RecordServices implements IRecordServices {
     private String crearSerie(ContenidoDependenciaTrdDTO trd) throws SystemException {
         JSONObject serie = new JSONObject();
         String nombreSerie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat("_").concat(trd.getNomSerie());
-        int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
-        propiedades.put("rmc:xSerie", nombreSerie);
-        propiedades.put("rmc:xCodSerie", trd.getCodSerie());
+        //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
+        propiedades.put(ConstantesECM.RMC_X_SERIE, nombreSerie);
+        propiedades.put(ConstantesECM.RMC_X_COD_SERIE, trd.getCodSerie());
+        propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
+        propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
         serie.put(tagPropiedades, propiedades);
         serie.put("name", nombreSerie);
         serie.put(tipoNodo, recordCategoria);
@@ -947,7 +971,8 @@ public class RecordServices implements IRecordServices {
             disposicion.replace(descripcion, mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
             crearTiempoRetencion(disposicion, idSerie);
             disposicion.replace(nombre, DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
-            disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(archivoCentral)));
+            //disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(archivoCentral)));
+            disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
             disposicion.replace(descripcion, trd.getProcedimiento());
             crearTiempoRetencion(disposicion, idSerie);
         } else {
@@ -965,26 +990,28 @@ public class RecordServices implements IRecordServices {
      * @throws SystemException
      */
     private String crearSubserie(ContenidoDependenciaTrdDTO trd, String idSerie) throws SystemException {
-        String idSubSerie = "";
-        int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
+        //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
         JSONObject subSerie = new JSONObject();
         if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
             String nombreSubserie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat(".").concat(trd.getCodSubSerie()).concat("_").concat(trd.getNomSubSerie());
             subSerie.put("name", nombreSubserie);
             subSerie.put(tipoNodo, recordCategoria);
             subSerie.put("aspectNames", "rma:scheduled");
-            propiedades.put("rmc:xSubserie", nombreSubserie);
-            propiedades.put("rmc:xCodSubSerie", trd.getCodSubSerie());
+            propiedades.put(ConstantesECM.RMC_X_SUBSERIE, nombreSubserie);
+            propiedades.put(ConstantesECM.RMC_X_COD_SUB_SERIE, trd.getCodSubSerie());
+            propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
+            propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
             subSerie.put(tagPropiedades, propiedades);
             codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
         }
-        idSubSerie = crearNodo(subSerie, idSerie);
+        String idSubSerie = crearNodo(subSerie, idSerie);
         crearTiempoRetencion(disposicion, idSubSerie);
         disposicion.replace("period", "year|".concat(String.valueOf(trd.getRetArchivoGestion())));
         disposicion.replace("description", mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
         crearTiempoRetencion(disposicion, idSubSerie);
         disposicion.replace("name", DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
-        disposicion.replace("period", valorPeriodo.concat(String.valueOf(archivoCentral)));
+        //disposicion.replace("period", valorPeriodo.concat(String.valueOf(archivoCentral)));
+        disposicion.replace("period", valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
         disposicion.replace("description", trd.getProcedimiento());
         crearTiempoRetencion(disposicion, idSubSerie);
         return idSubSerie;
