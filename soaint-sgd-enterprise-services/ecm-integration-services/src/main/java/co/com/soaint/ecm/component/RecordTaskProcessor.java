@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 @Log4j2
 @Component
@@ -113,18 +115,38 @@ public class RecordTaskProcessor implements Serializable {
                     try {
                         final LocalDateTime dateTimeEcm = LocalDateTime.parse(xDisposition);
                         final LocalDateTime dateTimeCurrent = LocalDateTime.now();
-                        if (phaseType == PhaseType.AG && dateTimeCurrent.isEqual(dateTimeEcm) || dateTimeCurrent.isAfter(dateTimeEcm)) {
-                            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                            final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
-                            final LocalDateTime localDateTime = recordServices.getRetentionDateOf(folder, ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL);
+                        if (dateTimeCurrent.isEqual(dateTimeEcm) || dateTimeCurrent.isAfter(dateTimeEcm)) {
                             final UnidadDocumentalDTO unidadDocumentalDTO = new UnidadDocumentalDTO();
-                            unidadDocumentalDTO.setFechaArchivoRetencion(localDateTime);
-                            unidadDocumentalDTO.setFaseArchivo(PhaseType.AC.getPhaseName());
+                            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                             final String idUD = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_IDENTIFICADOR);
-                            unidadDocumentalDTO.setId(idUD);
-                            contentControl.actualizarUnidadDocumental(unidadDocumentalDTO, session);
-                            unidadDocumentalDTO.setId(objectId);
-                            recordServices.modificarRecordFolder(unidadDocumentalDTO);
+                            boolean hasValueToUpdate = false;
+                            if (phaseType == PhaseType.AG) {
+                                final Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+                                final LocalDateTime localDateTime = recordServices.getRetentionDateOf(folder, ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL);
+                                unidadDocumentalDTO.setFechaArchivoRetencion(localDateTime);
+                                //unidadDocumentalDTO.setFaseArchivo(PhaseType.AC.getPhaseName());
+                                hasValueToUpdate = true;
+                            } else {
+                                Optional<UnidadDocumentalDTO> udById = contentControl.getUDById(idUD, session);
+                                if (udById.isPresent()) {
+                                    final UnidadDocumentalDTO udTmp = udById.get();
+                                    final Boolean inactive = udTmp.getInactivo();
+                                    if (ObjectUtils.isEmpty(inactive) || !inactive) {
+                                        unidadDocumentalDTO.setInactivo(true);
+                                        hasValueToUpdate = true;
+                                    }
+                                }
+                            }
+                            if (hasValueToUpdate) {
+                                unidadDocumentalDTO.setId(idUD);
+                                unidadDocumentalDTO.setFaseArchivo(phaseType.getPhaseName());
+                                contentControl.actualizarUnidadDocumental(unidadDocumentalDTO, session);
+                                if (ObjectUtils.isEmpty(unidadDocumentalDTO.getInactivo())) {
+                                    unidadDocumentalDTO.setId(objectId);
+                                    unidadDocumentalDTO.setFaseArchivo(PhaseType.AC.getPhaseName());
+                                    recordServices.modificarRecordFolder(unidadDocumentalDTO);
+                                }
+                            }
                         }
                     } catch (Exception e) {
                         log.error("Error: {}", e.getMessage());

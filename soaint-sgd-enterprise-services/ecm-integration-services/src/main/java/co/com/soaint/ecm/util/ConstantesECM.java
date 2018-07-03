@@ -106,6 +106,7 @@ public final class ConstantesECM {
     public static final String RMC_X_SERIE = "rmc:xSerie";
     public static final String RMC_X_SUBSERIE = "rmc:xSubserie";
     public static final String RMC_X_COD_SUB_SERIE = "rmc:xCodSubSerie";
+    public static final String RMC_X_FINAL_DISPOSICION = "rmc:xFinalDisposicion";
 
     private ConstantesECM(){}
 }

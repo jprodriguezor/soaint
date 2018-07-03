@@ -4,7 +4,6 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.FinalDispositionType;
@@ -17,14 +16,12 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.alfresco.cmis.client.AlfrescoDocument;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
@@ -35,7 +32,6 @@ import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -1279,15 +1275,22 @@ public final class ContentControlAlfresco implements ContentControl {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
             if (!StringUtils.isEmpty(disposicion)) {
-                final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
-                final FinalDispositionType dispositionType = FinalDispositionType.valueOf(disposicion.trim().toUpperCase());
-                if ("aprobado".equals(estado) && FinalDispositionType.E == dispositionType) {
-                    eliminarUnidadDocumental(idUnidadDocumental, session);
-                } else {
-                    Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
-                    if (optionalFolder.isPresent()) {
-                        dto.setDisposicion(dispositionType.name());
-                        utilities.updateProperties(optionalFolder.get(), dto);
+                final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado());
+                final FinalDispositionType dispositionType = FinalDispositionType.getDispositionBy(disposicion);
+                if (dispositionType != null) {
+                    if ("aprobado".equalsIgnoreCase(estado) && dispositionType == FinalDispositionType.E) {
+                        eliminarUnidadDocumental(idUnidadDocumental, session);
+                    } else {
+                        Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                        if (optionalFolder.isPresent()) {
+                            dto.setDisposicion(dispositionType.name());
+                            utilities.updateProperties(optionalFolder.get(), dto);
+                            Optional<Folder> recordFolderByUdId = recordServices.getRecordFolderByUdId(idUnidadDocumental);
+                            recordFolderByUdId.ifPresent(folder -> {
+                                dto.setId(recordFolderByUdId.get().getId());
+                                recordServices.modificarRecordFolder(dto);
+                            });
+                        }
                     }
                 }
             }
@@ -1446,51 +1449,4 @@ public final class ContentControlAlfresco implements ContentControl {
                     .build();
         }
     }
-
-    public static void main(String[] args) {
-
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/core-config.xml");
-
-        ContentControlAlfresco controlAlfresco = context.getBean(ContentControlAlfresco.class);
-        RecordServices recordServices = context.getBean(RecordServices.class);
-
-        Session session = controlAlfresco.obtenerConexion().getSession();
-
-        final String query = "select * from rma:recordFolder";
-
-        ItemIterable<QueryResult> query1 = session.query(query, false);
-
-        query1.forEach(queryResult -> {
-            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-            CmisObject cmisObject = session.getObject(session.createObjectId(objectId));
-            Folder folder = (Folder) cmisObject;
-            Map<String, String> map = new HashMap<>();
-            map.put(PropertyIds.DESCRIPTION, "AAAAAAAA");
-            folder.updateProperties(map, true);
-            UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
-            dto.setId(folder.getId());
-            dto.setNombreUnidadDocumental("Archivo Gestion: 2, Archivo Central: 6");
-            recordServices.modificarRecordFolder(dto);
-            folder.refresh();
-            showProperties(folder);
-            Folder folderParent = folder.getFolderParent();
-            showProperties(folderParent);
-        });
-
-        System.out.println(query1.getPageNumItems());
-
-
-        context.close();
-    }
-
-    static void showProperties(Folder folder) {
-        List<Property<?>> properties = folder.getProperties();
-        System.out.println("********************************************************");
-        System.out.println("Starting Properties: " + folder.getName());
-        System.out.println();
-        properties.forEach(property ->System.out.println("Key: " + property.getId() + ", Value: " + property.getValue()));
-        System.out.println("********************************************************");
-        System.out.println();
-    }
-
 }

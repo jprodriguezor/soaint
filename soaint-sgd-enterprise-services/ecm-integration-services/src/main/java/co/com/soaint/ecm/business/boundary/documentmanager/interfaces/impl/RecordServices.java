@@ -3,10 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
-import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
-import co.com.soaint.ecm.domain.entity.PhaseType;
+import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -237,21 +234,26 @@ public class RecordServices implements IRecordServices {
             final Folder contentFolder = optionalContentFolder.get();
             final ItemIterable<CmisObject> children = recordFolder.getChildren();
 
+            final Map<String, Object> map = new HashMap<>();
+            map.put(ConstantesECM.CMCOR_UD_FASE_ARCHIVO, "");
+            map.put(ConstantesECM.CMCOR_UD_DISPOSICION, "");
+            contentFolder.updateProperties(map);
+
             for (CmisObject cmisObject :
                     children) {
                 if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
                         cmisObject.getType().getId().startsWith("D:cmcor")) {
                     Document document = (Document) cmisObject;
                     ContentStream contentStream = document.getContentStream();
-                    eliminarObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
-                    final Map<String, Object> map = contentControl.obtenerPropiedadesDocumento(document);
+                    eliminarRecordObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
+                    final Map<String, Object> tmpMap = contentControl.obtenerPropiedadesDocumento(document);
                     String docName = document.getPropertyValue(PropertyIds.NAME);
-                    map.put(PropertyIds.NAME, docName);
-                    map.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
-                    contentFolder.createDocument(map, contentStream, VersioningState.MAJOR);
+                    tmpMap.put(PropertyIds.NAME, docName);
+                    tmpMap.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
+                    contentFolder.createDocument(tmpMap, contentStream, VersioningState.MAJOR);
                 }
             }
-            eliminarObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
+            eliminarRecordObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
         }
     }
 
@@ -389,8 +391,8 @@ public class RecordServices implements IRecordServices {
         actualizarUnidadDocumental(unidadDocumental);
     }
 
-    private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
-        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
+    private void cerrarUnidadDocumental(Folder recordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
+        final boolean isClosed = !ObjectUtils.isEmpty(recordFolder) ? recordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
         if (!isClosed) {
             final Conexion conexion = contentControl.obtenerConexion();
             final Optional<UnidadDocumentalDTO> optionalDto = contentControl.
@@ -407,9 +409,9 @@ public class RecordServices implements IRecordServices {
                 }
                 final boolean isNew;
                 final String idRecordFolder;
-                if(!ObjectUtils.isEmpty(udRecordFolder)) {
+                if(!ObjectUtils.isEmpty(recordFolder)) {
                     isNew = false;
-                    idRecordFolder = udRecordFolder.getId();
+                    idRecordFolder = recordFolder.getId();
                 } else {
                     idRecordFolder = crearCarpetaRecord(unidadDocumental);
                     isNew = true;
@@ -420,9 +422,13 @@ public class RecordServices implements IRecordServices {
                 final String idUnidadDocumental = unidadDocumental.getId();
                 final Optional<Folder> recordFolderByUdId = getRecordFolderByUdId(idUnidadDocumental);
                 if (recordFolderByUdId.isPresent()) {
+                    recordFolder = recordFolderByUdId.get();
                     if (isNew) {
-                        final LocalDateTime localDateTime = getRetentionDateOf(recordFolderByUdId.get(), ConstantesECM.RMC_X_RET_ARCHIVO_GESTION);
+                        final Folder recordCategoryParent = recordFolder.getFolderParent();
+                        final String xDisposition = recordCategoryParent.getPropertyValue(ConstantesECM.RMC_X_FINAL_DISPOSICION);
+                        final LocalDateTime localDateTime = getRetentionDateOf(recordFolder, ConstantesECM.RMC_X_RET_ARCHIVO_GESTION);
                         unidadDocumental.setFechaArchivoRetencion(localDateTime);
+                        unidadDocumental.setDisposicion(xDisposition);
                     }
                     unidadDocumental.setId(idRecordFolder);
                     closeOrOpenUnidadDocumentalRecord(unidadDocumental);
@@ -884,7 +890,8 @@ public class RecordServices implements IRecordServices {
 
             String codigoOrg = organigrama.getCodOrg();
             JSONObject entrada = new JSONObject();
-            entrada.put("name", organigrama.getNomOrg());
+            //entrada.put("name", organigrama.getNomOrg());
+            entrada.put(nombre, organigrama.getNomOrg());
             entrada.put(tipoNodo, recordCategoria);
             String idOrganAdmin = String.valueOf(organigrama.getIdeOrgaAdmin());
             if ("P".equalsIgnoreCase(organigrama.getTipo()) && !idNodosPadre.containsKey(idOrganAdmin)) {
@@ -956,12 +963,16 @@ public class RecordServices implements IRecordServices {
         JSONObject serie = new JSONObject();
         String nombreSerie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat("_").concat(trd.getNomSerie());
         //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
+        final FinalDispositionType type = FinalDispositionType.getDispositionBy(String.valueOf(trd.getDiposicionFinal()));
+        String xFinalDisposicion = (type != null) ? type.getDispositionName() : "";
         propiedades.put(ConstantesECM.RMC_X_SERIE, nombreSerie);
         propiedades.put(ConstantesECM.RMC_X_COD_SERIE, trd.getCodSerie());
         propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
         propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
+        propiedades.put(ConstantesECM.RMC_X_FINAL_DISPOSICION, xFinalDisposicion);
         serie.put(tagPropiedades, propiedades);
-        serie.put("name", nombreSerie);
+        //serie.put("name", nombreSerie);
+        serie.put(nombre, nombreSerie);
         serie.put(tipoNodo, recordCategoria);
         if (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) {
             serie.put("aspectNames", "rma:scheduled");
@@ -970,7 +981,9 @@ public class RecordServices implements IRecordServices {
             disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(trd.getRetArchivoGestion())));
             disposicion.replace(descripcion, mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
             crearTiempoRetencion(disposicion, idSerie);
-            disposicion.replace(nombre, DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
+            final DiposicionFinalEnum diposicionFinalEnum = DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal()));
+            xFinalDisposicion = (diposicionFinalEnum != null) ? diposicionFinalEnum.getNombre() : "";
+            disposicion.replace(nombre, xFinalDisposicion);
             //disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(archivoCentral)));
             disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
             disposicion.replace(descripcion, trd.getProcedimiento());
@@ -992,15 +1005,21 @@ public class RecordServices implements IRecordServices {
     private String crearSubserie(ContenidoDependenciaTrdDTO trd, String idSerie) throws SystemException {
         //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
         JSONObject subSerie = new JSONObject();
+
         if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
             String nombreSubserie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat(".").concat(trd.getCodSubSerie()).concat("_").concat(trd.getNomSubSerie());
-            subSerie.put("name", nombreSubserie);
+            //subSerie.put("name", nombreSubserie);
+            subSerie.put(nombre, nombreSubserie);
             subSerie.put(tipoNodo, recordCategoria);
             subSerie.put("aspectNames", "rma:scheduled");
             propiedades.put(ConstantesECM.RMC_X_SUBSERIE, nombreSubserie);
             propiedades.put(ConstantesECM.RMC_X_COD_SUB_SERIE, trd.getCodSubSerie());
             propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
             propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
+
+            final FinalDispositionType type = FinalDispositionType.getDispositionBy(String.valueOf(trd.getDiposicionFinal()));
+            String xFinalDisposicion = (type != null) ? type.getDispositionName() : "";
+            propiedades.put(ConstantesECM.RMC_X_FINAL_DISPOSICION, xFinalDisposicion);
             subSerie.put(tagPropiedades, propiedades);
             codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
         }
@@ -1009,7 +1028,10 @@ public class RecordServices implements IRecordServices {
         disposicion.replace("period", "year|".concat(String.valueOf(trd.getRetArchivoGestion())));
         disposicion.replace("description", mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
         crearTiempoRetencion(disposicion, idSubSerie);
-        disposicion.replace("name", DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
+        //disposicion.replace("name", DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
+        final DiposicionFinalEnum diposicionFinalEnum = DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal()));
+        final String xFinalDisposicion = (diposicionFinalEnum != null) ? diposicionFinalEnum.getNombre() : "";
+        disposicion.replace(nombre, xFinalDisposicion);
         //disposicion.replace("period", valorPeriodo.concat(String.valueOf(archivoCentral)));
         disposicion.replace("period", valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
         disposicion.replace("description", trd.getProcedimiento());
@@ -1064,7 +1086,7 @@ public class RecordServices implements IRecordServices {
         return nodoId;
     }
 
-    private void eliminarObjECM(BaseTypeId type, String id) throws SystemException {
+    private void eliminarRecordObjECM(BaseTypeId type, String id) throws SystemException {
         final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? "/records/" : "/record-folders/") + id;
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         try {

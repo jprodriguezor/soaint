@@ -11,8 +11,9 @@ import lombok.Getter;
 public enum DiposicionFinalEnum {
     RETENER("0", "retain"),
     CONSERVACION_TOTAL("1", "transfer"),
-    PORDEFINIR("3", "denifir"),
     ELIMINACION("2", "destroy"),
+    PORDEFINIR("3", "select"),
+    //PORDEFINIR("3", "denifir"),
     INTERRUMPIR("4", "cutoff"),
     INCORPORACION("5", "accession");
 
@@ -21,11 +22,8 @@ public enum DiposicionFinalEnum {
 
     public static DiposicionFinalEnum obtenerClave(String codigo) {
         DiposicionFinalEnum[] var1 = values();
-        int var2 = var1.length;
-
-        for(int var3 = 0; var3 < var2; ++var3) {
-            DiposicionFinalEnum valor = var1[var3];
-            if(valor.getCodigo().equalsIgnoreCase(codigo)) {
+        for (DiposicionFinalEnum valor : var1) {
+            if (valor.getCodigo().equalsIgnoreCase(codigo)) {
                 return valor;
             }
         }

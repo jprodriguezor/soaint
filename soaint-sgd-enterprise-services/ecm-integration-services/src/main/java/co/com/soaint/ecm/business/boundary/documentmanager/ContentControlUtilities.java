@@ -573,7 +573,6 @@ public final class ContentControlUtilities implements Serializable {
         log.info("Creating props to make the folder");
         final Map<String, Object> props = new HashMap<>();
         boolean isEmptyFolder = ObjectUtils.isEmpty(folder);
-
         props.put(ConstantesECM.CMCOR_UD_ID, unidadDocumentalDTO.getId());
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL));
 
