@@ -141,18 +141,14 @@ public class AsignacionControlTest  {
         AsignacionTramiteDTO asignacionTramiteDTO = newAsignacionTramiteDTO();
         List<AsignacionDTO> asignacionDTOList = asignacionTramiteDTO.getAsignaciones().getAsignaciones();
 
-        // asignacion
         DctAsignacionDTO asignacionDTOStub = DctAsignacionDTO.newInstance().ideAsignacion(ID_ASIGNACION).build();
         TypedQuery<DctAsignacionDTO> asignacionTQ = getSingleResultMock("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class, asignacionDTOStub);
 
-        // asignacion result update DUDA!!!!!!!!!!!!!!!!!!!!!!!!
         TypedQuery<AsignacionDTO> asignacionFuncionarioTQ = getExecuteUpdateMock("DctAsignacion.asignarToFuncionario", null);
 
-        // asignacion result
         AsignacionDTO asignacionDTOResultStub = AsignacionDTO.newInstance().build();
         TypedQuery<AsignacionDTO> asignacionResultTQ = getSingleResultMock( "DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class, asignacionDTOResultStub);
 
-        //DUDA!!!!!!!!!!!!!!!!!
         when(correspondenciaControl.consultarFechaVencimientoByIdeDocumento(any(BigInteger.class))).thenReturn(new Date());
 
         // when
