@@ -1,9 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.domain.entity.CorAgente;
-import co.com.soaint.correspondencia.domain.entity.CorReferido;
-import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
-import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
+import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
@@ -150,7 +147,6 @@ public class CorrespondenciaControlTest {
         return typedQuery;
     }
 
-    @Ignore
     @Test
     public void radicarCorrespondencia() throws SystemException, BusinessException {
         List<DatosContactoDTO> datosContactoDTOS = new ArrayList<>();
@@ -160,7 +156,7 @@ public class CorrespondenciaControlTest {
         Date FECHA = new Date();
         String REQ_DIST_FISICA = "1";
         String COD_FUNC_RADICA = "2";
-        String NRO_RADICADO = "1000SE2018000013";
+        String NRO_RADICADO = "1040SE2017000001";
         String COD_SEDE = "1040";
         String COD_TIPO_CMC = "SE";
         String COD_DEPENDENCIA = "10401040";
@@ -181,8 +177,23 @@ public class CorrespondenciaControlTest {
         List<DatosContactoDTO> DATOS_CONTACTO = Arrays.asList(
                 DatosContactoDTO.newInstance().build()
         );
+        PpdDocumento PPD_DOCUMENTO_STUB = PpdDocumento.newInstance().idePpdDocumento(BigInteger.valueOf(1186))
+                .codTipoDoc("TL-DOCDP")
+                .fecDocumento(new Date())
+                .asunto("Cualquier Mierda")
+                .nroAnexos(Long.valueOf(2))
+                .nroFolios(Long.valueOf(2))
+                .ideEcm("45c2ef61-9cf3-4c99-a95a-638e58728cb7")
+                .build();
         List<PpdDocumentoDTO> PPD_DOCUMENTO_LIST = Arrays.asList(
-                PpdDocumentoDTO.newInstance().build()
+                PpdDocumentoDTO.newInstance().idePpdDocumento(BigInteger.valueOf(1186))
+                        .codTipoDoc("TL-DOCDP")
+                        .fecDocumento(new Date())
+                        .asunto("Cualquier Mierda")
+                        .nroAnexos(Long.valueOf(2))
+                        .nroFolios(Long.valueOf(2))
+                        .ideEcm("45c2ef61-9cf3-4c99-a95a-638e58728cb7")
+                        .build()
         );
         BigInteger ID_ANEXO = BigInteger.valueOf(1);
         String COD_ANEXO = "AN-TP";
@@ -214,15 +225,43 @@ public class CorrespondenciaControlTest {
                         .build()
         );
         when(agenteControl.conformarAgentes(anyListOf(AgenteDTO.class), anyListOf(DatosContactoDTO.class), anyString())).thenReturn(COR_AGENTE_LIST);
-        PpdDocumento PPD_DOCUMENTO = PpdDocumento.newInstance().build();
-        when(ppdDocumentoControl.ppdDocumentoTransform(PPD_DOCUMENTO_LIST.get(0))).thenReturn(PPD_DOCUMENTO);
-        CorReferido COR_REFERIDO = CorReferido.newInstance().build();
+        CorAnexo COR_ANEXO_STUB = CorAnexo.newInstance()
+                .ideAnexo(ID_ANEXO)
+                .codAnexo(COD_ANEXO)
+                .codTipoSoporte(COD_TIPO_SOPORTE)
+                .descripcion(DESC_ANEXO)
+                .build();
+        when(anexoControl.corAnexoTransform(any(AnexoDTO.class))).thenReturn(COR_ANEXO_STUB);
+
+        when(ppdDocumentoControl.ppdDocumentoTransform(PPD_DOCUMENTO_LIST.get(0))).thenReturn(PPD_DOCUMENTO_STUB);
+        CorReferido COR_REFERIDO = CorReferido.newInstance()
+                .ideReferido(BigInteger.valueOf(254))
+                .nroRadRef("1000EE2018000134")
+                .build();
         when(referidoControl.corReferidoTransform(any(ReferidoDTO.class))).thenReturn(COR_REFERIDO);
+        Long CANTIDAD_STUB = 0L;
+//        when(correspondenciaControl.verificarByNroRadicado(NRO_RADICADO)).thenCallRealMethod();
+        TypedQuery<Long> correspondenciaDTOTypedQuery = getSingleResultMock("CorCorrespondencia.countByNroRadicado", Long.class,CANTIDAD_STUB);
+        List<CorrespondenciaDTO> CORRESPONDENCIA_LIST_STUB = new ArrayList<CorrespondenciaDTO>();
+        String TP_CMC = "SE";
+        CorrespondenciaDTO CORRESPONDENCIA_STUB = CorrespondenciaDTO.newInstance()
+                .nroRadicado(NRO_RADICADO)
+                .codSede(COD_SEDE)
+                .codDependencia(COD_DEPENDENCIA)
+                .fecRadicado(new Date())
+                .codEstado(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo())
+                .codTipoCmc(TP_CMC)
+                .ideDocumento(IDE_DOCUMENTO)
+                .build();
+        CORRESPONDENCIA_LIST_STUB.add(CORRESPONDENCIA_STUB);
+        TypedQuery<CorrespondenciaDTO> consultarCorrespondenciaTypedQuery = getResultListMock("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class,CORRESPONDENCIA_LIST_STUB);
+
         // when
         ComunicacionOficialDTO comunicacionOficialDTO = correspondenciaControl.radicarCorrespondencia(COMUNICACION_OFICIAL);
 
         // then
-
+        verify(em).createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class);
+        verify(correspondenciaDTOTypedQuery).setParameter("NRO_RADICADO", NRO_RADICADO);
     }
 
     @Test

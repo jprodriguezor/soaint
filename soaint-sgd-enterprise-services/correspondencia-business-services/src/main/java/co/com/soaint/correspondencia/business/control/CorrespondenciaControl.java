@@ -238,12 +238,11 @@ public class CorrespondenciaControl {
 
             if (comunicacionOficialDTO.getAnexoList() != null) {
                 ppdDocumento.setCorAnexoList(new ArrayList<>());
-                comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
+                comunicacionOficialDTO.getAnexoList().forEach(anexoDTO -> {
                     CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
                     corAnexo.setPpdDocumento(ppdDocumento);
                     ppdDocumento.getCorAnexoList().add(corAnexo);
                 });
-
             }
 
             correspondencia.getPpdDocumentoList().add(ppdDocumento);
@@ -526,8 +525,10 @@ public class CorrespondenciaControl {
             cal.setTime(fechaFin);
             cal.add(Calendar.DATE, 1);
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", CorrespondenciaDTO.class)
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+//                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
+                    .setParameter("FECHA_INI", fechaIni)
+//                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("FECHA_FIN", cal.getTime())
                     .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNACION.getCodigo())
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_EST_AG", codEstado)
@@ -896,7 +897,12 @@ public class CorrespondenciaControl {
      */
     public Boolean verificarByNroRadicado(String nroRadicado) throws SystemException {
         try {
-            long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
+            if (nroRadicado == null || nroRadicado.isEmpty()) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("error.nro_radicado_empty_or_null")
+                        .buildSystemException();
+            }
+            Long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getSingleResult();
             return cantidad > 0;
