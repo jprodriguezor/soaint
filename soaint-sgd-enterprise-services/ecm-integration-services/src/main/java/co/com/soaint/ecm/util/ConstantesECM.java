@@ -92,21 +92,28 @@ public final class ConstantesECM {
     public static final String P_APP_LINKED = "P:app:linked";
     public static final String DEPENDENCIA_RADICACION = "10001040";
 
+    //Propiedades record Carpeta
     public static final String RMA_IS_CLOSED = "rma:isClosed";
-
-    public static final String RMC_X_DISPOSITION_AS_OF = "rmc:xDispositionAsOf";
-    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
     public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
+    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
     public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
-    public static final String RMC_X_ESTADO = "rmc:xEstado";
-    public static final String RMC_X_DISPOSICION = "rmc:xDisposicion";
-    public static final String RMC_X_RET_ARCHIVO_GESTION = "rmc:xRetArchivoGestion";
-    public static final String RMC_X_RET_ARCHIVO_CENTRAL = "rmc:xRetArchivoCentral";
+    public static final String RMC_X_ESTADO_DISPOSICION = "rmc:xEstadoDisposicion";
+    public static final String RMC_X_ESTADO_TRANSFERENCIA = "rmc:xEstadoTransferencia";
+    public static final String RMC_X_DISPOSICION_HASTA_FECHA = "rmc:xDisposicionHastaFecha";
+    public static final String RMC_X_DISPOSICION_FINAL_CARPETA = "rmc:xDisposicionFinalCarpeta";
+
+    //Propiedades record Categoria
     public static final String RMC_X_COD_SERIE = "rmc:xCodSerie";
+    public static final String RMC_X_COD_SUB_SERIE = "rmc:xCodSubSerie";
+    public static final String RMC_X_DISPOSICION_FINAL_CATEGORIA = "rmc:xDisposicionFinalCategoria";
+    public static final String RMC_X_FONDO = "rmc:xFondo";
+    public static final String RMC_X_RET_ARCHIVO_CENTRAL = "rmc:xRetArchivoCentral";
+    public static final String RMC_X_RET_ARCHIVO_GESTION = "rmc:xRetArchivoGestion";
+    public static final String RMC_X_SECCION = "rmc:xSeccion";
     public static final String RMC_X_SERIE = "rmc:xSerie";
     public static final String RMC_X_SUBSERIE = "rmc:xSubserie";
-    public static final String RMC_X_COD_SUB_SERIE = "rmc:xCodSubSerie";
-    public static final String RMC_X_FINAL_DISPOSICION = "rmc:xFinalDisposicion";
+    //public static final String RMC_X_SUB_SECCION = "rmc:xSubseccion";
+    //public static final String RMC_X_SUB_FONDO = "rmc:xSubFondo";
 
     private ConstantesECM(){}
 }

@@ -103,11 +103,11 @@ public class RecordTaskProcessor implements Serializable {
         log.info("Buscando Unidades documentales que hayan culminado el tiempo de retencion para hoy");
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM rmc:rmarecordFolderCustomProperties" +
-                " WHERE " + ConstantesECM.RMC_X_DISPOSITION_AS_OF + " IS NOT NULL";
+                " WHERE " + ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA + " IS NOT NULL";
         //final String query = "SELECT * FROM rma:recordSearch WHERE rma:recordSearchDispositionActionName <> 'retain'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         queryResults.forEach(queryResult -> {
-            final String xDisposition = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_DISPOSITION_AS_OF);
+            final String xDisposition = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA);
             if (!StringUtils.isEmpty(xDisposition) && !xDisposition.trim().isEmpty()) {
                 final String xFaseArchivo = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_FASE_ARCHIVO);
                 final PhaseType phaseType = PhaseType.getPhaseTypeBy(xFaseArchivo);

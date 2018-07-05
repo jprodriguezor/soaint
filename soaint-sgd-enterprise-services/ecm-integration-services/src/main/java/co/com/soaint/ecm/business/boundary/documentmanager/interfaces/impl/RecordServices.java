@@ -148,7 +148,7 @@ public class RecordServices implements IRecordServices {
                             .mensaje("operacion realizada satisfactoriamente")
                             .build();
                 }
-            }            
+            }
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
                     .mensaje("No existe la Unidad Dpcumental con ID: " + idUnidadDocumental)
@@ -164,8 +164,8 @@ public class RecordServices implements IRecordServices {
             log.info("fin -  Crear carpeta record: ");
         }
     }
-    
-    private String crearCarpetaRecord(final UnidadDocumentalDTO documentalDTO) throws SystemException {        
+
+    private String crearCarpetaRecord(final UnidadDocumentalDTO documentalDTO) throws SystemException {
         final Map<String, String> query = new HashMap<>();
         JSONObject parametro = new JSONObject();
         String queryPrincipal = "select * from rmc:rmarecordCategoryCustomProperties" +
@@ -348,20 +348,23 @@ public class RecordServices implements IRecordServices {
         if (!ObjectUtils.isEmpty(documentalDTO.getCerrada())) {
             nombreMap.put(ConstantesECM.RMA_IS_CLOSED, documentalDTO.getCerrada());
         }
+        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
+            nombreMap.put(ConstantesECM.RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+        }
         if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
             nombreMap.put(ConstantesECM.RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
         }
         if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
-            nombreMap.put(ConstantesECM.RMC_X_ESTADO, documentalDTO.getEstado());
+            nombreMap.put(ConstantesECM.RMC_X_ESTADO_DISPOSICION, documentalDTO.getEstado());
         }
-        if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
-            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION, documentalDTO.getDisposicion());
-        }
-        if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            nombreMap.put(ConstantesECM.RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+        if (!StringUtils.isEmpty(documentalDTO.getEstadoTransferencia())) {
+            nombreMap.put(ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA, documentalDTO.getEstadoTransferencia());
         }
         if (!ObjectUtils.isEmpty(documentalDTO.getFechaArchivoRetencion())) {
-            nombreMap.put(ConstantesECM.RMC_X_DISPOSITION_AS_OF, documentalDTO.getFechaArchivoRetencion().toString());
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA, documentalDTO.getFechaArchivoRetencion().toString());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CARPETA, documentalDTO.getDisposicion());
         }
         properties.put("properties", nombreMap);
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
@@ -370,6 +373,97 @@ public class RecordServices implements IRecordServices {
                 .header(headerAuthorization, valueAuthorization + " " + encoding)
                 .header(headerAccept, valueApplicationType)
                 .put(Entity.json(properties.toString()));
+    }
+
+    @Override
+    public MensajeRespuesta obtenerUnidadesDocumentalesATransferirECM(String tipoTransferencia) {
+        final TransferType transferType = TransferType.getTransferBy(tipoTransferencia);
+        if (transferType != null) {
+            String query = "select * from rmc:rmarecordFolderCustomProperties" +
+                    " where " + ConstantesECM.RMC_X_FASE_ARCHIVO + " = '" + PhaseType.AC.getPhaseName() + "'" +
+                    " and " + ConstantesECM.RMC_X_DISPOSICION_FINAL_CARPETA + " = '" + FinalDispositionType.CT.getDispositionName() + "'" +
+                    " and " + ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA + " <> '" + StateType.APPROVED.getStateName() + "'";
+            final Session session = contentControl.obtenerConexion().getSession();
+            final ItemIterable<QueryResult> queryResults = session.query(query, false);
+            final List<UnidadDocumentalDTO> documentalDTOList = new ArrayList<>();
+            for (QueryResult queryResult : queryResults) {
+                final String xDispositionDate = queryResult.getPropertyValueById(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA);
+                final LocalDateTime ecmDateTime = LocalDateTime.parse(xDispositionDate);
+                final LocalDateTime currentDateTime = LocalDateTime.now();
+                final String idUD = queryResult.getPropertyValueById(ConstantesECM.RMC_X_IDENTIFICADOR);
+                if (transferType == TransferType.PRIMARY) {
+                    if (currentDateTime.isBefore(ecmDateTime)) {
+                        Optional<UnidadDocumentalDTO> udById = contentControl.getUDById(idUD, session);
+                        udById.ifPresent(documentalDTOList::add);
+                    }
+                    continue;
+                }
+                if (currentDateTime.isEqual(ecmDateTime) || currentDateTime.isAfter(ecmDateTime)) {
+                    Optional<UnidadDocumentalDTO> udById = contentControl.getUDById(idUD, session);
+                    udById.ifPresent(documentalDTOList::add);
+                }
+            }
+            contentControl.formatoListaUnidadDocumental(documentalDTOList, session);
+            final Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("unidadesDocumentales", documentalDTOList);
+            return MensajeRespuesta.newInstance()
+                    .response(responseMap)
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.SUCCESS).build();
+        }
+        return MensajeRespuesta.newInstance()
+                .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                .mensaje("'" + tipoTransferencia + "' " + "no es un tipo de transferencia valido").build();
+    }
+
+    @Override
+    public MensajeRespuesta aprobarRechazarTransferenciasDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) {
+        Map<String, String> errorResponse = new HashMap<>();
+        unidadDocumentalDTOS.forEach(dto -> {
+            String idUd = dto.getId();
+            if (!StringUtils.isEmpty(idUd)) {
+                Optional<Folder> recordFolderByUdId = getRecordFolderByUdId(idUd);
+                if (recordFolderByUdId.isPresent()) {
+                    final String tipoTransferencia = dto.getTipoTransferencia();
+                    TransferType transferType = TransferType.getTransferBy(tipoTransferencia);
+                    if (transferType != null) {
+                        final String estadoTransferencia = dto.getEstadoTransferencia();
+                        StateType stateType = StateType.getStateBy(estadoTransferencia);
+                        if (null != stateType) {
+                            dto.setTipoTransferencia(transferType == TransferType.PRIMARY ?
+                                    FinalDispositionType.TP.getDispositionName() : FinalDispositionType.TS.getDispositionName());
+                            final Response response = modificarRecordFolder(dto);
+                            if (response.getStatus() != 200) {
+                                errorResponse.put(response.getStatus() + "", "Status Error");
+                            }
+                        } else {
+                            errorResponse.put(idUd, "No se procesa el estado '" + estadoTransferencia + "'");
+                        }
+                    } else {
+                        errorResponse.put(idUd, "No se procesa el tipo de transferencia '" + tipoTransferencia + "'");
+                    }
+                } else {
+                    errorResponse.put(idUd, "No existe en el ECM el id '" + idUd + "'");
+                }
+            }
+        });
+        if (errorResponse.isEmpty()) {
+            return MensajeRespuesta.newInstance()
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.OPERACION_COMPLETADA_SATISFACTORIAMENTE).build();
+        }
+        final Collection<String> values = errorResponse.values();
+        StringBuilder builder = new StringBuilder();
+        values.forEach(s -> {
+            if (builder.length() != 0) {
+                builder.append("\n").append(s);
+            } else {
+                builder.append(s);
+            }
+        });
+        return MensajeRespuesta.newInstance()
+                .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                .mensaje("Hubo errores al procesar la peticion: " + builder.toString()).build();
     }
 
     private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
@@ -409,7 +503,7 @@ public class RecordServices implements IRecordServices {
                 }
                 final boolean isNew;
                 final String idRecordFolder;
-                if(!ObjectUtils.isEmpty(recordFolder)) {
+                if (!ObjectUtils.isEmpty(recordFolder)) {
                     isNew = false;
                     idRecordFolder = recordFolder.getId();
                 } else {
@@ -425,7 +519,7 @@ public class RecordServices implements IRecordServices {
                     recordFolder = recordFolderByUdId.get();
                     if (isNew) {
                         final Folder recordCategoryParent = recordFolder.getFolderParent();
-                        final String xDisposition = recordCategoryParent.getPropertyValue(ConstantesECM.RMC_X_FINAL_DISPOSICION);
+                        final String xDisposition = recordCategoryParent.getPropertyValue(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA);
                         final LocalDateTime localDateTime = getRetentionDateOf(recordFolder, ConstantesECM.RMC_X_RET_ARCHIVO_GESTION);
                         unidadDocumental.setFechaArchivoRetencion(localDateTime);
                         unidadDocumental.setDisposicion(xDisposition);
@@ -895,7 +989,7 @@ public class RecordServices implements IRecordServices {
             entrada.put(tipoNodo, recordCategoria);
             String idOrganAdmin = String.valueOf(organigrama.getIdeOrgaAdmin());
             if ("P".equalsIgnoreCase(organigrama.getTipo()) && !idNodosPadre.containsKey(idOrganAdmin)) {
-                propiedades.put("rmc:xFondo", organigrama.getCodOrg());
+                propiedades.put(ConstantesECM.RMC_X_FONDO, organigrama.getCodOrg());
                 entrada.put(tagPropiedades, propiedades);
                 idPadre = crearRootCategory(entrada);
                 codigosRecord.put(codigoOrg, idPadre);
@@ -904,7 +998,7 @@ public class RecordServices implements IRecordServices {
 
             } else {
                 if (!codigosRecord.containsKey(codigoOrg)) {
-                    propiedades.put("rmc:xSeccion", organigrama.getCodOrg());
+                    propiedades.put(ConstantesECM.RMC_X_SECCION, organigrama.getCodOrg());
                     entrada.put(tagPropiedades, propiedades);
                     idSubCategoria = crearNodo(entrada, codigosRecord.get(codigoOrgAUX));
                     codigoOrgAUX = organigrama.getCodOrg();
@@ -969,7 +1063,7 @@ public class RecordServices implements IRecordServices {
         propiedades.put(ConstantesECM.RMC_X_COD_SERIE, trd.getCodSerie());
         propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
         propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
-        propiedades.put(ConstantesECM.RMC_X_FINAL_DISPOSICION, xFinalDisposicion);
+        propiedades.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA, xFinalDisposicion);
         serie.put(tagPropiedades, propiedades);
         //serie.put("name", nombreSerie);
         serie.put(nombre, nombreSerie);
@@ -1019,7 +1113,7 @@ public class RecordServices implements IRecordServices {
 
             final FinalDispositionType type = FinalDispositionType.getDispositionBy(String.valueOf(trd.getDiposicionFinal()));
             String xFinalDisposicion = (type != null) ? type.getDispositionName() : "";
-            propiedades.put(ConstantesECM.RMC_X_FINAL_DISPOSICION, xFinalDisposicion);
+            propiedades.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA, xFinalDisposicion);
             subSerie.put(tagPropiedades, propiedades);
             codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
         }

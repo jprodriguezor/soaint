@@ -18,7 +18,9 @@ public enum FinalDispositionType implements Serializable {
     E("2", "Eliminar"),
     S("3", "Seleccionar"),
     M("4", "Microfilmar"),
-    D("5", "Digitalizar");
+    D("5", "Digitalizar"),
+    TP("", "Transferencia Primaria"),
+    TS("", "Transferencia Secundaria");
 
     private static final Long serialVersionUID = 1L;
 

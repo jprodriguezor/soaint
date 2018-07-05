@@ -808,6 +808,10 @@ public final class ContentControlUtilities implements Serializable {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
                         " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " LIKE '" + PhaseType.AC.getPhaseName() + "%'";
+                // Seleccion Adicional (en prueba)
+                if (!query.contains(ConstantesECM.CMCOR_UD_ESTADO)) {
+                    query += " AND " + ConstantesECM.CMCOR_UD_ESTADO + " <> '" + StateType.APPROVED.getStateName() + "'";
+                }
                 log.info("Ejecutar consulta {}", query);
             } else {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
