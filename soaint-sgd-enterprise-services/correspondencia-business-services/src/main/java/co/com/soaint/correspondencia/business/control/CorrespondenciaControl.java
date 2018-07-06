@@ -525,10 +525,8 @@ public class CorrespondenciaControl {
             cal.setTime(fechaFin);
             cal.add(Calendar.DATE, 1);
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", CorrespondenciaDTO.class)
-//                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_INI", fechaIni)
-//                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime())
+                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
+                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
                     .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNACION.getCodigo())
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_EST_AG", codEstado)
