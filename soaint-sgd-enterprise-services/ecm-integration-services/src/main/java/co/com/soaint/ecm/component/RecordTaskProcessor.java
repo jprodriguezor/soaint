@@ -144,7 +144,7 @@ public class RecordTaskProcessor implements Serializable {
                                 if (ObjectUtils.isEmpty(unidadDocumentalDTO.getInactivo())) {
                                     unidadDocumentalDTO.setId(objectId);
                                     unidadDocumentalDTO.setFaseArchivo(PhaseType.AC.getPhaseName());
-                                    recordServices.modificarRecordFolder(unidadDocumentalDTO);
+                                    recordServices.modificarRecordFolder(unidadDocumentalDTO, false);
                                 }
                             }
                         }

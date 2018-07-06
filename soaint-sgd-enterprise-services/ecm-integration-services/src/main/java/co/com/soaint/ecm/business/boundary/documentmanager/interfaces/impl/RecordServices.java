@@ -313,7 +313,7 @@ public class RecordServices implements IRecordServices {
     private void closeOrOpenUnidadDocumentalRecord(UnidadDocumentalDTO documentalDTO) throws SystemException {
         log.info("Se entra al metodo closeOrOpenUnidadDocumentalRecord para cerrar la unidad documental con id: {}", documentalDTO.getId());
         try {
-            Response response = modificarRecordFolder(documentalDTO);
+            Response response = modificarRecordFolder(documentalDTO, false);
             if (response.getStatus() != HttpURLConnection.HTTP_OK) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
@@ -341,7 +341,7 @@ public class RecordServices implements IRecordServices {
                 .put(Entity.json(properties.toString()));
     }
 
-    public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
+    public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO, boolean isTrafer) {
         final JSONObject properties = new JSONObject();
         final Map<String, Object> nombreMap = new HashMap<>();
 
@@ -355,10 +355,7 @@ public class RecordServices implements IRecordServices {
             nombreMap.put(ConstantesECM.RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
         }
         if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
-            nombreMap.put(ConstantesECM.RMC_X_ESTADO_DISPOSICION, documentalDTO.getEstado());
-        }
-        if (!StringUtils.isEmpty(documentalDTO.getEstadoTransferencia())) {
-            nombreMap.put(ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA, documentalDTO.getEstadoTransferencia());
+            nombreMap.put(isTrafer ? ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA : ConstantesECM.RMC_X_ESTADO_DISPOSICION, documentalDTO.getEstado());
         }
         if (!ObjectUtils.isEmpty(documentalDTO.getFechaArchivoRetencion())) {
             nombreMap.put(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA, documentalDTO.getFechaArchivoRetencion().toString());
@@ -427,12 +424,12 @@ public class RecordServices implements IRecordServices {
                     final String tipoTransferencia = dto.getTipoTransferencia();
                     TransferType transferType = TransferType.getTransferBy(tipoTransferencia);
                     if (transferType != null) {
-                        final String estadoTransferencia = dto.getEstadoTransferencia();
+                        final String estadoTransferencia = dto.getEstado();
                         StateType stateType = StateType.getStateBy(estadoTransferencia);
                         if (null != stateType) {
                             dto.setTipoTransferencia(transferType == TransferType.PRIMARY ?
                                     FinalDispositionType.TP.getDispositionName() : FinalDispositionType.TS.getDispositionName());
-                            final Response response = modificarRecordFolder(dto);
+                            final Response response = modificarRecordFolder(dto, true);
                             if (response.getStatus() != 200) {
                                 errorResponse.put(response.getStatus() + "", "Status Error");
                             }

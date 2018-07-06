@@ -65,7 +65,7 @@ public interface IRecordServices {
      */
     void eliminarRecordFolder(String idUnidadDocumental) throws SystemException;
 
-    Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO);
+    Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO, boolean isTransfer);
 
     /**
      * Operacion para devolver Las unidades documentales a Transferir

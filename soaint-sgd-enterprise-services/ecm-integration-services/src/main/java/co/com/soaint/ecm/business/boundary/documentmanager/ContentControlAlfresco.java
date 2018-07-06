@@ -1269,7 +1269,7 @@ public final class ContentControlAlfresco implements ContentControl {
                                 Optional<Folder> recordFolderByUdId = recordServices.getRecordFolderByUdId(idUnidadDocumental);
                                 recordFolderByUdId.ifPresent(folder -> {
                                     dto.setId(recordFolderByUdId.get().getId());
-                                    recordServices.modificarRecordFolder(dto);
+                                    recordServices.modificarRecordFolder(dto, false);
                                 });
                             }
                         }

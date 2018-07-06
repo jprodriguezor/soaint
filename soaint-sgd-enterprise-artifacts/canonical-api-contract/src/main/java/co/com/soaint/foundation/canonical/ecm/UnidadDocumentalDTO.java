@@ -38,7 +38,6 @@ public class UnidadDocumentalDTO extends BaseDTO {
     private String descriptor2;
     private String descriptor1;
     private String estado; // aprobado/rechazado
-    private String estadoTransferencia; // aprobado/rechazado
     private String tipoTransferencia; //primaria/secundaria
     private String disposicion; //tipos disposiciones
     private Calendar fechaExtremaFinal;
