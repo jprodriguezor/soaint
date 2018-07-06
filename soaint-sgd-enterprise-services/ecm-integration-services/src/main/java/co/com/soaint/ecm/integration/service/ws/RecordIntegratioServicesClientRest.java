@@ -118,4 +118,46 @@ public class RecordIntegratioServicesClientRest {
             return respuesta;
         }
     }
+
+    /**
+     * Operacion para devolver Las unidades documentales a Transferir
+     *
+     * @param tipoTransferencia Tipo de transferencia a realizar (Primaria o Secundaria)
+     * @return MensajeRespuesta
+     */
+    @GET
+    @Path("/obtenerUnidadesDocumentalesATransferir/{tipoTransferencia}")
+    public MensajeRespuesta obtenerUnidadesDocumentalesATransferirECM(@PathParam("tipoTransferencia") final String tipoTransferencia) {
+        log.info("processing rest request - Obtener Unidades Documentales a Transferir ECM");
+        try {
+            return record.obtenerUnidadesDocumentalesATransferirECM(tipoTransferencia);
+        } catch (Exception e) {
+            log.error("Error en operacion - obtenerUnidadesDocumentalesATransferirECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
+            respuesta.setMensaje(e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Metodo para cerrar una o varias unidades documentales
+     *
+     * @param unidadDocumentalDTOS   Lista Unidades Documentales para aprobar/rechazar
+     * @return MensajeRespuesta
+     */
+    @PUT
+    @Path("/aprobar-rechazar-transferencias/")
+    public MensajeRespuesta aprobarRechazarTransferenciasDocumentalesECM(@RequestBody List<UnidadDocumentalDTO> unidadDocumentalDTOS) {
+        log.info("Ejecutando metodo MensajeRespuesta aprobarRechazarTransferenciasDocumentalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS)");
+        try {
+            return record.aprobarRechazarTransferenciasDocumentales(unidadDocumentalDTOS);
+        } catch (Exception e) {
+            log.error("Error en operacion - aprobarRechazarTransferenciasDocumentalesECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
+            respuesta.setMensaje(e.getMessage());
+            throw e;
+        }
+    }
 }

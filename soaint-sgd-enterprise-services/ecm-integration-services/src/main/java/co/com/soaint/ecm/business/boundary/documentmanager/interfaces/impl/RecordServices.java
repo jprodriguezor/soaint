@@ -3,10 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
-import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
-import co.com.soaint.ecm.domain.entity.PhaseType;
+import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -105,11 +102,6 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
 
-    public static final String RMC_X_AUTO_CIERRE = "rmc:xAutoCierre";
-    public static String RMA_IS_CLOSED = "rma:isClosed";
-    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
-    public static final String RMC_X_FASE_ARCHIVO = "rmc:xFaseArchivo";
-
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
         log.info("iniciar - Crear estructura en record: {}");
@@ -156,7 +148,7 @@ public class RecordServices implements IRecordServices {
                             .mensaje("operacion realizada satisfactoriamente")
                             .build();
                 }
-            }            
+            }
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
                     .mensaje("No existe la Unidad Dpcumental con ID: " + idUnidadDocumental)
@@ -172,8 +164,8 @@ public class RecordServices implements IRecordServices {
             log.info("fin -  Crear carpeta record: ");
         }
     }
-    
-    private String crearCarpetaRecord(final UnidadDocumentalDTO documentalDTO) throws SystemException {        
+
+    private String crearCarpetaRecord(final UnidadDocumentalDTO documentalDTO) throws SystemException {
         final Map<String, String> query = new HashMap<>();
         JSONObject parametro = new JSONObject();
         String queryPrincipal = "select * from rmc:rmarecordCategoryCustomProperties" +
@@ -188,7 +180,7 @@ public class RecordServices implements IRecordServices {
         parametro.put("query", query);
         Map<String, Object> mapProperties = new HashMap<>();
         mapProperties.put(ConstantesECM.RMC_X_IDENTIFICADOR, documentalDTO.getId());
-        mapProperties.put(RMC_X_FASE_ARCHIVO, PhaseType.AG.getPhaseName());
+        mapProperties.put(ConstantesECM.RMC_X_FASE_ARCHIVO, PhaseType.AG.getPhaseName());
 
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", documentalDTO.getNombreUnidadDocumental());
@@ -242,21 +234,26 @@ public class RecordServices implements IRecordServices {
             final Folder contentFolder = optionalContentFolder.get();
             final ItemIterable<CmisObject> children = recordFolder.getChildren();
 
+            final Map<String, Object> map = new HashMap<>();
+            map.put(ConstantesECM.CMCOR_UD_FASE_ARCHIVO, "");
+            map.put(ConstantesECM.CMCOR_UD_DISPOSICION, "");
+            contentFolder.updateProperties(map);
+
             for (CmisObject cmisObject :
                     children) {
                 if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
                         cmisObject.getType().getId().startsWith("D:cmcor")) {
                     Document document = (Document) cmisObject;
                     ContentStream contentStream = document.getContentStream();
-                    eliminarObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
-                    final Map<String, Object> map = contentControl.obtenerPropiedadesDocumento(document);
+                    eliminarRecordObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
+                    final Map<String, Object> tmpMap = contentControl.obtenerPropiedadesDocumento(document);
                     String docName = document.getPropertyValue(PropertyIds.NAME);
-                    map.put(PropertyIds.NAME, docName);
-                    map.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
-                    contentFolder.createDocument(map, contentStream, VersioningState.MAJOR);
+                    tmpMap.put(PropertyIds.NAME, docName);
+                    tmpMap.put(PropertyIds.CONTENT_STREAM_FILE_NAME, docName);
+                    contentFolder.createDocument(tmpMap, contentStream, VersioningState.MAJOR);
                 }
             }
-            eliminarObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
+            eliminarRecordObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
         }
     }
 
@@ -293,7 +290,7 @@ public class RecordServices implements IRecordServices {
     @Override
     public Optional<Folder> getRecordFolderByUdId(String idUnidadDocumental) {
         log.info("Invocando el metodo obtener  record folder con Id {}", idUnidadDocumental);
-        String query = "select * from rmc:rmarecordFolderCustomProperties where " + RMC_X_IDENTIFICADOR + " = '" + idUnidadDocumental + "'";
+        String query = "select * from rmc:rmarecordFolderCustomProperties where " + ConstantesECM.RMC_X_IDENTIFICADOR + " = '" + idUnidadDocumental + "'";
         Session session = contentControl.obtenerConexion().getSession();
         ItemIterable<QueryResult> queryResults = session.query(query, false);
         Iterator<QueryResult> iterator = queryResults.iterator();
@@ -345,25 +342,29 @@ public class RecordServices implements IRecordServices {
     }
 
     public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
-        JSONObject properties = new JSONObject();
-        Map<String, Object> nombreMap = new HashMap<>();
+        final JSONObject properties = new JSONObject();
+        final Map<String, Object> nombreMap = new HashMap<>();
+
         if (!ObjectUtils.isEmpty(documentalDTO.getCerrada())) {
-            nombreMap.put(RMA_IS_CLOSED, documentalDTO.getCerrada());
-        }
-        if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
-            nombreMap.put(RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
-        }
-        if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
-            nombreMap.put("rmc:xEstado", documentalDTO.getEstado());
-        }
-        if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
-            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
-        }
-        if (!ObjectUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
+            nombreMap.put(ConstantesECM.RMA_IS_CLOSED, documentalDTO.getCerrada());
         }
         if (!StringUtils.isEmpty(documentalDTO.getFechaAutoCierre())) {
-            nombreMap.put(RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+            nombreMap.put(ConstantesECM.RMC_X_AUTO_CIERRE, documentalDTO.getFechaAutoCierre());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
+            nombreMap.put(ConstantesECM.RMC_X_FASE_ARCHIVO, documentalDTO.getFaseArchivo());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
+            nombreMap.put(ConstantesECM.RMC_X_ESTADO_DISPOSICION, documentalDTO.getEstado());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getEstadoTransferencia())) {
+            nombreMap.put(ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA, documentalDTO.getEstadoTransferencia());
+        }
+        if (!ObjectUtils.isEmpty(documentalDTO.getFechaArchivoRetencion())) {
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA, documentalDTO.getFechaArchivoRetencion().toString());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
+            nombreMap.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CARPETA, documentalDTO.getDisposicion());
         }
         properties.put("properties", nombreMap);
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
@@ -374,8 +375,99 @@ public class RecordServices implements IRecordServices {
                 .put(Entity.json(properties.toString()));
     }
 
+    @Override
+    public MensajeRespuesta obtenerUnidadesDocumentalesATransferirECM(String tipoTransferencia) {
+        final TransferType transferType = TransferType.getTransferBy(tipoTransferencia);
+        if (transferType != null) {
+            String query = "select * from rmc:rmarecordFolderCustomProperties" +
+                    " where " + ConstantesECM.RMC_X_FASE_ARCHIVO + " = '" + PhaseType.AC.getPhaseName() + "'" +
+                    " and " + ConstantesECM.RMC_X_DISPOSICION_FINAL_CARPETA + " = '" + FinalDispositionType.CT.getDispositionName() + "'" +
+                    " and " + ConstantesECM.RMC_X_ESTADO_TRANSFERENCIA + " <> '" + StateType.APPROVED.getStateName() + "'";
+            final Session session = contentControl.obtenerConexion().getSession();
+            final ItemIterable<QueryResult> queryResults = session.query(query, false);
+            final List<UnidadDocumentalDTO> documentalDTOList = new ArrayList<>();
+            for (QueryResult queryResult : queryResults) {
+                final String xDispositionDate = queryResult.getPropertyValueById(ConstantesECM.RMC_X_DISPOSICION_HASTA_FECHA);
+                final LocalDateTime ecmDateTime = LocalDateTime.parse(xDispositionDate);
+                final LocalDateTime currentDateTime = LocalDateTime.now();
+                final String idUD = queryResult.getPropertyValueById(ConstantesECM.RMC_X_IDENTIFICADOR);
+                if (transferType == TransferType.PRIMARY) {
+                    if (currentDateTime.isBefore(ecmDateTime)) {
+                        Optional<UnidadDocumentalDTO> udById = contentControl.getUDById(idUD, session);
+                        udById.ifPresent(documentalDTOList::add);
+                    }
+                    continue;
+                }
+                if (currentDateTime.isEqual(ecmDateTime) || currentDateTime.isAfter(ecmDateTime)) {
+                    Optional<UnidadDocumentalDTO> udById = contentControl.getUDById(idUD, session);
+                    udById.ifPresent(documentalDTOList::add);
+                }
+            }
+            contentControl.formatoListaUnidadDocumental(documentalDTOList, session);
+            final Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("unidadesDocumentales", documentalDTOList);
+            return MensajeRespuesta.newInstance()
+                    .response(responseMap)
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.SUCCESS).build();
+        }
+        return MensajeRespuesta.newInstance()
+                .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                .mensaje("'" + tipoTransferencia + "' " + "no es un tipo de transferencia valido").build();
+    }
+
+    @Override
+    public MensajeRespuesta aprobarRechazarTransferenciasDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) {
+        Map<String, String> errorResponse = new HashMap<>();
+        unidadDocumentalDTOS.forEach(dto -> {
+            String idUd = dto.getId();
+            if (!StringUtils.isEmpty(idUd)) {
+                Optional<Folder> recordFolderByUdId = getRecordFolderByUdId(idUd);
+                if (recordFolderByUdId.isPresent()) {
+                    final String tipoTransferencia = dto.getTipoTransferencia();
+                    TransferType transferType = TransferType.getTransferBy(tipoTransferencia);
+                    if (transferType != null) {
+                        final String estadoTransferencia = dto.getEstadoTransferencia();
+                        StateType stateType = StateType.getStateBy(estadoTransferencia);
+                        if (null != stateType) {
+                            dto.setTipoTransferencia(transferType == TransferType.PRIMARY ?
+                                    FinalDispositionType.TP.getDispositionName() : FinalDispositionType.TS.getDispositionName());
+                            final Response response = modificarRecordFolder(dto);
+                            if (response.getStatus() != 200) {
+                                errorResponse.put(response.getStatus() + "", "Status Error");
+                            }
+                        } else {
+                            errorResponse.put(idUd, "No se procesa el estado '" + estadoTransferencia + "'");
+                        }
+                    } else {
+                        errorResponse.put(idUd, "No se procesa el tipo de transferencia '" + tipoTransferencia + "'");
+                    }
+                } else {
+                    errorResponse.put(idUd, "No existe en el ECM el id '" + idUd + "'");
+                }
+            }
+        });
+        if (errorResponse.isEmpty()) {
+            return MensajeRespuesta.newInstance()
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.OPERACION_COMPLETADA_SATISFACTORIAMENTE).build();
+        }
+        final Collection<String> values = errorResponse.values();
+        StringBuilder builder = new StringBuilder();
+        values.forEach(s -> {
+            if (builder.length() != 0) {
+                builder.append("\n").append(s);
+            } else {
+                builder.append(s);
+            }
+        });
+        return MensajeRespuesta.newInstance()
+                .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                .mensaje("Hubo errores al procesar la peticion: " + builder.toString()).build();
+    }
+
     private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
-        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
+        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
         if (isClosed) {
             final String idUnidadDocumental = unidadDocumental.getId();
             unidadDocumental.setId(udRecordFolder.getId());
@@ -393,8 +485,8 @@ public class RecordServices implements IRecordServices {
         actualizarUnidadDocumental(unidadDocumental);
     }
 
-    private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
-        final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
+    private void cerrarUnidadDocumental(Folder recordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
+        final boolean isClosed = !ObjectUtils.isEmpty(recordFolder) ? recordFolder.getPropertyValue(ConstantesECM.RMA_IS_CLOSED) : false;
         if (!isClosed) {
             final Conexion conexion = contentControl.obtenerConexion();
             final Optional<UnidadDocumentalDTO> optionalDto = contentControl.
@@ -409,17 +501,35 @@ public class RecordServices implements IRecordServices {
                 if (null == phaseType || phaseType != PhaseType.AC) {
                     unidadDocumental.setFaseArchivo(PhaseType.AG.getPhaseName());
                 }
-                final String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
-                        udRecordFolder.getId() : crearCarpetaRecord(unidadDocumental);
+                final boolean isNew;
+                final String idRecordFolder;
+                if (!ObjectUtils.isEmpty(recordFolder)) {
+                    isNew = false;
+                    idRecordFolder = recordFolder.getId();
+                } else {
+                    idRecordFolder = crearCarpetaRecord(unidadDocumental);
+                    isNew = true;
+                }
                 for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
                     completeRecordFile(documentoDTO, idRecordFolder);
                 }
                 final String idUnidadDocumental = unidadDocumental.getId();
-                unidadDocumental.setId(idRecordFolder);
-                closeOrOpenUnidadDocumentalRecord(unidadDocumental);
-                unidadDocumental.setId(idUnidadDocumental);
-                if (null == unidadDocumental.getFechaCierre()) {
-                    unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                final Optional<Folder> recordFolderByUdId = getRecordFolderByUdId(idUnidadDocumental);
+                if (recordFolderByUdId.isPresent()) {
+                    recordFolder = recordFolderByUdId.get();
+                    if (isNew) {
+                        final Folder recordCategoryParent = recordFolder.getFolderParent();
+                        final String xDisposition = recordCategoryParent.getPropertyValue(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA);
+                        final LocalDateTime localDateTime = getRetentionDateOf(recordFolder, ConstantesECM.RMC_X_RET_ARCHIVO_GESTION);
+                        unidadDocumental.setFechaArchivoRetencion(localDateTime);
+                        unidadDocumental.setDisposicion(xDisposition);
+                    }
+                    unidadDocumental.setId(idRecordFolder);
+                    closeOrOpenUnidadDocumentalRecord(unidadDocumental);
+                    unidadDocumental.setId(idUnidadDocumental);
+                    if (null == unidadDocumental.getFechaCierre()) {
+                        unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+                    }
                 }
             }
         } else {
@@ -427,6 +537,18 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setInactivo(false);
         }
         actualizarUnidadDocumental(unidadDocumental);
+    }
+
+    public LocalDateTime getRetentionDateOf(Folder udRecordFolder, String archivoRetencionProperty) {
+        if (null != udRecordFolder && !StringUtils.isEmpty(archivoRetencionProperty)) {
+            final Folder parentFolder = udRecordFolder.getFolderParent();
+            final String xRetArchivoString = parentFolder.getPropertyValue(archivoRetencionProperty);
+            if (!StringUtils.isEmpty(xRetArchivoString)) {
+                final long xRetArchivolong = Long.parseLong(xRetArchivoString);
+                return LocalDateTime.now().plusYears(xRetArchivolong);
+            }
+        }
+        return null;
     }
 
     private void completeRecordFile(DocumentoDTO documentoDTO, final String idRecordFolder) throws SystemException {
@@ -862,11 +984,12 @@ public class RecordServices implements IRecordServices {
 
             String codigoOrg = organigrama.getCodOrg();
             JSONObject entrada = new JSONObject();
-            entrada.put("name", organigrama.getNomOrg());
+            //entrada.put("name", organigrama.getNomOrg());
+            entrada.put(nombre, organigrama.getNomOrg());
             entrada.put(tipoNodo, recordCategoria);
             String idOrganAdmin = String.valueOf(organigrama.getIdeOrgaAdmin());
             if ("P".equalsIgnoreCase(organigrama.getTipo()) && !idNodosPadre.containsKey(idOrganAdmin)) {
-                propiedades.put("rmc:xFondo", organigrama.getCodOrg());
+                propiedades.put(ConstantesECM.RMC_X_FONDO, organigrama.getCodOrg());
                 entrada.put(tagPropiedades, propiedades);
                 idPadre = crearRootCategory(entrada);
                 codigosRecord.put(codigoOrg, idPadre);
@@ -875,7 +998,7 @@ public class RecordServices implements IRecordServices {
 
             } else {
                 if (!codigosRecord.containsKey(codigoOrg)) {
-                    propiedades.put("rmc:xSeccion", organigrama.getCodOrg());
+                    propiedades.put(ConstantesECM.RMC_X_SECCION, organigrama.getCodOrg());
                     entrada.put(tagPropiedades, propiedades);
                     idSubCategoria = crearNodo(entrada, codigosRecord.get(codigoOrgAUX));
                     codigoOrgAUX = organigrama.getCodOrg();
@@ -933,11 +1056,17 @@ public class RecordServices implements IRecordServices {
     private String crearSerie(ContenidoDependenciaTrdDTO trd) throws SystemException {
         JSONObject serie = new JSONObject();
         String nombreSerie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat("_").concat(trd.getNomSerie());
-        int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
-        propiedades.put("rmc:xSerie", nombreSerie);
-        propiedades.put("rmc:xCodSerie", trd.getCodSerie());
+        //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
+        final FinalDispositionType type = FinalDispositionType.getDispositionBy(String.valueOf(trd.getDiposicionFinal()));
+        String xFinalDisposicion = (type != null) ? type.getDispositionName() : "";
+        propiedades.put(ConstantesECM.RMC_X_SERIE, nombreSerie);
+        propiedades.put(ConstantesECM.RMC_X_COD_SERIE, trd.getCodSerie());
+        propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
+        propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
+        propiedades.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA, xFinalDisposicion);
         serie.put(tagPropiedades, propiedades);
-        serie.put("name", nombreSerie);
+        //serie.put("name", nombreSerie);
+        serie.put(nombre, nombreSerie);
         serie.put(tipoNodo, recordCategoria);
         if (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) {
             serie.put("aspectNames", "rma:scheduled");
@@ -946,8 +1075,11 @@ public class RecordServices implements IRecordServices {
             disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(trd.getRetArchivoGestion())));
             disposicion.replace(descripcion, mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
             crearTiempoRetencion(disposicion, idSerie);
-            disposicion.replace(nombre, DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
-            disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(archivoCentral)));
+            final DiposicionFinalEnum diposicionFinalEnum = DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal()));
+            xFinalDisposicion = (diposicionFinalEnum != null) ? diposicionFinalEnum.getNombre() : "";
+            disposicion.replace(nombre, xFinalDisposicion);
+            //disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(archivoCentral)));
+            disposicion.replace(periodo, valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
             disposicion.replace(descripcion, trd.getProcedimiento());
             crearTiempoRetencion(disposicion, idSerie);
         } else {
@@ -965,26 +1097,37 @@ public class RecordServices implements IRecordServices {
      * @throws SystemException
      */
     private String crearSubserie(ContenidoDependenciaTrdDTO trd, String idSerie) throws SystemException {
-        String idSubSerie = "";
-        int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
+        //int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
         JSONObject subSerie = new JSONObject();
+
         if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
             String nombreSubserie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat(".").concat(trd.getCodSubSerie()).concat("_").concat(trd.getNomSubSerie());
-            subSerie.put("name", nombreSubserie);
+            //subSerie.put("name", nombreSubserie);
+            subSerie.put(nombre, nombreSubserie);
             subSerie.put(tipoNodo, recordCategoria);
             subSerie.put("aspectNames", "rma:scheduled");
-            propiedades.put("rmc:xSubserie", nombreSubserie);
-            propiedades.put("rmc:xCodSubSerie", trd.getCodSubSerie());
+            propiedades.put(ConstantesECM.RMC_X_SUBSERIE, nombreSubserie);
+            propiedades.put(ConstantesECM.RMC_X_COD_SUB_SERIE, trd.getCodSubSerie());
+            propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_CENTRAL, String.valueOf(trd.getRetArchivoCentral()));
+            propiedades.put(ConstantesECM.RMC_X_RET_ARCHIVO_GESTION, String.valueOf(trd.getRetArchivoGestion()));
+
+            final FinalDispositionType type = FinalDispositionType.getDispositionBy(String.valueOf(trd.getDiposicionFinal()));
+            String xFinalDisposicion = (type != null) ? type.getDispositionName() : "";
+            propiedades.put(ConstantesECM.RMC_X_DISPOSICION_FINAL_CATEGORIA, xFinalDisposicion);
             subSerie.put(tagPropiedades, propiedades);
             codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
         }
-        idSubSerie = crearNodo(subSerie, idSerie);
+        String idSubSerie = crearNodo(subSerie, idSerie);
         crearTiempoRetencion(disposicion, idSubSerie);
         disposicion.replace("period", "year|".concat(String.valueOf(trd.getRetArchivoGestion())));
         disposicion.replace("description", mensajeDescripcion.concat(" ").concat(trd.getRetArchivoCentral().toString().concat(" años en Archivo Central")));
         crearTiempoRetencion(disposicion, idSubSerie);
-        disposicion.replace("name", DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
-        disposicion.replace("period", valorPeriodo.concat(String.valueOf(archivoCentral)));
+        //disposicion.replace("name", DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal())).getNombre());
+        final DiposicionFinalEnum diposicionFinalEnum = DiposicionFinalEnum.obtenerClave(String.valueOf(trd.getDiposicionFinal()));
+        final String xFinalDisposicion = (diposicionFinalEnum != null) ? diposicionFinalEnum.getNombre() : "";
+        disposicion.replace(nombre, xFinalDisposicion);
+        //disposicion.replace("period", valorPeriodo.concat(String.valueOf(archivoCentral)));
+        disposicion.replace("period", valorPeriodo.concat(String.valueOf(trd.getRetArchivoCentral())));
         disposicion.replace("description", trd.getProcedimiento());
         crearTiempoRetencion(disposicion, idSubSerie);
         return idSubSerie;
@@ -1037,7 +1180,7 @@ public class RecordServices implements IRecordServices {
         return nodoId;
     }
 
-    private void eliminarObjECM(BaseTypeId type, String id) throws SystemException {
+    private void eliminarRecordObjECM(BaseTypeId type, String id) throws SystemException {
         final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? "/records/" : "/record-folders/") + id;
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         try {

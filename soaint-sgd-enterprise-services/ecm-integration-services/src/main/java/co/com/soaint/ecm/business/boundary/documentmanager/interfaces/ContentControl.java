@@ -299,4 +299,6 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta DocumentoDTO adicionado
      */
     MensajeRespuesta subirDocumentoAnexo(DocumentoDTO documento, Session session) throws SystemException;
+
+    void formatoListaUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session);
 }

@@ -4,10 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.domain.entity.Carpeta;
-import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.FinalDispositionType;
-import co.com.soaint.ecm.domain.entity.SelectorType;
+import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -16,14 +13,12 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.alfresco.cmis.client.AlfrescoDocument;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
@@ -1232,24 +1227,7 @@ public final class ContentControlAlfresco implements ContentControl {
         try {
             final List<String> disposicionFinalList = disposicionFinalDTO.getDisposicionFinalList();
             final List<UnidadDocumentalDTO> unidadDocumentalDTOS = utilities.listarUnidadesDocumentales(disposicionFinalList, dto, session);
-            unidadDocumentalDTOS.forEach(unidadDocumentalDTO -> {
-                final String idUnidadDocumental = unidadDocumentalDTO.getId();
-                final Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
-                optionalFolder.ifPresent(folder -> {
-                    final String[] serieSubserie = utilities.getSerieSubSerie(optionalFolder.get(), session);
-                    final String serieName = serieSubserie[0];
-                    final String subSerieName = serieSubserie[1];
-                    String currentFolderFatherName = !StringUtils.isEmpty(subSerieName) ? subSerieName : serieName;
-                    final int index = currentFolderFatherName.indexOf('_');
-                    currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
-                    unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
-                    unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    final FinalDispositionType type = FinalDispositionType.getDispositionBy(unidadDocumentalDTO.getDisposicion());
-                    if (null != type) {
-                        unidadDocumentalDTO.setDisposicion(type.name());
-                    }
-                });
-            });
+            formatoListaUnidadDocumental(unidadDocumentalDTOS, session);
             final Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("unidadesDocumentales", unidadDocumentalDTOS);
             return MensajeRespuesta.newInstance()
@@ -1277,15 +1255,24 @@ public final class ContentControlAlfresco implements ContentControl {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
             if (!StringUtils.isEmpty(disposicion)) {
-                final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
-                final FinalDispositionType dispositionType = FinalDispositionType.valueOf(disposicion.trim().toUpperCase());
-                if ("aprobado".equals(estado) && FinalDispositionType.E == dispositionType) {
-                    eliminarUnidadDocumental(idUnidadDocumental, session);
-                } else {
-                    Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
-                    if (optionalFolder.isPresent()) {
-                        dto.setDisposicion(dispositionType.name());
-                        utilities.updateProperties(optionalFolder.get(), dto);
+                final FinalDispositionType dispositionType = FinalDispositionType.getDispositionBy(disposicion);
+                if (dispositionType != null) {
+                    final StateType stateType = StateType.getStateBy(dto.getEstado());
+                    if (null != stateType) {
+                        if (stateType == StateType.APPROVED && dispositionType == FinalDispositionType.E) {
+                            eliminarUnidadDocumental(idUnidadDocumental, session);
+                        } else {
+                            Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                            if (optionalFolder.isPresent()) {
+                                dto.setDisposicion(dispositionType.name());
+                                utilities.updateProperties(optionalFolder.get(), dto);
+                                Optional<Folder> recordFolderByUdId = recordServices.getRecordFolderByUdId(idUnidadDocumental);
+                                recordFolderByUdId.ifPresent(folder -> {
+                                    dto.setId(recordFolderByUdId.get().getId());
+                                    recordServices.modificarRecordFolder(dto);
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -1384,6 +1371,28 @@ public final class ContentControlAlfresco implements ContentControl {
                     .withRootException(e)
                     .buildSystemException();
         }
+    }
+
+    @Override
+    public void formatoListaUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) {
+        unidadDocumentalDTOS.forEach(unidadDocumentalDTO -> {
+            final String idUnidadDocumental = unidadDocumentalDTO.getId();
+            final Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+            optionalFolder.ifPresent(folder -> {
+                final String[] serieSubserie = utilities.getSerieSubSerie(optionalFolder.get(), session);
+                final String serieName = serieSubserie[0];
+                final String subSerieName = serieSubserie[1];
+                String currentFolderFatherName = !StringUtils.isEmpty(subSerieName) ? subSerieName : serieName;
+                final int index = currentFolderFatherName.indexOf('_');
+                currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
+                unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
+                unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
+                final FinalDispositionType type = FinalDispositionType.getDispositionBy(unidadDocumentalDTO.getDisposicion());
+                if (null != type) {
+                    unidadDocumentalDTO.setDisposicion(type.name());
+                }
+            });
+        });
     }
 
     @Override

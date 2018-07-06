@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 public enum PhaseType implements Serializable {
 
     AC("Archivo Central"),
-    AG("Archivo Gestion");
+    AG("Archivo Gestion"),
+    AH("Archivo Historico");
 
     private static final Long serialVersionUID = 1L;
 
