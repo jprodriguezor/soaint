@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentStamper;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.DigitalSignature;
 import co.com.soaint.ecm.domain.entity.ImagePositionType;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -10,6 +11,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,12 @@ public final class ContentStamperImpl implements ContentStamper {
 
     private final ImagePositionType positionType;
 
-    public ContentStamperImpl(@Value("${pdf.image.location}") String imagePosition) {
+    private final DigitalSignature digitalSignature;
+
+    @Autowired
+    public ContentStamperImpl(DigitalSignature digitalSignature, @Value("${pdf.image.location}") String imagePosition) {
         this.positionType = ImagePositionType.valueOf(imagePosition.toUpperCase());
+        this.digitalSignature = digitalSignature;
     }
 
     @Override
@@ -72,7 +78,9 @@ public final class ContentStamperImpl implements ContentStamper {
             stamper.flush();
             stamper.close();
             reader.close();
-            return byteArrayOutputStream.toByteArray();
+            final byte[] bytes = byteArrayOutputStream.toByteArray();
+            log.info("Ready to invoke the signPdf Component");
+            return digitalSignature.signPDF(bytes);
 
         } catch (Exception e) {
             log.error("Ocurrio un error al poner la etiqueta en el PDF");
