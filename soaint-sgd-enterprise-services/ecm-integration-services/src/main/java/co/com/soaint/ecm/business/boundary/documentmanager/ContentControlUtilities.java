@@ -4,6 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentStamper;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.DigitalSignature;
 import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -39,14 +40,21 @@ public final class ContentControlUtilities implements Serializable {
 
     private static final long serialVersionUID = 155L;
 
-    @Autowired
-    private Configuracion configuracion;
+    private final Configuracion configuracion;
+
+    private final ContentControl contentControl;
+
+    private final ContentStamper contentStamper;
+
+    private final DigitalSignature digitalSignature;
 
     @Autowired
-    private ContentControl contentControl;
-
-    @Autowired
-    private ContentStamper contentStamper;
+    public ContentControlUtilities(Configuracion configuracion, ContentControl contentControl, ContentStamper contentStamper, DigitalSignature digitalSignature) {
+        this.configuracion = configuracion;
+        this.contentControl = contentControl;
+        this.contentStamper = contentStamper;
+        this.digitalSignature = digitalSignature;
+    }
 
     public Folder getFolderFromRootByName(String folderName) {
         Session session = contentControl.obtenerConexion().getSession();
@@ -1109,7 +1117,8 @@ public final class ContentControlUtilities implements Serializable {
                 imageBytes = imageBytes(file);
             }
 
-            final byte[] stampedDocument = contentStamper
+            final byte[] stampedDocument = isHtmlDoc ? digitalSignature.signPDF(contentStamper
+                    .getStampedDocument(imageBytes, documentBytes, mimeType)) : contentStamper
                     .getStampedDocument(imageBytes, documentBytes, mimeType);
 
             String docName = documentECM.getName()
@@ -1209,6 +1218,7 @@ public final class ContentControlUtilities implements Serializable {
         final boolean isLabelRequired = ObjectUtils.isEmpty(documentoDTO.getLabelRequired())
                 ? true : documentoDTO.getLabelRequired();
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
+        documentoDTO.setDocumento(digitalSignature.signPDF(bytes));
         final Document document = createDocument(carpetaTarget, documentoDTO);
         documentoDTO = transformarDocumento(document);
         if (isLabelRequired && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)) {
