@@ -23,7 +23,7 @@ public interface IRecordServices {
      * @return respuesta satisfactoria para la creacion del estructura
      * @throws SystemException
      */
-    MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException;
+    MensajeRespuesta crearEstructuraEcm(List<EstructuraTrdDTO> structure) throws SystemException;
 
     /**
      * permite crear carpeta en el record

@@ -103,34 +103,25 @@ public class RecordServices implements IRecordServices {
     private Map<String, Object> disposicion = new HashMap<>();
 
     @Override
-    public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
-        log.info("iniciar - Crear estructura en record: {}");
-        try {
-            Map<String, String> idNodosPadre = new HashMap<>();
-            codigosRecord = new HashMap<>();
-            for (EstructuraTrdDTO estructura : structure) {
-                Utilities utils = new Utilities();
-                utils.ordenarListaOrganigrama(estructura.getOrganigramaItemList());
-                List<OrganigramaDTO> organigramaList = estructura.getOrganigramaItemList();
-                List<ContenidoDependenciaTrdDTO> trdList = estructura.getContenidoDependenciaList();
-                generarOrganigrama(organigramaList, idNodosPadre);
-                generarDependencia(trdList);
-            }
-            idPadre = "";
-
-            return MensajeRespuesta.newInstance()
-                    .codMensaje("0000")
-                    .mensaje("Estructura creada correctamente")
-                    .build();
-        } catch (Exception e) {
+    public MensajeRespuesta crearEstructuraEcm(List<EstructuraTrdDTO> structure) throws SystemException {
+        Session session = contentControl.obtenerConexion().getSession();
+        Carpeta carpeta = new Carpeta();
+        carpeta.setFolder(session.getRootFolder());
+        MensajeRespuesta mensajeRespuesta = contentControl.generarArbol(structure, carpeta);
+        if (!ConstantesECM.SUCCESS_COD_MENSAJE.equals(mensajeRespuesta.getCodMensaje())) {
             log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage(errorSistemaGenerico)
-                    .withRootException(e)
+                    .withMessage("Ocurrio un error al generar la estructura en el Content")
                     .buildSystemException();
-        } finally {
-            log.info("fin -  Crear estructura en record: ");
         }
+        mensajeRespuesta = crearEstructuraRecord(structure);
+        if (!ConstantesECM.SUCCESS_COD_MENSAJE.equals(mensajeRespuesta.getCodMensaje())) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("Ocurrio un error al generar la estructura en el Record")
+                    .buildSystemException();
+        }
+        return mensajeRespuesta;
     }
 
     @Override
@@ -162,6 +153,36 @@ public class RecordServices implements IRecordServices {
                     .buildSystemException();
         } finally {
             log.info("fin -  Crear carpeta record: ");
+        }
+    }
+
+    private MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
+        log.info("iniciar - Crear estructura en record: {}");
+        try {
+            Map<String, String> idNodosPadre = new HashMap<>();
+            codigosRecord = new HashMap<>();
+            for (EstructuraTrdDTO estructura : structure) {
+                Utilities utils = new Utilities();
+                utils.ordenarListaOrganigrama(estructura.getOrganigramaItemList());
+                List<OrganigramaDTO> organigramaList = estructura.getOrganigramaItemList();
+                List<ContenidoDependenciaTrdDTO> trdList = estructura.getContenidoDependenciaList();
+                generarOrganigrama(organigramaList, idNodosPadre);
+                generarDependencia(trdList);
+            }
+            idPadre = "";
+
+            return MensajeRespuesta.newInstance()
+                    .codMensaje("0000")
+                    .mensaje("Estructura creada correctamente")
+                    .build();
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin -  Crear estructura en record: ");
         }
     }
 

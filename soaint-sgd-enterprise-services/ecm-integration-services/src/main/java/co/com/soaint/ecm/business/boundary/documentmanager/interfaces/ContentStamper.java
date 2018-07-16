@@ -9,4 +9,6 @@ import java.io.Serializable;
 public interface ContentStamper extends Serializable {
 
     byte[] getStampedDocument(byte[] stampImg, byte[] contentBytes, String mimeType) throws SystemException;
+
+    byte[] getResizedPdfDocument(byte[] pdfContent) throws SystemException;
 }

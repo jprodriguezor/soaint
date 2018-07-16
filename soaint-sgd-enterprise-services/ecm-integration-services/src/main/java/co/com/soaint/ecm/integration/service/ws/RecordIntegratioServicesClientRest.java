@@ -49,7 +49,7 @@ public class RecordIntegratioServicesClientRest {
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException {
         log.info("processing rest request - Crear Estructura Record");
         try {
-            return record.crearEstructuraRecord(structure);
+            return record.crearEstructuraEcm(structure);
         } catch (RuntimeException e) {
             log.error("Error servicio creando estructura ", e);
             throw e;

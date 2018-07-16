@@ -32,7 +32,8 @@ public final class ContentStamperImpl implements ContentStamper {
         this.positionType = ImagePositionType.valueOf(imagePosition.toUpperCase());
     }
 
-    @Override
+    /*
+     @Override
     public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, String mimeType) throws SystemException {
         log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
         try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -74,6 +75,72 @@ public final class ContentStamperImpl implements ContentStamper {
             reader.close();
             return byteArrayOutputStream.toByteArray();
 
+        } catch (Exception e) {
+            log.error("Ocurrio un error al poner la etiqueta en el PDF");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+    */
+
+    @Override
+    public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, String mimeType) throws SystemException {
+        log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
+        try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            float absoluteY = 659.301F;
+            if (MimeTypes.getMIMEType("html").equals(mimeType)) {
+                final Document document = new Document(PageSize.A4);
+                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                final PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+                document.open();
+                final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+                final String htmlCad = new String(contentBytes, UTF8_CHARSET);
+                contentBytes = (top() + htmlCad + bottom()).getBytes(UTF8_CHARSET);
+                final XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
+                final InputStream is = new ByteArrayInputStream(contentBytes);
+                worker.parseXHtml(writer, document, is, Charset.forName("UTF-8"));
+                document.close();
+                contentBytes = outputStream.toByteArray();
+                absoluteY = 695F;
+                outputStream.flush();
+                outputStream.close();
+                is.close();
+            }
+            final PdfReader reader = new PdfReader(contentBytes);
+
+            final PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
+            final Image image = getImage(stamperImg);
+            image.setAbsolutePosition(370F, absoluteY); //695
+            final PdfImage stream = new PdfImage(image, "", null);
+            PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
+            image.setDirectReference(ref.getIndirectReference());
+            final PdfContentByte over = stamper.getOverContent(1);
+            over.addImage(image);
+            stamper.flush();
+            stamper.close();
+            reader.close();
+            return byteArrayOutputStream.toByteArray();
+
+        } catch (Exception e) {
+            log.error("Ocurrio un error al poner la etiqueta en el PDF");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    @Override
+    public byte[] getResizedPdfDocument(byte[] pdfContent) throws SystemException {
+        try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            final PdfReader reader = new PdfReader(pdfContent);
+            resizePdf(reader);
+            final PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
+            stamper.flush();
+            stamper.close();
+            return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             log.error("Ocurrio un error al poner la etiqueta en el PDF");
             throw ExceptionBuilder.newBuilder()

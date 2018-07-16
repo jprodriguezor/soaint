@@ -1117,9 +1117,8 @@ public final class ContentControlUtilities implements Serializable {
                 imageBytes = imageBytes(file);
             }
 
-            final byte[] stampedDocument = isHtmlDoc ? digitalSignature.signPDF(contentStamper
-                    .getStampedDocument(imageBytes, documentBytes, mimeType)) : contentStamper
-                    .getStampedDocument(imageBytes, documentBytes, mimeType);
+            final byte[] stampedDocument = digitalSignature.signPDF(contentStamper
+                    .getStampedDocument(imageBytes, documentBytes, mimeType));
 
             String docName = documentECM.getName()
                     .replace(".pdf", "") + ".pdf";
@@ -1211,14 +1210,18 @@ public final class ContentControlUtilities implements Serializable {
         if (StringUtils.isEmpty(nombreDoc)) {
             throw new SystemException("No se ha especificado el nombre del documento");
         }
-        final byte[] bytes = documentoDTO.getDocumento();
+        byte[] bytes = documentoDTO.getDocumento();
         if (ObjectUtils.isEmpty(bytes)) {
             throw new SystemException("No se ha especificado el contenido del documento");
         }
         final boolean isLabelRequired = ObjectUtils.isEmpty(documentoDTO.getLabelRequired())
                 ? true : documentoDTO.getLabelRequired();
         final Carpeta carpetaTarget = crearCarpetaRadicacion(selectorType, session);
-        documentoDTO.setDocumento(digitalSignature.signPDF(bytes));
+        bytes = contentStamper.getResizedPdfDocument(bytes);
+        if (selectorType == SelectorType.EE || selectorType == SelectorType.EI) {
+            bytes = digitalSignature.signPDF(bytes);
+        }
+        documentoDTO.setDocumento(bytes);
         final Document document = createDocument(carpetaTarget, documentoDTO);
         documentoDTO = transformarDocumento(document);
         if (isLabelRequired && (selectorType == SelectorType.SE || selectorType == SelectorType.SI)) {
@@ -1227,7 +1230,7 @@ public final class ContentControlUtilities implements Serializable {
         return documentoDTO;
     }
 
-    Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
+    /*Carpeta crearCarpetaRadicacion(SelectorType selectorType, String dependencyCode, Session session) throws SystemException {
         if (ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
             return crearCarpetaRadicacion(selectorType, session);
         }
@@ -1244,13 +1247,13 @@ public final class ContentControlUtilities implements Serializable {
             carpeta.setFolder(optionalFolder.get());
         }
         return carpeta;
-    }
+    }*/
 
-    private Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
+    Carpeta crearCarpetaRadicacion(SelectorType selectorType, Session session) throws SystemException {
         final String query = "SELECT * FROM cmcor:CM_Subserie" +
                 " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + ConstantesECM.DEPENDENCIA_RADICACION + "'" +
-                " AND " + ConstantesECM.CMCOR_SER_CODIGO + " = '0231'" +
-                " AND " + ConstantesECM.CMCOR_SS_CODIGO + " IN ('02311', '02312')" +
+                /*" AND " + ConstantesECM.CMCOR_SER_CODIGO + " = '0231'" +
+                " AND " + ConstantesECM.CMCOR_SS_CODIGO + " IN ('02311', '02312')" +*/
                 " AND " + PropertyIds.NAME + " LIKE '%" + selectorType.getFatherFolderName() + "'" +
                 " AND " + PropertyIds.OBJECT_TYPE_ID + " = 'F:cmcor:CM_Subserie'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
@@ -1269,7 +1272,7 @@ public final class ContentControlUtilities implements Serializable {
             }
             return carpeta;
         }
-        throw new SystemException("En la dependencia 10001040 no existe la carpeta " + selectorType.getFatherFolderName());
+        throw new SystemException("En la dependencia " + ConstantesECM.DEPENDENCIA_RADICACION + " no existe la carpeta " + selectorType.getFatherFolderName());
     }
 
     private void updateAnexos(String idDocument, String newIdDocument, Session session) {

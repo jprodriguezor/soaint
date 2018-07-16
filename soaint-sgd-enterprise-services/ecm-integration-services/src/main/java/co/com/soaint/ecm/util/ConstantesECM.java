@@ -1,5 +1,9 @@
 package co.com.soaint.ecm.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public final class ConstantesECM {
 
     public static final String ERROR_COD_MENSAJE = "1224";
@@ -90,7 +94,6 @@ public final class ConstantesECM {
     public static final String SUCCESS = "SUCCESS";
     public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
     public static final String P_APP_LINKED = "P:app:linked";
-    public static final String DEPENDENCIA_RADICACION = "10001040";
 
     //Propiedades record Carpeta
     public static final String RMA_IS_CLOSED = "rma:isClosed";
@@ -115,5 +118,12 @@ public final class ConstantesECM {
     //public static final String RMC_X_SUB_SECCION = "rmc:xSubseccion";
     //public static final String RMC_X_SUB_FONDO = "rmc:xSubFondo";
 
-    private ConstantesECM(){}
+    public static String DEPENDENCIA_RADICACION;
+
+    private ConstantesECM() {}
+
+    @Value("${ecm.radication.dependency}")
+    public void setDependenciaRadicacion(String dependenciaRadicacion) {
+        DEPENDENCIA_RADICACION = dependenciaRadicacion;
+    }
 }

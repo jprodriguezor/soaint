@@ -923,12 +923,12 @@ public final class ContentControlAlfresco implements ContentControl {
         response.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
         response.setResponse(idResponse);
         if (ObjectUtils.isEmpty(dto)) {
-            response.setMensaje("El documento introducido el nulo");
+            response.setMensaje("El documento introducido es nulo");
             return response;
         }
         final String idDocumento = dto.getIdDocumento();
         if (StringUtils.isEmpty(idDocumento)) {
-            response.setMensaje("El ID del documento introducido el nulo");
+            response.setMensaje("El ID del documento introducido es nulo");
             return response;
         }
         log.info("### Modificar documento: " + idDocumento);
@@ -958,9 +958,10 @@ public final class ContentControlAlfresco implements ContentControl {
                 final Folder sourceFolder = utilities.getFolderFrom((Document) object);
                 if (null != sourceFolder) {
                     dto.setNroRadicado(null);
-                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, ConstantesECM.DEPENDENCIA_RADICACION, session);
-                    final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
-                    final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
+                    final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, session);
+                    //final Carpeta linkTargetFolder = utilities.crearCarpetaRadicacion(selectorType, ConstantesECM.DEPENDENCIA_RADICACION, session);
+                    //final String dependencyCode = sourceFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO);
+                    //final Carpeta targetFolder = utilities.crearCarpetaRadicacion(selectorType, dependencyCode, session);
                     final ItemIterable<QueryResult> principalAdjuntosQueryResults = utilities.getPrincipalAdjuntosQueryResults(session, dto);
                     for (QueryResult queryResult :
                             principalAdjuntosQueryResults) {
@@ -968,11 +969,12 @@ public final class ContentControlAlfresco implements ContentControl {
                         CmisObject tmpObject = session.getObject(session.createObjectId(objectId));
                         tmpObject = tmpObject.updateProperties(updateProperties);
                         Document document = (Document) tmpObject;
-                        document.move(sourceFolder, targetFolder.getFolder());
+                        /*document.move(sourceFolder, targetFolder.getFolder());
                         document.refresh();
                         if (!ConstantesECM.DEPENDENCIA_RADICACION.equals(dependencyCode)) {
                             utilities.crearLink(linkTargetFolder.getFolder(), document, session);
-                        }
+                        }*/
+                        utilities.crearLink(linkTargetFolder.getFolder(), document, session);
                     }
                 }
                 final String nombreRemitente = dto.getNombreRemitente();
@@ -1406,9 +1408,11 @@ public final class ContentControlAlfresco implements ContentControl {
         if (StringUtils.isEmpty(codigoDependencia)) {
             throw new SystemException("Especifique el codigo de la dependencia");
         }
-        final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
+        /*final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
                 " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'" +
-                " AND " + PropertyIds.NAME + " NOT LIKE '" + ConstantesECM.PRODUCCION_DOCUMENTAL + "%'";
+                " AND " + PropertyIds.NAME + " NOT LIKE '" + ConstantesECM.PRODUCCION_DOCUMENTAL + "%'";*/
+        final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + codigoDependencia + "'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
         for (QueryResult queryResult : queryResults) {
@@ -1418,14 +1422,18 @@ public final class ContentControlAlfresco implements ContentControl {
                 final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
                 final String nameFolder = udFolder.getName();
                 if (nameFolder.startsWith(ConstantesECM.COMUNICACION_EXTERNA)
-                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)) {
+                        || nameFolder.startsWith(ConstantesECM.COMUNICACION_INTERNA)
+                        || nameFolder.startsWith(ConstantesECM.PRODUCCION_DOCUMENTAL)) {
                     final ItemIterable<CmisObject> children = udFolder.getChildren();
                     for (CmisObject cmisObject : children) {
                         if (cmisObject.getType().getId().equals("D:" + ConstantesECM.CMCOR + "CM_DocumentoPersonalizado")) {
                             final Document document = (Document) cmisObject;
                             final DocumentoDTO documentoDTO = utilities.transformarDocumento(document);
-                            documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
-                            dtos.add(dtos.size(), documentoDTO);
+                            final String nroRadicado = documentoDTO.getNroRadicado();
+                            if (!StringUtils.isEmpty(nroRadicado) && !"null".equalsIgnoreCase(nroRadicado)) {
+                                documentoDTO.setCodigoDependencia(udFolder.getPropertyValue(ConstantesECM.CMCOR_DEP_CODIGO));
+                                dtos.add(dtos.size(), documentoDTO);
+                            }
                         }
                     }
                 }

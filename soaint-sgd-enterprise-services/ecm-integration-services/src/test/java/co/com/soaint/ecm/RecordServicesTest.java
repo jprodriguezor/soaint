@@ -340,7 +340,7 @@ public class RecordServicesTest {
 
         try {
 
-            assertEquals("0000", recordServices.crearEstructuraRecord(structure).getCodMensaje());
+            assertEquals("0000", recordServices.crearEstructuraEcm(structure).getCodMensaje());
 
             Session session = localPropertiesRule.newConexion().getSession();
 
