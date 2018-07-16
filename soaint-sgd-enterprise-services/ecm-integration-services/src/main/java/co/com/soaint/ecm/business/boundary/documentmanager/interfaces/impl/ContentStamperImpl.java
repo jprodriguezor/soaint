@@ -97,7 +97,7 @@ public final class ContentStamperImpl implements ContentStamper {
                 document.open();
                 final Charset UTF8_CHARSET = Charset.forName("UTF-8");
                 final String htmlCad = new String(contentBytes, UTF8_CHARSET);
-                contentBytes = (top() + htmlCad + bottom()).getBytes(UTF8_CHARSET);
+                contentBytes = (top() + replaceBrTag(htmlCad) + bottom()).getBytes(UTF8_CHARSET);
                 final XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
                 final InputStream is = new ByteArrayInputStream(contentBytes);
                 worker.parseXHtml(writer, document, is, Charset.forName("UTF-8"));
@@ -196,6 +196,10 @@ public final class ContentStamperImpl implements ContentStamper {
                 pageDict.put(PdfName.MEDIABOX, newBox);
             }
         }*/
+    }
+
+    private String replaceBrTag(String htmlCad) {
+        return htmlCad.replace("<br>", "<br/>");
     }
 
     private String top() {
