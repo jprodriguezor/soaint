@@ -44,5 +44,11 @@ public class RespuestaTareaDTO implements Serializable {
         this.tiempoExpiracion = tiempoExpiracion;
         this.idInstanciaProceso = idInstanciaProceso;
     }
+
+    public RespuestaTareaDTO(Long idTarea, String nombre, String estado){
+        this.idTarea = idTarea;
+        this.nombre = nombre;
+        this.estado = estado;
+    }
 }
 
