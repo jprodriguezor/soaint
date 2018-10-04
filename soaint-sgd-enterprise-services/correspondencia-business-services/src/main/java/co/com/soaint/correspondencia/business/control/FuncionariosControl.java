@@ -147,7 +147,7 @@ public class FuncionariosControl {
         try {
             log.info("login name:"+ loginName);
             FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByLoginName", FuncionarioDTO.class)
-                    .setParameter("LOGIN_NAME", "'"+loginName+"'")
+                    .setParameter("LOGIN_NAME", loginName)
                     .getSingleResult();
 
             funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
