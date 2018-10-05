@@ -182,6 +182,12 @@ export const routes: Routes = [
     component: DisposicionFinalComponent,
     canActivate: [AuthenticatedGuard]
   },
+  {
+    path: ROUTES_PATH.cargarPlanillaSalida,
+    component: CargarPlanillaSalidaComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
