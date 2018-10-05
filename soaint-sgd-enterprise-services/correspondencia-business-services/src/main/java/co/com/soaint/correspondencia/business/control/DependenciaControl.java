@@ -68,7 +68,7 @@ public class DependenciaControl {
         log.info(codOrgaAdmiList.size() + "##########################################");
         if (!codOrgaAdmiList.isEmpty()) {
             em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementosByCodOrgList", OrganigramaItemDTO.class)
-                    .setParameter("COD_ORG_LIST", codOrgaAdmiList)
+                    //.setParameter("COD_ORG_LIST", codOrgaAdmiList)
                     .getResultList()
                     .stream()
                     .forEach(organigramaItemDTO ->
