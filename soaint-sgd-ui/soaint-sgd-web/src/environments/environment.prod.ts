@@ -180,7 +180,7 @@ export const process_info = {
   },
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
-    show: false,
+    show: true,
   },
   'proceso.gestion-planillas-salida': {
     displayValue : 'Gestión de planillas',
