@@ -45,6 +45,7 @@ public class FuncionariosControl {
     public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
         FuncionarioDTO funcionario;
         try {
+            log.info("credenciales"+ credenciales.getLoginName()+"passs:" +credenciales.getPassword());
             FuncionarioDTO usuario = securityApiClient.verificarCredenciales(credenciales);
             funcionario = funcionariosWebApiClient.listarFuncionarioByLoginName(usuario.getLoginName());
             funcionario.setRoles(usuario.getRoles());

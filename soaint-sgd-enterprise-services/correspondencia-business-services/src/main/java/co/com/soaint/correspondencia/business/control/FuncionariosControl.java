@@ -145,6 +145,7 @@ public class FuncionariosControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws BusinessException, SystemException {
         try {
+            log.info("login name:"+ loginName);
             FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByLoginName", FuncionarioDTO.class)
                     .setParameter("LOGIN_NAME", loginName)
                     .getSingleResult();
