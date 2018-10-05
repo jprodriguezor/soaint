@@ -65,10 +65,9 @@ public class DependenciaControl {
         List<String> codOrgaAdmiList = em.createNamedQuery("TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci")
                 .setParameter("IDE_FUNCI", ideFunci)
                 .getResultList();
-        log.info(codOrgaAdmiList.size() + "##########################################");
         if (!codOrgaAdmiList.isEmpty()) {
             em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementosByCodOrgList", OrganigramaItemDTO.class)
-                    //.setParameter("COD_ORG_LIST", codOrgaAdmiList)
+                    .setParameter("COD_ORG_LIST", codOrgaAdmiList)
                     .getResultList()
                     .stream()
                     .forEach(organigramaItemDTO ->
